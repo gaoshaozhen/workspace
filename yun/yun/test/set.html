@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  	<meta charset="utf-8"/>
+    <title>set.html</title>
+    <style type="text/css">
+    	body{
+    		margin:0px;
+    	}
+    	#as{   
+    		width:100px;
+    		height:100px; 		
+    		border:1px rgba(51, 48, 48, 0.37) solid;
+    		margin:0px;
+    		background:#EE85EB;
+    		opacity:0.5;
+    		position:fixed;
+    		top:0px;
+    		left:0px;
+    	}
+    	#test{
+    		width:100%;
+    		height:1500px;
+    		background:#EED9EE;
+    	}
+    	#out{
+    		width: 400px;
+		    height: 300px;
+		    border: 1px red solid;
+		    position: absolute;
+		    top: 97px;
+		    /* margin: auto; */
+		    background: #F3F8F7;
+		    left: 157px;
+    	}
+    </style>
+    <script type="text/javascript" src="../lib/jquery/jquery.min.js"></script>
+  </head>
+  <body>  	 
+ 	<textArea style='width:99%;height:280px;font-size:14px;margin:0px;padding:0px; 'readonly="readonly" ><p>sf</p></textArea>
+  </body>
+  <script type="text/javascript">    	    
+    	  (function(){
+    	 	//setInterval(function(){
+    	 		
+    	 	//},100);
+    	 		var winWidth=window.innerHeight;
+    	 		var winHeight=window.innerWidth;
+    	 		var screemWidth=screen.availWidth;
+    	 		var screenHeight=screen.availHeight;
+    	 		//$("#as").html(winWidth+"<br/>"+winHeight+"<br/>"+screemWidth+"<br/>"+screenHeight+"<br>");
+    	 		//$("#as").css({"width":"100%","height":screenHeight+"px"});
+    	 		//alert($("#as").css("width"));
+    	   })(); 
+    	   
+    	   function createOut(left,top){
+    	   		var screenWidth=screen.availWidth;
+    	 		var screenHeight=screen.availHeight;
+    	   		var outScreen=$("<div>");
+    			outScreen.css({"background":"#DBD9DD",
+    						  "position":"fixed",
+    						  	"width":"100%",
+    	   						"height":screenHeight+"px",
+    	   						"left":"0px",
+    	   						"top":"0px",
+    	   						"opacity":"0.5",
+    						  });
+				var nei=$("<div>");
+				nei.css({"border":" 3px  #2067BD solid",
+						"width":"202px",
+						 "height":"316px",
+						 "position":"absolute",
+						 "left":left+"px",
+						 "top":top+"px"});
+				
+				var text=$("<textArea style='width:99%;height:280px;font-size:14px;margin:0px;padding:0px; disabled:disabled;'></textArea>");
+				nei.append(text);
+				var con=$("<input type='button' value='保存' style='background:blue ;color:white;height: 25px;width: 57px;' >");
+				var qu=$("<input type='button' value='取消'  style='background:blue ;color:white;height: 25px;width: 57px;'>");
+				nei.append(con);
+				nei.append(qu);	
+				con.click(function(){
+					//var txt=$("")
+					//alert(this);
+					//console.log($(this).prev().val());
+				});	
+				qu.click(function(){
+					
+				});				  
+				outScreen.append(nei);
+				//$("body").append(outScreen);    							    						
+    	   }
+    	   createOut(300,300);	
+    	   $("body").append("<p>asdsadfs<p>");
+    	  
+    </script>
+</html>

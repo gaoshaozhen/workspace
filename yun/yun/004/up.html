@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8"/>
+	<title></title>
+	<link rel="stylesheet" type="text/css" href="css/style.css">
+</head>
+<body>
+	<div id="container">
+		<!-- 页首 -->
+		<div id="header">
+			<div style="float: left;"><b style="font-size: 2em;width: 113px;height: 48px;line-height: 48px;">百度云</b>
+			</div>
+			<!--页面链接-->
+			<div class="menu" style="float:left;width: 400px;height: 48px;">
+				<div class="navs"><a class="def-nav">主页</a></div>
+				<div class="navs"><a class="def-nav">网盘</a></div>				
+				<div class="navs"><a class="def-nav">分享</a></div>
+				<div class="navs"><a class="def-nav">应用</a></div>
+				<div class="new-href" style="width:580px;height:70px;position:absolute;background:#F7F7F7;top:50px;border:1px #C3CAE7 solid; display:none;">
+					<div class='mm'>
+						<div class='icon' style='background:url(../lib/icon/1.png);'></div>
+						<span style='color:black;margin:20px;font-size:12px;'>网盘</span>
+					</div>
+					<div class='mm'>
+						<div class='icon' style='background:url(../lib/icon/2.png);'></div>
+						<span style='color:black;margin: 13px;font-size:12px;'>联系人</span>
+					</div>
+					<div class='mm'>
+						<div class='icon' style='background:url(../lib/icon/3.png);'></div>
+						<span style='color:black;margin: 8px;font-size:12px;'>通话记录</span>
+					</div>
+					<div class='mm'>
+						<div class='icon' style='background:url(../lib/icon/4.png);'></div>
+						<span style='color:black;margin: 20px;font-size:12px;'>短信</span>
+					</div>
+					<div class='mm'>
+						<div class='icon' style='background:url(../lib/icon/5.png);'></div>
+						<span style='color:black;margin: 20px;font-size:12px;'>相册</span>
+					</div>
+					<div class='mm'>
+						<div class='icon' style='background:url(../lib/icon/6.png);'></div>
+						<span style='color:black;margin: 20px;font-size:12px;'>文章</span>
+					</div>
+					<div class='mm'>
+						<div class='icon' style='background:url(../lib/icon/7.png);'></div>
+						<span style='color:black;margin: 13px;font-size:12px;'>记事本</span>
+					</div>
+					<div class='mm'>
+						<div class='icon' style='background:url(../lib/icon/8.png);'></div>
+						<span style='color:black;margin: 8px;font-size:12px;'>手机找回</span>
+					</div>
+					<div class='mm'>
+						<div class='icon' style='background:url(../lib/icon/9.png);'></div>
+						<span style='color:black;margin: 13px;font-size:12px;'>云直播</span>
+					</div>
+				</div>	
+			</div>			
+			<div class="more" style="float:right;width: 400px;height: 48px;line-height: 48px;">
+				<form style="float: left;">
+					<input type="text" style="width: 114px;"></input>
+					<input type="submit" value="搜索"></input>	
+				</form>				
+				<div class="mn"><span class="other">通知</span></div>
+				<div class="mn"><span class="other">更多</span></div>	
+			</div>
+		</div>
+		<!-- 左侧菜单栏 -->
+		<div id="menu-List">
+			<div class="file-Search">				
+				<ul>
+					<li class="search"><span class="tex">全部文件</span></li>
+					<li class="search"><span class="tex">图片</span></li>
+					<li class="search"><span class="tex">文档</span></li>
+					<li class="search"><span class="tex">视频</span></li>
+					<li class="search"><span class="tex">种子</span></li>
+					<li class="search"><span class="tex">音乐</span></li>
+					<li class="search"><span class="tex">其他</span></li>
+					<li class="search"><span class="tex">我的分享</span></li>
+					<li class="search"><span class="tex">回收站</span></li>
+				</ul>					
+			</div>
+		</div>
+		<!-- 内容区域 -->
+		<div id="showFile"> 
+			<div class="control">
+				<div class="up">
+					<span class="as">上传</span>
+					<div class="up-file-folder">
+						<input type="file" name="file" class="file">
+						<div class="up-fi">上传文件</div>
+						<div class="up-fo">上传文件夹</div>
+					</div>
+				</div>
+				<div class="up"><div class="addNewFile">新建文件夹</div></div>
+				<div class="up">离线下载</div>
+				<div class="up">我的设备</div>
+				<div class="files-control" style="display:none">
+					<div class="up"><div class="downLoad" style="width:100%;height:100%">下载</div></div>
+					<div class="up"><div class="delete" style="width:100%;height:100%">删除</div></div>
+					<div class="up">重命名</div>
+					<div class="up">移动到</div>
+					<div class="up">复制</div>
+				</div>				
+			</div>
+			<div class ="left-right" >
+					<span >全部文件</span>					
+			</div>			
+			<!-- 文件区域 -->
+			<div class="file-folder" >
+				
+			</div>			
+		</div>
+	</div>
+</body>
+<script type="text/javascript" src="jquery/jquery.min.js"></script>
+<script type="text/javascript" src="js/my.js"></script>
+<script type="text/javascript" src="js/menu.js"></script>
+<script type="text/javascript" src="js/header.js"></script>
+</html>

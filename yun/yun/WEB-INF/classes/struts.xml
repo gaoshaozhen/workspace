@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE struts PUBLIC
+	"-//Apache Software Foundation//DTD Struts Configuration 2.3//EN"
+	"http://struts.apache.org/dtds/struts-2.3.dtd">
+<struts>
+ 	 <constant name="struts.i18n.encoding" value="utf-8"/>
+	 <package name="struts2qs" namespace="/" extends="struts-default">  
+        <action name="getBooks" class="org.crayzit.struts2qs.action.GetBooksAction">  
+           <result name="login">/loginForm.jsp</result>  
+            <result name="success">/showBook.jsp</result>            
+        </action> 
+         <action name="login" class="org.crayzit.struts2qs.action.LoginAction">  
+           <result name="input">/loginForm.jsp</result>
+           <result name="error">/error.jsp</result>  
+            <result name="success">/welcome.jsp</result>            
+        </action>  
+         <action name="test" class="test.Test">  
+           <result type="redirect">/test.jsp</result>                      
+        </action>
+        <action name="test1" class="test.Test1">  
+           <result type="redirectAction">test</result>                      
+        </action>        
+        <action name="Myaction" class="org.crayzit.struts2qs.action.Myaction">
+        	<result>${target}.jsp</result>
+        </action>  
+        <action name="*">
+        	<result>{1}.jsp</result>
+        </action>
+        <action name="guessPro" class="org.crayzit.struts2qs.action.GuessNumberAction">
+        	<result type="stream">
+        		<param name="contentType">text/html</param>
+        		<param name="inputName">inputName</param>
+        	</result>        	
+        </action>
+    </package> 
+</struts>

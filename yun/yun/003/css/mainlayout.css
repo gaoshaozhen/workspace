@@ -1,0 +1,28 @@
+*{margin:0;padding:0;}
+body{
+	margin: 0px;
+}
+#container{
+	width: 1366px;
+	height:707px;
+}
+#header{
+	width: 100%;
+	height: 50px;
+	background: #252525;
+	color: #F0F0F0;
+	overflow: hidden;
+	font-size: 19px;
+}
+#container #menu-List{
+	width: 230px;
+	height: 657px;
+	background: #F0F0F0;
+	float:left;
+}
+#container #showFile{
+	width: 1136px;	
+	height: 657px;
+	float:right;
+	
+}
