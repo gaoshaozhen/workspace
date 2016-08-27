@@ -1,0 +1,3163 @@
+<<!DOCTYPE html>
+<html>
+<head>
+	<meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no"> 
+	<meta charset="utf-8">
+	<title>俄罗斯方块</title>
+	<style type="text/css">
+		#game{
+			border:1px blue solid;
+			margin: auto auto;			
+			width: 480px;
+    		height: 442px;
+		}
+			.square{
+				width:18px;
+				height:18px;
+				border:1px solid green;
+				float:left;
+				margin:0px;
+			}
+			#gameArea{
+				width:240px;
+				height:440px;
+				border:2px solid red;
+				float:left;
+			}
+			#score{
+				color: blue;
+				width: 212px;
+				float: right;
+			}
+	</style>	
+</head>
+<body style="background: black;">
+	<div id="game">
+		<div id="gameArea"></div>
+		<div id="score" >
+			<div>
+				<span>得分：</span>
+				<span id="num1">0</span><br/>
+			</div>
+			<div>
+				<span>消除：</span>
+				<span id="num2">0</span>
+			</div>
+			<div id="controlBtn" onclick="startGame('gameArea')" style="background: #335634;width: 67px;">开始游戏
+			</div>
+		</div>
+	</div>
+	<div id="test" style="width: 200px;height: 430px;border: 1px solid green;position: absolute;left: 3px;top: 1px;color: green;"></div>
+</body>
+	<script type="text/javascript">
+		function runGame(){
+			var runState=false;//true表示游戏运行中，false表示未运行
+			var scoreNum=0;//游戏分数
+			var eli=0;//消除行数
+			var point=new Array();//记录空间状态，1代表已被占据，0代表未被占据
+			var lock=false;//方块锁，true代表已被一进程占据，false代表未被占据
+			var sq=new Array(5);// 当下正在运动的方块编号及位置编号sq[0]为方块编号
+			var timer;//定时器，决定方块下降速度
+			init=function(gameArea){//初始化数据
+				var area=document.getElementById(gameArea);
+				var node=area.childNodes;
+				if(node.length!=0){//若游戏界面尚未清空则清空
+					var n=node.length;
+					var no=new Array();
+					for(var j=0;j<n;j++){
+						no[j]=node.item(j);
+					}
+					for(var i=0;i<n;i++){
+						area.removeChild(no[i]);
+					}
+				}					
+				for(var k=0;k<322;k++){//初始化point状态
+					if(parseInt(k/14)==22){
+						point[k]=1;
+					}
+					else if(k%14==0||k%14==13){
+						point[k]=1;
+					}
+					else{
+						point[k]=0;					
+					}					
+				}
+				//alert(point[41]);
+				sq[0]=0;
+				for(var w=1;w<=4;w++){//初始化sq
+					sq[w]=new Array(2);
+					sq[w][0]=0;
+					sq[w][1]=0;
+				}
+				eli=0;
+				score=0;
+				document.getElementById("num1").innerHTML=scoreNum.toString();
+				document.getElementById("num2").innerHTML=eli.toString();
+				var square;
+				for(var i=0;i<264;i++){//显示方格
+					square=document.createElement("div");
+					square.className="square";
+					document.getElementById(gameArea).appendChild(square);	
+				}				
+			}
+			this.offRun=function(){//关闭定时器
+				clearInterval(timer);
+			}
+			this.getState=function(){//获得游戏状态
+				return runState;
+			}
+			getSqId=function(x,y){//由坐标系双坐标得到位置编号
+				return 12*(y-1)+x-1;
+			}
+			getBlockId=function(x,y){//由坐标系双坐标得到point编号
+				return 14*(y-1)+x;
+			}
+			judgeFaild=function(){//判断游戏是否失败,失败返回true，为失败返回false
+				for(var i=1;i<=4;i++){
+					var num=this.getBlockId(sq[i][0],sq[i][1]);
+					if(point[num]==1){
+						/*
+						var d=document.getElementById("test");//显示当前point状态
+						var str="";
+						for(var z=0;z<point.length;z++){
+							//alert(point[41]);
+							if(z%14==13){
+								str+=point[z]+"\n";	
+							}
+							else{
+								str+=point[z];
+							}						
+						}
+						d.innerHTML=str;
+						alert("point["+num+"]被占据"+"("+sq[i][0]+","+sq[i][1]+")"+point[41]);
+						*/return true;
+					}
+				}
+				return false;
+			}
+			getShapePosition=function(num){//由编号返回方块各点初始坐标系坐标（数组保存）
+				var co=new Array(5);
+				co[0]=num;
+				for(var i=1;i<5;i++){
+					co[i]=new Array(2);
+				}
+				switch(num){
+					case 1: co[1][0]=6;	co[1][1]=2;	co[2][0]=6;	co[2][1]=1;
+							co[3][0]=7;	co[3][1]=1;	co[4][0]=7;	co[4][1]=2;	break;
+					case 2: co[1][0]=7;	co[1][1]=2;	co[2][0]=6;	co[2][1]=2;
+							co[3][0]=7;	co[3][1]=1;	co[4][0]=8;	co[4][1]=2;	break;
+					case 3: co[1][0]=7;	co[1][1]=2;	co[2][0]=7;	co[2][1]=1;
+							co[3][0]=8;	co[3][1]=2;	co[4][0]=7; co[4][1]=3; break;
+					case 4: co[1][0]=7; co[1][1]=1; co[2][0]=8; co[2][1]=1;
+							co[3][0]=7; co[3][1]=2;	co[4][0]=6;	co[4][1]=1; break;
+					case 5: co[1][0]=7;	co[1][1]=2;	co[2][0]=7;	co[2][1]=1;
+							co[3][0]=7;	co[3][1]=3;	co[4][0]=6;	co[4][1]=2; break;
+
+					case 6: co[1][0]=6;	co[1][1]=2;	co[2][0]=7;	co[2][1]=2;
+							co[3][0]=7;	co[3][1]=1;	co[4][0]=8;	co[4][1]=1;	break;
+
+					case 7: co[1][0]=6;	co[1][1]=2;	co[2][0]=6;	co[2][1]=1;
+							co[3][0]=7;	co[3][1]=2;	co[4][0]=7;	co[4][1]=3;	break;
+
+					case 8: co[1][0]=6;	co[1][1]=1;	co[2][0]=7;	co[2][1]=1;
+							co[3][0]=7;	co[3][1]=2;	co[4][0]=8; co[4][1]=2; break;
+
+					case 9: co[1][0]=6; co[1][1]=3; co[2][0]=6; co[2][1]=2;
+							co[3][0]=7; co[3][1]=2;	co[4][0]=7;	co[4][1]=1; break;
+
+					case 10: co[1][0]=6;	co[1][1]=2;	co[2][0]=6;	co[2][1]=1;
+							 co[3][0]=7;	co[3][1]=2;	co[4][0]=8;	co[4][1]=2;	break;
+
+					case 11: co[1][0]=6;	co[1][1]=3;	co[2][0]=6;	co[2][1]=2;
+							 co[3][0]=6;	co[3][1]=1;	co[4][0]=7;	co[4][1]=1;	break;
+
+					case 12: co[1][0]=6;	co[1][1]=1;	co[2][0]=7;	co[2][1]=1;
+							 co[3][0]=8;	co[3][1]=1;	co[4][0]=8; co[4][1]=2; break;
+
+					case 13: co[1][0]=6; 	co[1][1]=3; co[2][0]=7; co[2][1]=3;
+							 co[3][0]=7; 	co[3][1]=2; co[4][0]=7; co[4][1]=1; break;
+
+					case 14: co[1][0]=6;	co[1][1]=2;	co[2][0]=7;	co[2][1]=2;
+							 co[3][0]=8;	co[3][1]=2;	co[4][0]=8;	co[4][1]=1;	break;
+ 
+					case 15: co[1][0]=6;	co[1][1]=3;	co[2][0]=6;	co[2][1]=2;
+							 co[3][0]=6;	co[3][1]=1;	co[4][0]=7;	co[4][1]=3;	break;
+
+					case 16: co[1][0]=6;	co[1][1]=2;	co[2][0]=6;	co[2][1]=1;
+							 co[3][0]=7;	co[3][1]=1;	co[4][0]=8; co[4][1]=1; break;
+
+					case 17: co[1][0]=6;	 co[1][1]=1; co[2][0]=7; co[2][1]=1;
+							 co[3][0]=7; 	 co[3][1]=2; co[4][0]=7; co[4][1]=3; break;
+
+					case 18: co[1][0]=6;	co[1][1]=4;	co[2][0]=6;	co[2][1]=3;
+							 co[3][0]=6;	co[3][1]=2;	co[4][0]=6; co[4][1]=1; break;
+
+					case 19: co[1][0]=5;	 co[1][1]=1; co[2][0]=6; co[2][1]=1;
+							 co[3][0]=7; 	 co[3][1]=1; co[4][0]=8; co[4][1]=1; break;
+					default:alert("返回坐标出错！");
+				}
+				return co;
+			}
+			produceShape=function(){//产生方块
+				var n=1+Math.floor(19*(Math.random()));//产生编号1的方块
+				sq=getShapePosition(n);
+				//alert(sq[4][0]+"\n"+sq[4][1]);
+				if(judgeFaild()==true){//游戏失败
+					clearInterval(timer);
+					alert("游戏失败！");
+				}
+				else{//没有失败
+					var r=document.getElementById("gameArea");
+					var t=r.childNodes;
+					for(var i=1;i<=4;i++){
+						var g=getSqId(sq[i][0],sq[i][1]);	
+						//alert(sq[i][0]+"\n"+sq[i][1]+"\n"+g);					
+						var s=t.item(g);
+						s.style.backgroundColor="red"; //对方块所在位置着色
+						var a=getBlockId(sq[i][0],sq[i][1]);
+						point[a]=1;
+					}
+				}
+			} 	
+			function move_left(){//左移当前方块	
+				//alert("move_left");
+				if(lock==true){//方块已被占据，不允许左移
+					alert("已被占据");
+					return;
+				}
+				else{
+					lock=true;//占据方块，开始左移					
+					if(sq[0]==1){//1号方块
+						var a=new Array(4);
+						a[0]=getBlockId(sq[1][0],sq[1][1]);
+						a[1]=getBlockId(sq[2][0],sq[2][1]);						
+						if(point[a[0]-1]==1||point[a[1]-1]==1){//左边有阻碍，不能移动
+							//alert("1号方块不能左移");
+							lock=false;//释放方块
+							return;
+						}
+						else{//左边没有阻碍，可以移动
+							a[2]=getBlockId(sq[3][0],sq[3][1]);//获取point位置编号
+							a[3]=getBlockId(sq[4][0],sq[4][1]);
+							var f=document.getElementById("gameArea");
+							var r=f.childNodes;
+							var b;
+							for(var i=0;i<4;i++){
+								point[a[i]]=0; //修改point
+								point[a[i]-1]=1;
+								b =getSqId(sq[i+1][0],sq[i+1][1]);
+								r.item(b).style.backgroundColor="black"; //将实际位置痕迹抹除
+								b-=1;   //得到新位置编号
+								sq[i+1][0]-=1;
+								r.item(b).style.backgroundColor="red";//移动到新位置
+							}
+						}
+					}
+					else if(sq[0]==2){//2号方块	
+						var a=new Array(4);
+						a[0]=getBlockId(sq[1][0],sq[1][1]);//获取point位置编号
+						a[1]=getBlockId(sq[2][0],sq[2][1]);
+						a[2]=getBlockId(sq[3][0],sq[3][1]);	
+						a[3]=getBlockId(sq[4][0],sq[4][1]);				
+						if(point[a[1]-1]==1||point[a[2]-1]==1){//左边有阻碍，不能移动	
+							//alert("左边有阻碍，不能移动	");
+							lock=false;//释放方块							
+							return;
+						}
+						else{//左边没有阻碍，可以移动
+							//alert("左边没有阻碍，可以移动	");
+							var f=document.getElementById("gameArea");
+							var r=f.childNodes;
+							var b;
+							for(var i=0;i<4;i++){//清除旧痕迹
+								point[a[i]]=0; //修改point								
+								b =getSqId(sq[i+1][0],sq[i+1][1]);//获得方块当前实际位置编号
+								r.item(b).style.backgroundColor="black"; //将实际位置痕迹抹除
+							}
+							for(var x=0;x<4;x++){
+								point[a[x]-1]=1;//更新point状态
+								b =getSqId(sq[x+1][0],sq[x+1][1]);//获得方块当前实际位置编号
+								b-=1;   //得到新位置编号								
+								r.item(b).style.backgroundColor="red";//移动到新位置
+								sq[x+1][0]-=1;//更新实际位置编号
+							}
+						}
+					}
+					else if(sq[0]==3){//3号方块	
+						var a=new Array(4);
+						a[0]=getBlockId(sq[1][0],sq[1][1]);//获取point位置编号
+						a[1]=getBlockId(sq[2][0],sq[2][1]);
+						a[2]=getBlockId(sq[3][0],sq[3][1]);	
+						a[3]=getBlockId(sq[4][0],sq[4][1]);				
+						if(point[a[0]-1]==1||point[a[1]-1]==1||point[a[3]-1]==1){//左边有阻碍，不能移动	
+							//alert("左边有阻碍，不能移动	");
+							lock=false;//释放方块							
+							return;
+						}
+						else{//左边没有阻碍，可以移动
+							//alert("左边没有阻碍，可以移动	");
+							var f=document.getElementById("gameArea");
+							var r=f.childNodes;
+							var b;
+							for(var i=0;i<4;i++){//清除旧痕迹
+								point[a[i]]=0; //修改point								
+								b =getSqId(sq[i+1][0],sq[i+1][1]);//获得方块当前实际位置编号
+								r.item(b).style.backgroundColor="black"; //将实际位置痕迹抹除
+							}
+							for(var x=0;x<4;x++){
+								point[a[x]-1]=1;//更新point状态
+								b =getSqId(sq[x+1][0],sq[x+1][1]);//获得方块当前实际位置编号
+								b-=1;   //得到新位置编号								
+								r.item(b).style.backgroundColor="red";//移动到新位置
+								sq[x+1][0]-=1;//更新实际位置编号
+							}
+						}
+					}
+					else if(sq[0]==4){//4号方块	
+						var a=new Array(4);
+						a[0]=getBlockId(sq[1][0],sq[1][1]);//获取point位置编号
+						a[1]=getBlockId(sq[2][0],sq[2][1]);
+						a[2]=getBlockId(sq[3][0],sq[3][1]);	
+						a[3]=getBlockId(sq[4][0],sq[4][1]);				
+						if(point[a[2]-1]==1||point[a[3]-1]==1){//左边有阻碍，不能移动	
+							//alert("左边有阻碍，不能移动	");
+							lock=false;//释放方块							
+							return;
+						}
+						else{//左边没有阻碍，可以移动
+							//alert("左边没有阻碍，可以移动	");
+							var f=document.getElementById("gameArea");
+							var r=f.childNodes;
+							var b;
+							for(var i=0;i<4;i++){//清除旧痕迹
+								point[a[i]]=0; //修改point								
+								b =getSqId(sq[i+1][0],sq[i+1][1]);//获得方块当前实际位置编号
+								r.item(b).style.backgroundColor="black"; //将实际位置痕迹抹除
+							}
+							for(var x=0;x<4;x++){
+								point[a[x]-1]=1;//更新point状态
+								b =getSqId(sq[x+1][0],sq[x+1][1]);//获得方块当前实际位置编号
+								b-=1;   //得到新位置编号								
+								r.item(b).style.backgroundColor="red";//移动到新位置
+								sq[x+1][0]-=1;//更新实际位置编号
+							}
+						}
+					}
+					else if(sq[0]==5){//5号方块	
+						var a=new Array(4);
+						a[0]=getBlockId(sq[1][0],sq[1][1]);//获取point位置编号
+						a[1]=getBlockId(sq[2][0],sq[2][1]);
+						a[2]=getBlockId(sq[3][0],sq[3][1]);	
+						a[3]=getBlockId(sq[4][0],sq[4][1]);				
+						if(point[a[1]-1]==1||point[a[2]-1]==1||point[a[3]-1]==1){//左边有阻碍，不能移动	
+							//alert("左边有阻碍，不能移动	");
+							lock=false;//释放方块							
+							return;
+						}
+						else{//左边没有阻碍，可以移动
+							//alert("左边没有阻碍，可以移动	");
+							var f=document.getElementById("gameArea");
+							var r=f.childNodes;
+							var b;
+							for(var i=0;i<4;i++){//清除旧痕迹
+								point[a[i]]=0; //修改point								
+								b =getSqId(sq[i+1][0],sq[i+1][1]);//获得方块当前实际位置编号
+								r.item(b).style.backgroundColor="black"; //将实际位置痕迹抹除
+							}
+							for(var x=0;x<4;x++){
+								point[a[x]-1]=1;//更新point状态
+								b =getSqId(sq[x+1][0],sq[x+1][1]);//获得方块当前实际位置编号
+								b-=1;   //得到新位置编号								
+								r.item(b).style.backgroundColor="red";//移动到新位置
+								sq[x+1][0]-=1;//更新实际位置编号
+							}
+						}
+					}
+					else if(sq[0]==6){//6号方块	
+						var a=new Array(4);
+						a[0]=getBlockId(sq[1][0],sq[1][1]);//获取point位置编号
+						a[1]=getBlockId(sq[2][0],sq[2][1]);
+						a[2]=getBlockId(sq[3][0],sq[3][1]);	
+						a[3]=getBlockId(sq[4][0],sq[4][1]);				
+						if(point[a[0]-1]==1||point[a[2]-1]==1){//左边有阻碍，不能移动	
+							//alert("左边有阻碍，不能移动	");
+							lock=false;//释放方块							
+							return;
+						}
+						else{//左边没有阻碍，可以移动
+							//alert("左边没有阻碍，可以移动	");
+							var f=document.getElementById("gameArea");
+							var r=f.childNodes;
+							var b;
+							for(var i=0;i<4;i++){//清除旧痕迹
+								point[a[i]]=0; //修改point								
+								b =getSqId(sq[i+1][0],sq[i+1][1]);//获得方块当前实际位置编号
+								r.item(b).style.backgroundColor="black"; //将实际位置痕迹抹除
+							}
+							for(var x=0;x<4;x++){
+								point[a[x]-1]=1;//更新point状态
+								b =getSqId(sq[x+1][0],sq[x+1][1]);//获得方块当前实际位置编号
+								b-=1;   //得到新位置编号								
+								r.item(b).style.backgroundColor="red";//移动到新位置
+								sq[x+1][0]-=1;//更新实际位置编号
+							}
+						}
+					}
+					else if(sq[0]==7){//7号方块	
+						var a=new Array(4);
+						a[0]=getBlockId(sq[1][0],sq[1][1]);//获取point位置编号
+						a[1]=getBlockId(sq[2][0],sq[2][1]);
+						a[2]=getBlockId(sq[3][0],sq[3][1]);	
+						a[3]=getBlockId(sq[4][0],sq[4][1]);				
+						if(point[a[0]-1]==1||point[a[1]-1]==1||point[a[3]-1]==1){//左边有阻碍，不能移动	
+							//alert("左边有阻碍，不能移动	");
+							lock=false;//释放方块							
+							return;
+						}
+						else{//左边没有阻碍，可以移动
+							//alert("左边没有阻碍，可以移动	");
+							var f=document.getElementById("gameArea");
+							var r=f.childNodes;
+							var b;
+							for(var i=0;i<4;i++){//清除旧痕迹
+								point[a[i]]=0; //修改point								
+								b =getSqId(sq[i+1][0],sq[i+1][1]);//获得方块当前实际位置编号
+								r.item(b).style.backgroundColor="black"; //将实际位置痕迹抹除
+							}
+							for(var x=0;x<4;x++){
+								point[a[x]-1]=1;//更新point状态
+								b =getSqId(sq[x+1][0],sq[x+1][1]);//获得方块当前实际位置编号
+								b-=1;   //得到新位置编号								
+								r.item(b).style.backgroundColor="red";//移动到新位置
+								sq[x+1][0]-=1;//更新实际位置编号
+							}
+						}
+					}
+					else if(sq[0]==8){//8号方块	
+						var a=new Array(4);
+						a[0]=getBlockId(sq[1][0],sq[1][1]);//获取point位置编号
+						a[1]=getBlockId(sq[2][0],sq[2][1]);
+						a[2]=getBlockId(sq[3][0],sq[3][1]);	
+						a[3]=getBlockId(sq[4][0],sq[4][1]);				
+						if(point[a[0]-1]==1||point[a[2]-1]==1){//左边有阻碍，不能移动	
+							//alert("左边有阻碍，不能移动	");
+							lock=false;//释放方块							
+							return;
+						}
+						else{//左边没有阻碍，可以移动
+							//alert("左边没有阻碍，可以移动	");
+							var f=document.getElementById("gameArea");
+							var r=f.childNodes;
+							var b;
+							for(var i=0;i<4;i++){//清除旧痕迹
+								point[a[i]]=0; //修改point								
+								b =getSqId(sq[i+1][0],sq[i+1][1]);//获得方块当前实际位置编号
+								r.item(b).style.backgroundColor="black"; //将实际位置痕迹抹除
+							}
+							for(var x=0;x<4;x++){
+								point[a[x]-1]=1;//更新point状态
+								b =getSqId(sq[x+1][0],sq[x+1][1]);//获得方块当前实际位置编号
+								b-=1;   //得到新位置编号								
+								r.item(b).style.backgroundColor="red";//移动到新位置
+								sq[x+1][0]-=1;//更新实际位置编号
+							}
+						}
+					}
+					else if(sq[0]==9){//9号方块	
+						var a=new Array(4);
+						a[0]=getBlockId(sq[1][0],sq[1][1]);//获取point位置编号
+						a[1]=getBlockId(sq[2][0],sq[2][1]);
+						a[2]=getBlockId(sq[3][0],sq[3][1]);	
+						a[3]=getBlockId(sq[4][0],sq[4][1]);				
+						if(point[a[0]-1]==1||point[a[1]-1]==1||point[a[3]-1]==1){//左边有阻碍，不能移动	
+							//alert("左边有阻碍，不能移动	");
+							lock=false;//释放方块							
+							return;
+						}
+						else{//左边没有阻碍，可以移动
+							//alert("左边没有阻碍，可以移动	");
+							var f=document.getElementById("gameArea");
+							var r=f.childNodes;
+							var b;
+							for(var i=0;i<4;i++){//清除旧痕迹
+								point[a[i]]=0; //修改point								
+								b =getSqId(sq[i+1][0],sq[i+1][1]);//获得方块当前实际位置编号
+								r.item(b).style.backgroundColor="black"; //将实际位置痕迹抹除
+							}
+							for(var x=0;x<4;x++){
+								point[a[x]-1]=1;//更新point状态
+								b =getSqId(sq[x+1][0],sq[x+1][1]);//获得方块当前实际位置编号
+								b-=1;   //得到新位置编号								
+								r.item(b).style.backgroundColor="red";//移动到新位置
+								sq[x+1][0]-=1;//更新实际位置编号
+							}
+						}
+					}
+					else if(sq[0]==10){//10号方块 
+						var a=new Array(4);
+						a[0]=getBlockId(sq[1][0],sq[1][1]);//获取point位置编号
+						a[1]=getBlockId(sq[2][0],sq[2][1]);
+						a[2]=getBlockId(sq[3][0],sq[3][1]);	
+						a[3]=getBlockId(sq[4][0],sq[4][1]);				
+						if(point[a[0]-1]==1||point[a[1]-1]==1){//左边有阻碍，不能移动	
+							//alert("左边有阻碍，不能移动	");
+							lock=false;//释放方块							
+							return;
+						}
+						else{//左边没有阻碍，可以移动
+							//alert("左边没有阻碍，可以移动	");
+							var f=document.getElementById("gameArea");
+							var r=f.childNodes;
+							var b;
+							for(var i=0;i<4;i++){//清除旧痕迹
+								point[a[i]]=0; //修改point								
+								b =getSqId(sq[i+1][0],sq[i+1][1]);//获得方块当前实际位置编号
+								r.item(b).style.backgroundColor="black"; //将实际位置痕迹抹除
+							}
+							for(var x=0;x<4;x++){
+								point[a[x]-1]=1;//更新point状态
+								b =getSqId(sq[x+1][0],sq[x+1][1]);//获得方块当前实际位置编号
+								b-=1;   //得到新位置编号								
+								r.item(b).style.backgroundColor="red";//移动到新位置
+								sq[x+1][0]-=1;//更新实际位置编号
+							}
+						}
+					}
+					else if(sq[0]==11){//11号方块
+						var a=new Array(4);
+						a[0]=getBlockId(sq[1][0],sq[1][1]);//获取point位置编号
+						a[1]=getBlockId(sq[2][0],sq[2][1]);
+						a[2]=getBlockId(sq[3][0],sq[3][1]);	
+						a[3]=getBlockId(sq[4][0],sq[4][1]);				
+						if(point[a[0]-1]==1||point[a[1]-1]==1||point[a[2]-1]==1){//左边有阻碍，不能移动	
+							//alert("左边有阻碍，不能移动	");
+							lock=false;//释放方块							
+							return;
+						}
+						else{//左边没有阻碍，可以移动
+							//alert("左边没有阻碍，可以移动	");
+							var f=document.getElementById("gameArea");
+							var r=f.childNodes;
+							var b;
+							for(var i=0;i<4;i++){//清除旧痕迹
+								point[a[i]]=0; //修改point								
+								b =getSqId(sq[i+1][0],sq[i+1][1]);//获得方块当前实际位置编号
+								r.item(b).style.backgroundColor="black"; //将实际位置痕迹抹除
+							}
+							for(var x=0;x<4;x++){
+								point[a[x]-1]=1;//更新point状态
+								b =getSqId(sq[x+1][0],sq[x+1][1]);//获得方块当前实际位置编号
+								b-=1;   //得到新位置编号								
+								r.item(b).style.backgroundColor="red";//移动到新位置
+								sq[x+1][0]-=1;//更新实际位置编号
+							}
+						}
+					}
+					else if(sq[0]==12){//12号方块
+						var a=new Array(4);
+						a[0]=getBlockId(sq[1][0],sq[1][1]);//获取point位置编号
+						a[1]=getBlockId(sq[2][0],sq[2][1]);
+						a[2]=getBlockId(sq[3][0],sq[3][1]);	
+						a[3]=getBlockId(sq[4][0],sq[4][1]);				
+						if(point[a[0]-1]==1||point[a[3]-1]==1){//左边有阻碍，不能移动	
+							//alert("左边有阻碍，不能移动	");
+							lock=false;//释放方块							
+							return;
+						}
+						else{//左边没有阻碍，可以移动
+							//alert("左边没有阻碍，可以移动	");
+							var f=document.getElementById("gameArea");
+							var r=f.childNodes;
+							var b;
+							for(var i=0;i<4;i++){//清除旧痕迹
+								point[a[i]]=0; //修改point								
+								b =getSqId(sq[i+1][0],sq[i+1][1]);//获得方块当前实际位置编号
+								r.item(b).style.backgroundColor="black"; //将实际位置痕迹抹除
+							}
+							for(var x=0;x<4;x++){
+								point[a[x]-1]=1;//更新point状态
+								b =getSqId(sq[x+1][0],sq[x+1][1]);//获得方块当前实际位置编号
+								b-=1;   //得到新位置编号								
+								r.item(b).style.backgroundColor="red";//移动到新位置
+								sq[x+1][0]-=1;//更新实际位置编号
+							}
+						}
+					}
+					else if(sq[0]==13){//13号方块
+						var a=new Array(4);
+						a[0]=getBlockId(sq[1][0],sq[1][1]);//获取point位置编号
+						a[1]=getBlockId(sq[2][0],sq[2][1]);
+						a[2]=getBlockId(sq[3][0],sq[3][1]);	
+						a[3]=getBlockId(sq[4][0],sq[4][1]);				
+						if(point[a[0]-1]==1||point[a[2]-1]==1||point[a[3]-1]==1){//左边有阻碍，不能移动	
+							//alert("左边有阻碍，不能移动	");
+							lock=false;//释放方块							
+							return;
+						}
+						else{//左边没有阻碍，可以移动
+							//alert("左边没有阻碍，可以移动	");
+							var f=document.getElementById("gameArea");
+							var r=f.childNodes;
+							var b;
+							for(var i=0;i<4;i++){//清除旧痕迹
+								point[a[i]]=0; //修改point								
+								b =getSqId(sq[i+1][0],sq[i+1][1]);//获得方块当前实际位置编号
+								r.item(b).style.backgroundColor="black"; //将实际位置痕迹抹除
+							}
+							for(var x=0;x<4;x++){
+								point[a[x]-1]=1;//更新point状态
+								b =getSqId(sq[x+1][0],sq[x+1][1]);//获得方块当前实际位置编号
+								b-=1;   //得到新位置编号								
+								r.item(b).style.backgroundColor="red";//移动到新位置
+								sq[x+1][0]-=1;//更新实际位置编号
+							}
+						}	
+					}
+					else if(sq[0]==14){//14号方块
+						var a=new Array(4);
+						a[0]=getBlockId(sq[1][0],sq[1][1]);//获取point位置编号
+						a[1]=getBlockId(sq[2][0],sq[2][1]);
+						a[2]=getBlockId(sq[3][0],sq[3][1]);	
+						a[3]=getBlockId(sq[4][0],sq[4][1]);				
+						if(point[a[0]-1]==1||point[a[3]-1]==1){//左边有阻碍，不能移动	
+							//alert("左边有阻碍，不能移动	");
+							lock=false;//释放方块							
+							return;
+						}
+						else{//左边没有阻碍，可以移动
+							//alert("左边没有阻碍，可以移动	");
+							var f=document.getElementById("gameArea");
+							var r=f.childNodes;
+							var b;
+							for(var i=0;i<4;i++){//清除旧痕迹
+								point[a[i]]=0; //修改point								
+								b =getSqId(sq[i+1][0],sq[i+1][1]);//获得方块当前实际位置编号
+								r.item(b).style.backgroundColor="black"; //将实际位置痕迹抹除
+							}
+							for(var x=0;x<4;x++){
+								point[a[x]-1]=1;//更新point状态
+								b =getSqId(sq[x+1][0],sq[x+1][1]);//获得方块当前实际位置编号
+								b-=1;   //得到新位置编号								
+								r.item(b).style.backgroundColor="red";//移动到新位置
+								sq[x+1][0]-=1;//更新实际位置编号
+							}
+						}	 
+					}
+					else if(sq[0]==15){//15号方块
+						var a=new Array(4);
+						a[0]=getBlockId(sq[1][0],sq[1][1]);//获取point位置编号
+						a[1]=getBlockId(sq[2][0],sq[2][1]);
+						a[2]=getBlockId(sq[3][0],sq[3][1]);	
+						a[3]=getBlockId(sq[4][0],sq[4][1]);				
+						if(point[a[0]-1]==1||point[a[1]-1]==1||point[a[2]-1]==1){//左边有阻碍，不能移动	
+							//alert("左边有阻碍，不能移动	");
+							lock=false;//释放方块							
+							return;
+						}
+						else{//左边没有阻碍，可以移动
+							//alert("左边没有阻碍，可以移动	");
+							var f=document.getElementById("gameArea");
+							var r=f.childNodes;
+							var b;
+							for(var i=0;i<4;i++){//清除旧痕迹
+								point[a[i]]=0; //修改point								
+								b =getSqId(sq[i+1][0],sq[i+1][1]);//获得方块当前实际位置编号
+								r.item(b).style.backgroundColor="black"; //将实际位置痕迹抹除
+							}
+							for(var x=0;x<4;x++){
+								point[a[x]-1]=1;//更新point状态
+								b =getSqId(sq[x+1][0],sq[x+1][1]);//获得方块当前实际位置编号
+								b-=1;   //得到新位置编号								
+								r.item(b).style.backgroundColor="red";//移动到新位置
+								sq[x+1][0]-=1;//更新实际位置编号
+							}
+						}	
+					}
+					else if(sq[0]==16){//16号方块
+						var a=new Array(4);
+						a[0]=getBlockId(sq[1][0],sq[1][1]);//获取point位置编号
+						a[1]=getBlockId(sq[2][0],sq[2][1]);
+						a[2]=getBlockId(sq[3][0],sq[3][1]);	
+						a[3]=getBlockId(sq[4][0],sq[4][1]);				
+						if(point[a[0]-1]==1||point[a[1]-1]==1){//左边有阻碍，不能移动	
+							//alert("左边有阻碍，不能移动	");
+							lock=false;//释放方块							
+							return;
+						}
+						else{//左边没有阻碍，可以移动
+							//alert("左边没有阻碍，可以移动	");
+							var f=document.getElementById("gameArea");
+							var r=f.childNodes;
+							var b;
+							for(var i=0;i<4;i++){//清除旧痕迹
+								point[a[i]]=0; //修改point								
+								b =getSqId(sq[i+1][0],sq[i+1][1]);//获得方块当前实际位置编号
+								r.item(b).style.backgroundColor="black"; //将实际位置痕迹抹除
+							}
+							for(var x=0;x<4;x++){
+								point[a[x]-1]=1;//更新point状态
+								b =getSqId(sq[x+1][0],sq[x+1][1]);//获得方块当前实际位置编号
+								b-=1;   //得到新位置编号								
+								r.item(b).style.backgroundColor="red";//移动到新位置
+								sq[x+1][0]-=1;//更新实际位置编号
+							}
+						}	
+					}
+					else if(sq[0]==17){//17号方块
+						var a=new Array(4);
+						a[0]=getBlockId(sq[1][0],sq[1][1]);//获取point位置编号
+						a[1]=getBlockId(sq[2][0],sq[2][1]);
+						a[2]=getBlockId(sq[3][0],sq[3][1]);	
+						a[3]=getBlockId(sq[4][0],sq[4][1]);				
+						if(point[a[0]-1]==1||point[a[2]-1]==1||point[a[3]-1]==1){//左边有阻碍，不能移动	
+							//alert("左边有阻碍，不能移动	");
+							lock=false;//释放方块							
+							return;
+						}
+						else{//左边没有阻碍，可以移动
+							//alert("左边没有阻碍，可以移动	");
+							var f=document.getElementById("gameArea");
+							var r=f.childNodes;
+							var b;
+							for(var i=0;i<4;i++){//清除旧痕迹
+								point[a[i]]=0; //修改point								
+								b =getSqId(sq[i+1][0],sq[i+1][1]);//获得方块当前实际位置编号
+								r.item(b).style.backgroundColor="black"; //将实际位置痕迹抹除
+							}
+							for(var x=0;x<4;x++){
+								point[a[x]-1]=1;//更新point状态
+								b =getSqId(sq[x+1][0],sq[x+1][1]);//获得方块当前实际位置编号
+								b-=1;   //得到新位置编号								
+								r.item(b).style.backgroundColor="red";//移动到新位置
+								sq[x+1][0]-=1;//更新实际位置编号
+							}
+						}	 
+					}
+					else if(sq[0]==18){//18号方块
+						var a=new Array(4);
+						a[0]=getBlockId(sq[1][0],sq[1][1]);//获取point位置编号
+						a[1]=getBlockId(sq[2][0],sq[2][1]);
+						a[2]=getBlockId(sq[3][0],sq[3][1]);	
+						a[3]=getBlockId(sq[4][0],sq[4][1]);				
+						if(point[a[0]-1]==1||point[a[1]-1]==1||point[a[2]-1]==1||point[a[3]-1]==1){//左边有阻碍，不能移动	
+							//alert("左边有阻碍，不能移动	");
+							lock=false;//释放方块							
+							return;
+						}
+						else{//左边没有阻碍，可以移动
+							//alert("左边没有阻碍，可以移动	");
+							var f=document.getElementById("gameArea");
+							var r=f.childNodes;
+							var b;
+							for(var i=0;i<4;i++){//清除旧痕迹
+								point[a[i]]=0; //修改point								
+								b =getSqId(sq[i+1][0],sq[i+1][1]);//获得方块当前实际位置编号
+								r.item(b).style.backgroundColor="black"; //将实际位置痕迹抹除
+							}
+							for(var x=0;x<4;x++){
+								point[a[x]-1]=1;//更新point状态
+								b =getSqId(sq[x+1][0],sq[x+1][1]);//获得方块当前实际位置编号
+								b-=1;   //得到新位置编号								
+								r.item(b).style.backgroundColor="red";//移动到新位置
+								sq[x+1][0]-=1;//更新实际位置编号
+							}
+						}	
+					}
+					else if(sq[0]==19){//19号方块
+						var a=new Array(4);
+						a[0]=getBlockId(sq[1][0],sq[1][1]);//获取point位置编号
+						a[1]=getBlockId(sq[2][0],sq[2][1]);
+						a[2]=getBlockId(sq[3][0],sq[3][1]);	
+						a[3]=getBlockId(sq[4][0],sq[4][1]);				
+						if(point[a[0]-1]==1){//左边有阻碍，不能移动	
+							//alert("左边有阻碍，不能移动	");
+							lock=false;//释放方块							
+							return;
+						}
+						else{//左边没有阻碍，可以移动
+							//alert("左边没有阻碍，可以移动	");
+							var f=document.getElementById("gameArea");
+							var r=f.childNodes;
+							var b;
+							for(var i=0;i<4;i++){//清除旧痕迹
+								point[a[i]]=0; //修改point								
+								b =getSqId(sq[i+1][0],sq[i+1][1]);//获得方块当前实际位置编号
+								r.item(b).style.backgroundColor="black"; //将实际位置痕迹抹除
+							}
+							for(var x=0;x<4;x++){
+								point[a[x]-1]=1;//更新point状态
+								b =getSqId(sq[x+1][0],sq[x+1][1]);//获得方块当前实际位置编号
+								b-=1;   //得到新位置编号								
+								r.item(b).style.backgroundColor="red";//移动到新位置
+								sq[x+1][0]-=1;//更新实际位置编号
+							}
+						}	
+					}
+					else
+					{
+						alert("move_left()出错");
+					}
+					lock=false;//释放方块
+				}
+				var d=document.getElementById("test");//显示当前point状态
+				var str="";
+				for(var z=0;z<point.length;z++){
+					if(z%14==13){
+						str+=point[z]+"\n";	
+					}
+					else{
+						str+=point[z];
+					}						
+				}
+				d.innerHTML=str;
+			}	
+			function move_right(){//右移当前方块
+				//alert("move_right");
+				if(lock==true){//方块已被占据，不允许右移
+					alert("已被占据");
+					return;
+				}
+				else{
+					lock=true;//占据方块，开始右移					
+					if(sq[0]==1){//1号方块
+						var a=new Array(4);
+						a[2]=getBlockId(sq[3][0],sq[3][1]);
+						a[3]=getBlockId(sq[4][0],sq[4][1]);						
+						if(point[a[2]+1]==1||point[a[3]+1]==1){//右边有阻碍，不能移动
+							//alert("1号方块不能右移");
+							lock=false;//释放方块
+							return;
+						}
+						else{//右边没有阻碍，可以移动
+							a[0]=getBlockId(sq[1][0],sq[1][1]);//获取point位置编号
+							a[1]=getBlockId(sq[2][0],sq[2][1]);
+							var f=document.getElementById("gameArea");
+							var r=f.childNodes;
+							var b;
+							for(var i=3;i>=0;i--){
+								point[a[i]]=0; //修改point
+								point[a[i]+1]=1;
+								b =getSqId(sq[i+1][0],sq[i+1][1]);//获得方块当前实际位置编号
+								r.item(b).style.backgroundColor="black"; //将实际位置痕迹抹除
+								b+=1;   //得到新位置编号
+								sq[i+1][0]+=1;
+								r.item(b).style.backgroundColor="red";//移动到新位置
+							}
+						}
+					}
+					else if(sq[0]==2){//2号方块
+						var a=new Array(4);
+						a[0]=getBlockId(sq[1][0],sq[1][1]);//获取point位置编号
+						a[1]=getBlockId(sq[2][0],sq[2][1]);
+						a[2]=getBlockId(sq[3][0],sq[3][1]);
+						a[3]=getBlockId(sq[4][0],sq[4][1]);						
+						if(point[a[2]+1]==1||point[a[3]+1]==1){//右边有阻碍，不能移动
+							//alert("1号方块不能右移");
+							lock=false;//释放方块
+							return;
+						}
+						else{//右边没有阻碍，可以移动							
+							var f=document.getElementById("gameArea");
+							var r=f.childNodes;
+							var b;
+							for(var i=0;i<4;i++){//清除旧痕迹
+								point[a[i]]=0; //修改point								
+								b =getSqId(sq[i+1][0],sq[i+1][1]);//获得方块当前实际位置编号
+								r.item(b).style.backgroundColor="black"; //将实际位置痕迹抹除
+							}
+							for(var x=0;x<4;x++){
+								point[a[x]+1]=1;//更新point状态
+								b =getSqId(sq[x+1][0],sq[x+1][1]);//获得方块当前实际位置编号
+								b+=1;   //得到新位置编号								
+								r.item(b).style.backgroundColor="red";//移动到新位置
+								sq[x+1][0]+=1;//更新实际位置编号
+							}
+						}
+					}
+					else if(sq[0]==3){//3号方块
+						var a=new Array(4);
+						a[0]=getBlockId(sq[1][0],sq[1][1]);//获取point位置编号
+						a[1]=getBlockId(sq[2][0],sq[2][1]);
+						a[2]=getBlockId(sq[3][0],sq[3][1]);
+						a[3]=getBlockId(sq[4][0],sq[4][1]);						
+						if(point[a[1]+1]==1||point[a[2]+1]==1||point[a[3]+1]==1){//右边有阻碍，不能移动
+							//alert("1号方块不能右移");
+							lock=false;//释放方块
+							return;
+						}
+						else{//右边没有阻碍，可以移动							
+							var f=document.getElementById("gameArea");
+							var r=f.childNodes;
+							var b;
+							for(var i=0;i<4;i++){//清除旧痕迹
+								point[a[i]]=0; //修改point								
+								b =getSqId(sq[i+1][0],sq[i+1][1]);//获得方块当前实际位置编号
+								r.item(b).style.backgroundColor="black"; //将实际位置痕迹抹除
+							}
+							for(var x=0;x<4;x++){
+								point[a[x]+1]=1;//更新point状态
+								b =getSqId(sq[x+1][0],sq[x+1][1]);//获得方块当前实际位置编号
+								b+=1;   //得到新位置编号								
+								r.item(b).style.backgroundColor="red";//移动到新位置
+								sq[x+1][0]+=1;//更新实际位置编号
+							}
+						}
+					}
+					else if(sq[0]==4){//4号方块
+						var a=new Array(4);
+						a[0]=getBlockId(sq[1][0],sq[1][1]);//获取point位置编号
+						a[1]=getBlockId(sq[2][0],sq[2][1]);
+						a[2]=getBlockId(sq[3][0],sq[3][1]);
+						a[3]=getBlockId(sq[4][0],sq[4][1]);						
+						if(point[a[1]+1]==1||point[a[2]+1]==1){//右边有阻碍，不能移动
+							//alert("1号方块不能右移");
+							lock=false;//释放方块
+							return;
+						}
+						else{//右边没有阻碍，可以移动							
+							var f=document.getElementById("gameArea");
+							var r=f.childNodes;
+							var b;
+							for(var i=0;i<4;i++){//清除旧痕迹
+								point[a[i]]=0; //修改point								
+								b =getSqId(sq[i+1][0],sq[i+1][1]);//获得方块当前实际位置编号
+								r.item(b).style.backgroundColor="black"; //将实际位置痕迹抹除
+							}
+							for(var x=0;x<4;x++){
+								point[a[x]+1]=1;//更新point状态
+								b =getSqId(sq[x+1][0],sq[x+1][1]);//获得方块当前实际位置编号
+								b+=1;   //得到新位置编号								
+								r.item(b).style.backgroundColor="red";//移动到新位置
+								sq[x+1][0]+=1;//更新实际位置编号
+							}
+						}
+					}
+					else if(sq[0]==5){//5号方块
+						var a=new Array(4);
+						a[0]=getBlockId(sq[1][0],sq[1][1]);//获取point位置编号
+						a[1]=getBlockId(sq[2][0],sq[2][1]);
+						a[2]=getBlockId(sq[3][0],sq[3][1]);
+						a[3]=getBlockId(sq[4][0],sq[4][1]);						
+						if(point[a[0]+1]==1||point[a[1]+1]==1||point[a[2]+1]==1){//右边有阻碍，不能移动
+							//alert("1号方块不能右移");
+							lock=false;//释放方块
+							return;
+						}
+						else{//右边没有阻碍，可以移动							
+							var f=document.getElementById("gameArea");
+							var r=f.childNodes;
+							var b;
+							for(var i=0;i<4;i++){//清除旧痕迹
+								point[a[i]]=0; //修改point								
+								b =getSqId(sq[i+1][0],sq[i+1][1]);//获得方块当前实际位置编号
+								r.item(b).style.backgroundColor="black"; //将实际位置痕迹抹除
+							}
+							for(var x=0;x<4;x++){
+								point[a[x]+1]=1;//更新point状态
+								b =getSqId(sq[x+1][0],sq[x+1][1]);//获得方块当前实际位置编号
+								b+=1;   //得到新位置编号								
+								r.item(b).style.backgroundColor="red";//移动到新位置
+								sq[x+1][0]+=1;//更新实际位置编号
+							}
+						}
+					}
+					else if(sq[0]==6){//6号方块
+						var a=new Array(4);
+						a[0]=getBlockId(sq[1][0],sq[1][1]);//获取point位置编号
+						a[1]=getBlockId(sq[2][0],sq[2][1]);
+						a[2]=getBlockId(sq[3][0],sq[3][1]);
+						a[3]=getBlockId(sq[4][0],sq[4][1]);						
+						if(point[a[1]+1]==1||point[a[3]+1]==1){//右边有阻碍，不能移动
+							//alert("1号方块不能右移");
+							lock=false;//释放方块
+							return;
+						}
+						else{//右边没有阻碍，可以移动							
+							var f=document.getElementById("gameArea");
+							var r=f.childNodes;
+							var b;
+							for(var i=0;i<4;i++){//清除旧痕迹
+								point[a[i]]=0; //修改point								
+								b =getSqId(sq[i+1][0],sq[i+1][1]);//获得方块当前实际位置编号
+								r.item(b).style.backgroundColor="black"; //将实际位置痕迹抹除
+							}
+							for(var x=0;x<4;x++){
+								point[a[x]+1]=1;//更新point状态
+								b =getSqId(sq[x+1][0],sq[x+1][1]);//获得方块当前实际位置编号
+								b+=1;   //得到新位置编号								
+								r.item(b).style.backgroundColor="red";//移动到新位置
+								sq[x+1][0]+=1;//更新实际位置编号
+							}
+						}
+					}
+					else if(sq[0]==7){//7号方块
+						var a=new Array(4);
+						a[0]=getBlockId(sq[1][0],sq[1][1]);//获取point位置编号
+						a[1]=getBlockId(sq[2][0],sq[2][1]);
+						a[2]=getBlockId(sq[3][0],sq[3][1]);
+						a[3]=getBlockId(sq[4][0],sq[4][1]);						
+						if(point[a[1]+1]==1||point[a[2]+1]==1||point[a[3]+1]==1){//右边有阻碍，不能移动
+							//alert("1号方块不能右移");
+							lock=false;//释放方块
+							return;
+						}
+						else{//右边没有阻碍，可以移动							
+							var f=document.getElementById("gameArea");
+							var r=f.childNodes;
+							var b;
+							for(var i=0;i<4;i++){//清除旧痕迹
+								point[a[i]]=0; //修改point								
+								b =getSqId(sq[i+1][0],sq[i+1][1]);//获得方块当前实际位置编号
+								r.item(b).style.backgroundColor="black"; //将实际位置痕迹抹除
+							}
+							for(var x=0;x<4;x++){
+								point[a[x]+1]=1;//更新point状态
+								b =getSqId(sq[x+1][0],sq[x+1][1]);//获得方块当前实际位置编号
+								b+=1;   //得到新位置编号								
+								r.item(b).style.backgroundColor="red";//移动到新位置
+								sq[x+1][0]+=1;//更新实际位置编号
+							}
+						}
+					}
+					else if(sq[0]==8){//8号方块
+						var a=new Array(4);
+						a[0]=getBlockId(sq[1][0],sq[1][1]);//获取point位置编号
+						a[1]=getBlockId(sq[2][0],sq[2][1]);
+						a[2]=getBlockId(sq[3][0],sq[3][1]);
+						a[3]=getBlockId(sq[4][0],sq[4][1]);						
+						if(point[a[1]+1]==1||point[a[3]+1]==1){//右边有阻碍，不能移动
+							//alert("1号方块不能右移");
+							lock=false;//释放方块
+							return;
+						}
+						else{//右边没有阻碍，可以移动							
+							var f=document.getElementById("gameArea");
+							var r=f.childNodes;
+							var b;
+							for(var i=0;i<4;i++){//清除旧痕迹
+								point[a[i]]=0; //修改point								
+								b =getSqId(sq[i+1][0],sq[i+1][1]);//获得方块当前实际位置编号
+								r.item(b).style.backgroundColor="black"; //将实际位置痕迹抹除
+							}
+							for(var x=0;x<4;x++){
+								point[a[x]+1]=1;//更新point状态
+								b =getSqId(sq[x+1][0],sq[x+1][1]);//获得方块当前实际位置编号
+								b+=1;   //得到新位置编号								
+								r.item(b).style.backgroundColor="red";//移动到新位置
+								sq[x+1][0]+=1;//更新实际位置编号
+							}
+						}
+					}
+					else if(sq[0]==9){//9号方块
+						var a=new Array(4);
+						a[0]=getBlockId(sq[1][0],sq[1][1]);//获取point位置编号
+						a[1]=getBlockId(sq[2][0],sq[2][1]);
+						a[2]=getBlockId(sq[3][0],sq[3][1]);
+						a[3]=getBlockId(sq[4][0],sq[4][1]);						
+						if(point[a[0]+1]==1||point[a[2]+1]==1||point[a[3]+1]==1){//右边有阻碍，不能移动
+							//alert("1号方块不能右移");
+							lock=false;//释放方块
+							return;
+						}
+						else{//右边没有阻碍，可以移动							
+							var f=document.getElementById("gameArea");
+							var r=f.childNodes;
+							var b;
+							for(var i=0;i<4;i++){//清除旧痕迹
+								point[a[i]]=0; //修改point								
+								b =getSqId(sq[i+1][0],sq[i+1][1]);//获得方块当前实际位置编号
+								r.item(b).style.backgroundColor="black"; //将实际位置痕迹抹除
+							}
+							for(var x=0;x<4;x++){
+								point[a[x]+1]=1;//更新point状态
+								b =getSqId(sq[x+1][0],sq[x+1][1]);//获得方块当前实际位置编号
+								b+=1;   //得到新位置编号								
+								r.item(b).style.backgroundColor="red";//移动到新位置
+								sq[x+1][0]+=1;//更新实际位置编号
+							}
+						}
+					}
+					else if(sq[0]==10){//10号方块
+						var a=new Array(4);
+						a[0]=getBlockId(sq[1][0],sq[1][1]);//获取point位置编号
+						a[1]=getBlockId(sq[2][0],sq[2][1]);
+						a[2]=getBlockId(sq[3][0],sq[3][1]);
+						a[3]=getBlockId(sq[4][0],sq[4][1]);						
+						if(point[a[1]+1]==1||point[a[3]+1]==1){//右边有阻碍，不能移动
+							//alert("1号方块不能右移");
+							lock=false;//释放方块
+							return;
+						}
+						else{//右边没有阻碍，可以移动							
+							var f=document.getElementById("gameArea");
+							var r=f.childNodes;
+							var b;
+							for(var i=0;i<4;i++){//清除旧痕迹
+								point[a[i]]=0; //修改point								
+								b =getSqId(sq[i+1][0],sq[i+1][1]);//获得方块当前实际位置编号
+								r.item(b).style.backgroundColor="black"; //将实际位置痕迹抹除
+							}
+							for(var x=0;x<4;x++){
+								point[a[x]+1]=1;//更新point状态
+								b =getSqId(sq[x+1][0],sq[x+1][1]);//获得方块当前实际位置编号
+								b+=1;   //得到新位置编号								
+								r.item(b).style.backgroundColor="red";//移动到新位置
+								sq[x+1][0]+=1;//更新实际位置编号
+							}
+						}
+					}
+					else if(sq[0]==11){//11号方块
+						var a=new Array(4);
+						a[0]=getBlockId(sq[1][0],sq[1][1]);//获取point位置编号
+						a[1]=getBlockId(sq[2][0],sq[2][1]);
+						a[2]=getBlockId(sq[3][0],sq[3][1]);
+						a[3]=getBlockId(sq[4][0],sq[4][1]);						
+						if(point[a[0]+1]==1||point[a[1]+1]==1||point[a[3]+1]==1){//右边有阻碍，不能移动
+							//alert("1号方块不能右移");
+							lock=false;//释放方块
+							return;
+						}
+						else{//右边没有阻碍，可以移动							
+							var f=document.getElementById("gameArea");
+							var r=f.childNodes;
+							var b;
+							for(var i=0;i<4;i++){//清除旧痕迹
+								point[a[i]]=0; //修改point								
+								b =getSqId(sq[i+1][0],sq[i+1][1]);//获得方块当前实际位置编号
+								r.item(b).style.backgroundColor="black"; //将实际位置痕迹抹除
+							}
+							for(var x=0;x<4;x++){
+								point[a[x]+1]=1;//更新point状态
+								b =getSqId(sq[x+1][0],sq[x+1][1]);//获得方块当前实际位置编号
+								b+=1;   //得到新位置编号								
+								r.item(b).style.backgroundColor="red";//移动到新位置
+								sq[x+1][0]+=1;//更新实际位置编号
+							}
+						}
+					}
+					else if(sq[0]==12){//12号方块
+						var a=new Array(4);
+						a[0]=getBlockId(sq[1][0],sq[1][1]);//获取point位置编号
+						a[1]=getBlockId(sq[2][0],sq[2][1]);
+						a[2]=getBlockId(sq[3][0],sq[3][1]);
+						a[3]=getBlockId(sq[4][0],sq[4][1]);						
+						if(point[a[2]+1]==1||point[a[3]+1]==1){//右边有阻碍，不能移动
+							//alert("1号方块不能右移");
+							lock=false;//释放方块
+							return;
+						}
+						else{//右边没有阻碍，可以移动							
+							var f=document.getElementById("gameArea");
+							var r=f.childNodes;
+							var b;
+							for(var i=0;i<4;i++){//清除旧痕迹
+								point[a[i]]=0; //修改point								
+								b =getSqId(sq[i+1][0],sq[i+1][1]);//获得方块当前实际位置编号
+								r.item(b).style.backgroundColor="black"; //将实际位置痕迹抹除
+							}
+							for(var x=0;x<4;x++){
+								point[a[x]+1]=1;//更新point状态
+								b =getSqId(sq[x+1][0],sq[x+1][1]);//获得方块当前实际位置编号
+								b+=1;   //得到新位置编号								
+								r.item(b).style.backgroundColor="red";//移动到新位置
+								sq[x+1][0]+=1;//更新实际位置编号
+							}
+						}
+					}
+					else if(sq[0]==13){//13号方块
+						var a=new Array(4);
+						a[0]=getBlockId(sq[1][0],sq[1][1]);//获取point位置编号
+						a[1]=getBlockId(sq[2][0],sq[2][1]);
+						a[2]=getBlockId(sq[3][0],sq[3][1]);
+						a[3]=getBlockId(sq[4][0],sq[4][1]);						
+						if(point[a[1]+1]==1||point[a[2]+1]==1||point[a[3]+1]==1){//右边有阻碍，不能移动
+							//alert("1号方块不能右移");
+							lock=false;//释放方块
+							return;
+						}
+						else{//右边没有阻碍，可以移动							
+							var f=document.getElementById("gameArea");
+							var r=f.childNodes;
+							var b;
+							for(var i=0;i<4;i++){//清除旧痕迹
+								point[a[i]]=0; //修改point								
+								b =getSqId(sq[i+1][0],sq[i+1][1]);//获得方块当前实际位置编号
+								r.item(b).style.backgroundColor="black"; //将实际位置痕迹抹除
+							}
+							for(var x=0;x<4;x++){
+								point[a[x]+1]=1;//更新point状态
+								b =getSqId(sq[x+1][0],sq[x+1][1]);//获得方块当前实际位置编号
+								b+=1;   //得到新位置编号								
+								r.item(b).style.backgroundColor="red";//移动到新位置
+								sq[x+1][0]+=1;//更新实际位置编号
+							}
+						}
+					}
+					else if(sq[0]==14){//14号方块
+						var a=new Array(4);
+						a[0]=getBlockId(sq[1][0],sq[1][1]);//获取point位置编号
+						a[1]=getBlockId(sq[2][0],sq[2][1]);
+						a[2]=getBlockId(sq[3][0],sq[3][1]);
+						a[3]=getBlockId(sq[4][0],sq[4][1]);						
+						if(point[a[2]+1]==1||point[a[3]+1]==1){//右边有阻碍，不能移动
+							//alert("1号方块不能右移");
+							lock=false;//释放方块
+							return;
+						}
+						else{//右边没有阻碍，可以移动							
+							var f=document.getElementById("gameArea");
+							var r=f.childNodes;
+							var b;
+							for(var i=0;i<4;i++){//清除旧痕迹
+								point[a[i]]=0; //修改point								
+								b =getSqId(sq[i+1][0],sq[i+1][1]);//获得方块当前实际位置编号
+								r.item(b).style.backgroundColor="black"; //将实际位置痕迹抹除
+							}
+							for(var x=0;x<4;x++){
+								point[a[x]+1]=1;//更新point状态
+								b =getSqId(sq[x+1][0],sq[x+1][1]);//获得方块当前实际位置编号
+								b+=1;   //得到新位置编号								
+								r.item(b).style.backgroundColor="red";//移动到新位置
+								sq[x+1][0]+=1;//更新实际位置编号
+							}
+						}
+					}
+					else if(sq[0]==15){//15号方块
+						var a=new Array(4);
+						a[0]=getBlockId(sq[1][0],sq[1][1]);//获取point位置编号
+						a[1]=getBlockId(sq[2][0],sq[2][1]);
+						a[2]=getBlockId(sq[3][0],sq[3][1]);
+						a[3]=getBlockId(sq[4][0],sq[4][1]);						
+						if(point[a[1]+1]==1||point[a[2]+1]==1||point[a[3]+1]==1){//右边有阻碍，不能移动
+							//alert("1号方块不能右移");
+							lock=false;//释放方块
+							return;
+						}
+						else{//右边没有阻碍，可以移动							
+							var f=document.getElementById("gameArea");
+							var r=f.childNodes;
+							var b;
+							for(var i=0;i<4;i++){//清除旧痕迹
+								point[a[i]]=0; //修改point								
+								b =getSqId(sq[i+1][0],sq[i+1][1]);//获得方块当前实际位置编号
+								r.item(b).style.backgroundColor="black"; //将实际位置痕迹抹除
+							}
+							for(var x=0;x<4;x++){
+								point[a[x]+1]=1;//更新point状态
+								b =getSqId(sq[x+1][0],sq[x+1][1]);//获得方块当前实际位置编号
+								b+=1;   //得到新位置编号								
+								r.item(b).style.backgroundColor="red";//移动到新位置
+								sq[x+1][0]+=1;//更新实际位置编号
+							}
+						}
+					}
+					else if(sq[0]==16){//16号方块
+						var a=new Array(4);
+						a[0]=getBlockId(sq[1][0],sq[1][1]);//获取point位置编号
+						a[1]=getBlockId(sq[2][0],sq[2][1]);
+						a[2]=getBlockId(sq[3][0],sq[3][1]);
+						a[3]=getBlockId(sq[4][0],sq[4][1]);						
+						if(point[a[0]+1]==1||point[a[3]+1]==1){//右边有阻碍，不能移动
+							//alert("1号方块不能右移");
+							lock=false;//释放方块
+							return;
+						}
+						else{//右边没有阻碍，可以移动							
+							var f=document.getElementById("gameArea");
+							var r=f.childNodes;
+							var b;
+							for(var i=0;i<4;i++){//清除旧痕迹
+								point[a[i]]=0; //修改point								
+								b =getSqId(sq[i+1][0],sq[i+1][1]);//获得方块当前实际位置编号
+								r.item(b).style.backgroundColor="black"; //将实际位置痕迹抹除
+							}
+							for(var x=0;x<4;x++){
+								point[a[x]+1]=1;//更新point状态
+								b =getSqId(sq[x+1][0],sq[x+1][1]);//获得方块当前实际位置编号
+								b+=1;   //得到新位置编号								
+								r.item(b).style.backgroundColor="red";//移动到新位置
+								sq[x+1][0]+=1;//更新实际位置编号
+							}
+						}
+					}
+					else if(sq[0]==17){//17号方块
+						var a=new Array(4);
+						a[0]=getBlockId(sq[1][0],sq[1][1]);//获取point位置编号
+						a[1]=getBlockId(sq[2][0],sq[2][1]);
+						a[2]=getBlockId(sq[3][0],sq[3][1]);
+						a[3]=getBlockId(sq[4][0],sq[4][1]);						
+						if(point[a[1]+1]==1||point[a[2]+1]==1||point[a[3]+1]==1){//右边有阻碍，不能移动
+							//alert("1号方块不能右移");
+							lock=false;//释放方块
+							return;
+						}
+						else{//右边没有阻碍，可以移动							
+							var f=document.getElementById("gameArea");
+							var r=f.childNodes;
+							var b;
+							for(var i=0;i<4;i++){//清除旧痕迹
+								point[a[i]]=0; //修改point								
+								b =getSqId(sq[i+1][0],sq[i+1][1]);//获得方块当前实际位置编号
+								r.item(b).style.backgroundColor="black"; //将实际位置痕迹抹除
+							}
+							for(var x=0;x<4;x++){
+								point[a[x]+1]=1;//更新point状态
+								b =getSqId(sq[x+1][0],sq[x+1][1]);//获得方块当前实际位置编号
+								b+=1;   //得到新位置编号								
+								r.item(b).style.backgroundColor="red";//移动到新位置
+								sq[x+1][0]+=1;//更新实际位置编号
+							}
+						}
+					}
+					else if(sq[0]==18){//18号方块
+						var a=new Array(4);
+						a[0]=getBlockId(sq[1][0],sq[1][1]);//获取point位置编号
+						a[1]=getBlockId(sq[2][0],sq[2][1]);
+						a[2]=getBlockId(sq[3][0],sq[3][1]);
+						a[3]=getBlockId(sq[4][0],sq[4][1]);						
+						if(point[a[0]+1]==1||point[a[1]+1]==1||point[a[2]+1]==1||point[a[3]+1]==1){//右边有阻碍，不能移动
+							//alert("1号方块不能右移");
+							lock=false;//释放方块
+							return;
+						}
+						else{//右边没有阻碍，可以移动							
+							var f=document.getElementById("gameArea");
+							var r=f.childNodes;
+							var b;
+							for(var i=0;i<4;i++){//清除旧痕迹
+								point[a[i]]=0; //修改point								
+								b =getSqId(sq[i+1][0],sq[i+1][1]);//获得方块当前实际位置编号
+								r.item(b).style.backgroundColor="black"; //将实际位置痕迹抹除
+							}
+							for(var x=0;x<4;x++){
+								point[a[x]+1]=1;//更新point状态
+								b =getSqId(sq[x+1][0],sq[x+1][1]);//获得方块当前实际位置编号
+								b+=1;   //得到新位置编号								
+								r.item(b).style.backgroundColor="red";//移动到新位置
+								sq[x+1][0]+=1;//更新实际位置编号
+							}
+						}
+					}
+					else if(sq[0]==19){//19号方块
+						var a=new Array(4);
+						a[0]=getBlockId(sq[1][0],sq[1][1]);//获取point位置编号
+						a[1]=getBlockId(sq[2][0],sq[2][1]);
+						a[2]=getBlockId(sq[3][0],sq[3][1]);
+						a[3]=getBlockId(sq[4][0],sq[4][1]);						
+						if(point[a[3]+1]==1){//右边有阻碍，不能移动
+							//alert("1号方块不能右移");
+							lock=false;//释放方块
+							return;
+						}
+						else{//右边没有阻碍，可以移动							
+							var f=document.getElementById("gameArea");
+							var r=f.childNodes;
+							var b;
+							for(var i=0;i<4;i++){//清除旧痕迹
+								point[a[i]]=0; //修改point								
+								b =getSqId(sq[i+1][0],sq[i+1][1]);//获得方块当前实际位置编号
+								r.item(b).style.backgroundColor="black"; //将实际位置痕迹抹除
+							}
+							for(var x=0;x<4;x++){
+								point[a[x]+1]=1;//更新point状态
+								b =getSqId(sq[x+1][0],sq[x+1][1]);//获得方块当前实际位置编号
+								b+=1;   //得到新位置编号								
+								r.item(b).style.backgroundColor="red";//移动到新位置
+								sq[x+1][0]+=1;//更新实际位置编号
+							}
+						}
+					}
+					lock=false;//释放方块										
+				}				
+				var d=document.getElementById("test");//显示当前point状态
+					var str="";
+					for(var z=0;z<point.length;z++){
+						if(z%14==13){
+							str+=point[z]+"\n";	
+						}
+						else{
+							str+=point[z];
+						}						
+					}
+					d.innerHTML=str;
+			}
+			function move_down(){//下移当前方块
+				//alert("move_down");
+				if(lock==true){//方块已被占据，不允许下移
+					alert("已被占据");
+					return;
+				}
+				else{
+					lock=true;//占据方块，开始下移					
+					if(sq[0]==1){//1号方块
+						var a=new Array(4);
+						a[0]=getBlockId(sq[1][0],sq[1][1]);
+						a[3]=getBlockId(sq[4][0],sq[4][1]);						
+						if(point[a[0]+14]==1||point[a[3]+14]==1){//下边有阻碍，不能移动
+							//alert("下边有阻碍，1号方块不能下移");
+							lock=false;//释放方块
+							return;
+						}
+						else{//下边没有阻碍，可以移动
+							a[1]=getBlockId(sq[2][0],sq[2][1]);//获取point位置编号
+							a[2]=getBlockId(sq[3][0],sq[3][1]);
+							var f=document.getElementById("gameArea");
+							var r=f.childNodes;
+							var b;
+							for(var i=0;i<4;i++){//清除旧痕迹
+								point[a[i]]=0; //修改point								
+								b =getSqId(sq[i+1][0],sq[i+1][1]);//获得方块当前实际位置编号
+								r.item(b).style.backgroundColor="black"; //将实际位置痕迹抹除
+							}
+							for(var x=0;x<4;x++){
+								point[a[x]+14]=1;//更新point状态
+								b =getSqId(sq[x+1][0],sq[x+1][1]);//获得方块当前实际位置编号
+								b+=12;   //得到新位置编号								
+								r.item(b).style.backgroundColor="red";//移动到新位置
+								sq[x+1][1]+=1;//更新实际位置编号
+							}
+						}
+					}
+					else if(sq[0]==2){//2号方块
+
+							var a=new Array(4);
+							a[0]=getBlockId(sq[1][0],sq[1][1]);
+							a[1]=getBlockId(sq[2][0],sq[2][1]);
+							a[3]=getBlockId(sq[4][0],sq[4][1]);						
+							if(point[a[0]+14]==1||point[a[1]+14]==1||point[a[3]+14]==1){//下边有阻碍，不能移动
+								//alert("下边有阻碍，1号方块不能自动下移");
+								lock=false;//释放方块
+								return;
+							}
+							else{//下边没有阻碍，可以移动
+								a[2]=getBlockId(sq[3][0],sq[3][1]);//获取point位置编号
+								var f=document.getElementById("gameArea");
+								var r=f.childNodes;
+								var b;
+								for(var i=0;i<4;i++){//清除旧痕迹
+									point[a[i]]=0; //修改point								
+									b =getSqId(sq[i+1][0],sq[i+1][1]);//获得方块当前实际位置编号
+									r.item(b).style.backgroundColor="black"; //将实际位置痕迹抹除
+								}
+								for(var x=0;x<4;x++){
+									point[a[x]+14]=1;//更新point状态
+									b =getSqId(sq[x+1][0],sq[x+1][1]);//获得方块当前实际位置编号
+									b+=12;   //得到新位置编号								
+									r.item(b).style.backgroundColor="red";//移动到新位置
+									sq[x+1][1]+=1;//更新实际位置编号
+								}
+							}
+					}
+					else if(sq[0]==3){//3号方块 
+							var a=new Array(4);
+							a[0]=getBlockId(sq[1][0],sq[1][1]);
+							a[1]=getBlockId(sq[2][0],sq[2][1]);
+							a[2]=getBlockId(sq[3][0],sq[3][1]);//获取point位置编号	
+							a[3]=getBlockId(sq[4][0],sq[4][1]);	
+							if(point[a[2]+14]==1||point[a[3]+14]==1){//下边有阻碍，不能移动
+								//alert("下边有阻碍，1号方块不能自动下移");								
+								lock=false;//释放方块					
+								return;
+							}
+							else{//下边没有阻碍，可以移动
+								
+								var f=document.getElementById("gameArea");
+								var r=f.childNodes;
+								var b;
+								for(var i=0;i<4;i++){//清除旧痕迹
+									point[a[i]]=0; //修改point								
+									b =getSqId(sq[i+1][0],sq[i+1][1]);//获得方块当前实际位置编号
+									r.item(b).style.backgroundColor="black"; //将实际位置痕迹抹除
+								}
+								for(var x=0;x<4;x++){
+									point[a[x]+14]=1;//更新point状态
+									b =getSqId(sq[x+1][0],sq[x+1][1]);//获得方块当前实际位置编号
+									b+=12;   //得到新位置编号								
+									r.item(b).style.backgroundColor="red";//移动到新位置
+									sq[x+1][1]+=1;//更新实际位置编号
+								}
+							}
+						}
+					else if(sq[0]==4){//4号方块
+						var a=new Array(4);
+						a[0]=getBlockId(sq[1][0],sq[1][1]);
+						a[1]=getBlockId(sq[2][0],sq[2][1]);
+						a[2]=getBlockId(sq[3][0],sq[3][1]);//获取point位置编号	
+						a[3]=getBlockId(sq[4][0],sq[4][1]);	
+						if(point[a[1]+14]==1||point[a[2]+14]==1||point[a[3]+14]==1){//下边有阻碍，不能移动
+							//alert("下边有阻碍，1号方块不能自动下移");								
+							lock=false;//释放方块								
+							return;
+						}
+						else{//下边没有阻碍，可以移动
+							
+							var f=document.getElementById("gameArea");
+							var r=f.childNodes;
+							var b;
+							for(var i=0;i<4;i++){//清除旧痕迹
+								point[a[i]]=0; //修改point								
+								b =getSqId(sq[i+1][0],sq[i+1][1]);//获得方块当前实际位置编号
+								r.item(b).style.backgroundColor="black"; //将实际位置痕迹抹除
+							}
+							for(var x=0;x<4;x++){
+								point[a[x]+14]=1;//更新point状态
+								b =getSqId(sq[x+1][0],sq[x+1][1]);//获得方块当前实际位置编号
+								b+=12;   //得到新位置编号								
+								r.item(b).style.backgroundColor="red";//移动到新位置
+								sq[x+1][1]+=1;//更新实际位置编号
+							}
+						}					
+					}
+					else if(sq[0]==5){//5号方块
+						var a=new Array(4);
+						a[0]=getBlockId(sq[1][0],sq[1][1]);
+						a[1]=getBlockId(sq[2][0],sq[2][1]);
+						a[2]=getBlockId(sq[3][0],sq[3][1]);//获取point位置编号	
+						a[3]=getBlockId(sq[4][0],sq[4][1]);	
+						if(point[a[2]+14]==1||point[a[3]+14]==1){//下边有阻碍，不能移动
+							//alert("下边有阻碍，1号方块不能自动下移");								
+							lock=false;//释放方块								
+							return;
+						}
+						else{//下边没有阻碍，可以移动
+							
+							var f=document.getElementById("gameArea");
+							var r=f.childNodes;
+							var b;
+							for(var i=0;i<4;i++){//清除旧痕迹
+								point[a[i]]=0; //修改point								
+								b =getSqId(sq[i+1][0],sq[i+1][1]);//获得方块当前实际位置编号
+								r.item(b).style.backgroundColor="black"; //将实际位置痕迹抹除
+							}
+							for(var x=0;x<4;x++){
+								point[a[x]+14]=1;//更新point状态
+								b =getSqId(sq[x+1][0],sq[x+1][1]);//获得方块当前实际位置编号
+								b+=12;   //得到新位置编号								
+								r.item(b).style.backgroundColor="red";//移动到新位置
+								sq[x+1][1]+=1;//更新实际位置编号
+							}
+						}							
+					}
+					else if(sq[0]==6){//6号方块	
+							var a=new Array(4);
+							a[0]=getBlockId(sq[1][0],sq[1][1]);
+							a[1]=getBlockId(sq[2][0],sq[2][1]);
+							a[2]=getBlockId(sq[3][0],sq[3][1]);//获取point位置编号
+							a[3]=getBlockId(sq[4][0],sq[4][1]);						
+							if(point[a[0]+14]==1||point[a[1]+14]==1||point[a[3]+14]==1){//下边有阻碍，不能移动
+								//alert("下边有阻碍，1号方块不能自动下移");								
+								lock=false;//释放方块								
+								return;
+							}
+							else{//下边没有阻碍，可以移动
+								
+								var f=document.getElementById("gameArea");
+								var r=f.childNodes;
+								var b;
+								for(var i=0;i<4;i++){//清除旧痕迹
+									point[a[i]]=0; //修改point								
+									b =getSqId(sq[i+1][0],sq[i+1][1]);//获得方块当前实际位置编号
+									r.item(b).style.backgroundColor="black"; //将实际位置痕迹抹除
+								}
+								for(var x=0;x<4;x++){
+									point[a[x]+14]=1;//更新point状态
+									b =getSqId(sq[x+1][0],sq[x+1][1]);//获得方块当前实际位置编号
+									b+=12;   //得到新位置编号								
+									r.item(b).style.backgroundColor="red";//移动到新位置
+									sq[x+1][1]+=1;//更新实际位置编号
+								}
+							}
+					}
+					else if(sq[0]==7){//7号方块 
+						var a=new Array(4);
+						a[0]=getBlockId(sq[1][0],sq[1][1]);
+						a[1]=getBlockId(sq[2][0],sq[2][1]);
+						a[2]=getBlockId(sq[3][0],sq[3][1]);//获取point位置编号	
+						a[3]=getBlockId(sq[4][0],sq[4][1]);	
+						if(point[a[0]+14]==1||point[a[3]+14]==1){//下边有阻碍，不能移动
+							//alert("下边有阻碍，1号方块不能自动下移");
+							
+							lock=false;//释放方块
+							
+							return;
+						}
+						else{//下边没有阻碍，可以移动
+							
+							var f=document.getElementById("gameArea");
+							var r=f.childNodes;
+							var b;
+							for(var i=0;i<4;i++){//清除旧痕迹
+								point[a[i]]=0; //修改point								
+								b =getSqId(sq[i+1][0],sq[i+1][1]);//获得方块当前实际位置编号
+								r.item(b).style.backgroundColor="black"; //将实际位置痕迹抹除
+							}
+							for(var x=0;x<4;x++){
+								point[a[x]+14]=1;//更新point状态
+								b =getSqId(sq[x+1][0],sq[x+1][1]);//获得方块当前实际位置编号
+								b+=12;   //得到新位置编号								
+								r.item(b).style.backgroundColor="red";//移动到新位置
+								sq[x+1][1]+=1;//更新实际位置编号
+							}
+						}
+					}
+					else if(sq[0]==8){//8号方块
+						var a=new Array(4);
+						a[0]=getBlockId(sq[1][0],sq[1][1]);
+						a[1]=getBlockId(sq[2][0],sq[2][1]);
+						a[2]=getBlockId(sq[3][0],sq[3][1]);//获取point位置编号	
+						a[3]=getBlockId(sq[4][0],sq[4][1]);	
+						if(point[a[0]+14]==1||point[a[2]+14]==1||point[a[3]+14]==1){//下边有阻碍，不能移动
+							//alert("下边有阻碍，1号方块不能自动下移");
+						
+							lock=false;//释放方块
+							
+							return;
+						}
+						else{//下边没有阻碍，可以移动
+							
+							var f=document.getElementById("gameArea");
+							var r=f.childNodes;
+							var b;
+							for(var i=0;i<4;i++){//清除旧痕迹
+								point[a[i]]=0; //修改point								
+								b =getSqId(sq[i+1][0],sq[i+1][1]);//获得方块当前实际位置编号
+								r.item(b).style.backgroundColor="black"; //将实际位置痕迹抹除
+							}
+							for(var x=0;x<4;x++){
+								point[a[x]+14]=1;//更新point状态
+								b =getSqId(sq[x+1][0],sq[x+1][1]);//获得方块当前实际位置编号
+								b+=12;   //得到新位置编号								
+								r.item(b).style.backgroundColor="red";//移动到新位置
+								sq[x+1][1]+=1;//更新实际位置编号
+							}
+						}					
+					}
+					else if(sq[0]==9){//9号方块
+						var a=new Array(4);
+						a[0]=getBlockId(sq[1][0],sq[1][1]);
+						a[1]=getBlockId(sq[2][0],sq[2][1]);
+						a[2]=getBlockId(sq[3][0],sq[3][1]);//获取point位置编号	
+						a[3]=getBlockId(sq[4][0],sq[4][1]);	
+						if(point[a[0]+14]==1||point[a[2]+14]==1){//下边有阻碍，不能移动
+							//alert("下边有阻碍，1号方块不能自动下移");
+							
+							lock=false;//释放方块
+							
+							return;
+						}
+						else{//下边没有阻碍，可以移动
+							
+							var f=document.getElementById("gameArea");
+							var r=f.childNodes;
+							var b;
+							for(var i=0;i<4;i++){//清除旧痕迹
+								point[a[i]]=0; //修改point								
+								b =getSqId(sq[i+1][0],sq[i+1][1]);//获得方块当前实际位置编号
+								r.item(b).style.backgroundColor="black"; //将实际位置痕迹抹除
+							}
+							for(var x=0;x<4;x++){
+								point[a[x]+14]=1;//更新point状态
+								b =getSqId(sq[x+1][0],sq[x+1][1]);//获得方块当前实际位置编号
+								b+=12;   //得到新位置编号								
+								r.item(b).style.backgroundColor="red";//移动到新位置
+								sq[x+1][1]+=1;//更新实际位置编号
+							}
+						}							
+					}
+					else if(sq[0]==10){//10号方块 
+							var a=new Array(4);
+							a[0]=getBlockId(sq[1][0],sq[1][1]);
+							a[1]=getBlockId(sq[2][0],sq[2][1]);
+							a[2]=getBlockId(sq[3][0],sq[3][1]);//获取point位置编号	
+							a[3]=getBlockId(sq[4][0],sq[4][1]);	
+							if(point[a[0]+14]==1||point[a[2]+14]==1||point[a[3]+14]==1){//下边有阻碍，不能移动
+								//alert("下边有阻碍，1号方块不能自动下移");
+								
+								lock=false;//释放方块
+								
+								return;
+							}
+							else{//下边没有阻碍，可以移动
+								
+								var f=document.getElementById("gameArea");
+								var r=f.childNodes;
+								var b;
+								for(var i=0;i<4;i++){//清除旧痕迹
+									point[a[i]]=0; //修改point								
+									b =getSqId(sq[i+1][0],sq[i+1][1]);//获得方块当前实际位置编号
+									r.item(b).style.backgroundColor="black"; //将实际位置痕迹抹除
+								}
+								for(var x=0;x<4;x++){
+									point[a[x]+14]=1;//更新point状态
+									b =getSqId(sq[x+1][0],sq[x+1][1]);//获得方块当前实际位置编号
+									b+=12;   //得到新位置编号								
+									r.item(b).style.backgroundColor="red";//移动到新位置
+									sq[x+1][1]+=1;//更新实际位置编号
+								}
+							}
+					}
+					else if(sq[0]==11){//11号方块
+						var a=new Array(4);
+						a[0]=getBlockId(sq[1][0],sq[1][1]);
+						a[1]=getBlockId(sq[2][0],sq[2][1]);
+						a[2]=getBlockId(sq[3][0],sq[3][1]);//获取point位置编号	
+						a[3]=getBlockId(sq[4][0],sq[4][1]);	
+						if(point[a[0]+14]==1||point[a[3]+14]==1){//下边有阻碍，不能移动
+							//alert("下边有阻碍，1号方块不能自动下移");
+							
+							lock=false;//释放方块
+						
+							return;
+						}
+						else{//下边没有阻碍，可以移动
+							
+							var f=document.getElementById("gameArea");
+							var r=f.childNodes;
+							var b;
+							for(var i=0;i<4;i++){//清除旧痕迹
+								point[a[i]]=0; //修改point								
+								b =getSqId(sq[i+1][0],sq[i+1][1]);//获得方块当前实际位置编号
+								r.item(b).style.backgroundColor="black"; //将实际位置痕迹抹除
+							}
+							for(var x=0;x<4;x++){
+								point[a[x]+14]=1;//更新point状态
+								b =getSqId(sq[x+1][0],sq[x+1][1]);//获得方块当前实际位置编号
+								b+=12;   //得到新位置编号								
+								r.item(b).style.backgroundColor="red";//移动到新位置
+								sq[x+1][1]+=1;//更新实际位置编号
+							}
+						}					
+					}
+					else if(sq[0]==12){//12号方块
+						var a=new Array(4);
+						a[0]=getBlockId(sq[1][0],sq[1][1]);
+						a[1]=getBlockId(sq[2][0],sq[2][1]);
+						a[2]=getBlockId(sq[3][0],sq[3][1]);//获取point位置编号	
+						a[3]=getBlockId(sq[4][0],sq[4][1]);	
+						if(point[a[0]+14]==1||point[a[1]+14]==1||point[a[3]+14]==1){//下边有阻碍，不能移动
+							//alert("下边有阻碍，1号方块不能自动下移");
+							
+							lock=false;//释放方块
+							
+							return;
+						}
+						else{//下边没有阻碍，可以移动
+							
+							var f=document.getElementById("gameArea");
+							var r=f.childNodes;
+							var b;
+							for(var i=0;i<4;i++){//清除旧痕迹
+								point[a[i]]=0; //修改point								
+								b =getSqId(sq[i+1][0],sq[i+1][1]);//获得方块当前实际位置编号
+								r.item(b).style.backgroundColor="black"; //将实际位置痕迹抹除
+							}
+							for(var x=0;x<4;x++){
+								point[a[x]+14]=1;//更新point状态
+								b =getSqId(sq[x+1][0],sq[x+1][1]);//获得方块当前实际位置编号
+								b+=12;   //得到新位置编号								
+								r.item(b).style.backgroundColor="red";//移动到新位置
+								sq[x+1][1]+=1;//更新实际位置编号
+							}
+						}							
+					}
+					else if(sq[0]==13){//13号方块	
+						var a=new Array(4);
+						a[0]=getBlockId(sq[1][0],sq[1][1]);
+						a[1]=getBlockId(sq[2][0],sq[2][1]);
+						a[2]=getBlockId(sq[3][0],sq[3][1]);//获取point位置编号
+						a[3]=getBlockId(sq[4][0],sq[4][1]);						
+						if(point[a[0]+14]==1||point[a[1]+14]==1){//下边有阻碍，不能移动
+							//alert("下边有阻碍，1号方块不能自动下移");
+							
+							lock=false;//释放方块
+							
+							return;
+						}
+						else{//下边没有阻碍，可以移动
+							
+							var f=document.getElementById("gameArea");
+							var r=f.childNodes;
+							var b;
+							for(var i=0;i<4;i++){//清除旧痕迹
+								point[a[i]]=0; //修改point								
+								b =getSqId(sq[i+1][0],sq[i+1][1]);//获得方块当前实际位置编号
+								r.item(b).style.backgroundColor="black"; //将实际位置痕迹抹除
+							}
+							for(var x=0;x<4;x++){
+								point[a[x]+14]=1;//更新point状态
+								b =getSqId(sq[x+1][0],sq[x+1][1]);//获得方块当前实际位置编号
+								b+=12;   //得到新位置编号								
+								r.item(b).style.backgroundColor="red";//移动到新位置
+								sq[x+1][1]+=1;//更新实际位置编号
+							}
+						}
+					}
+					else if(sq[0]==14){//14号方块 
+						var a=new Array(4);
+						a[0]=getBlockId(sq[1][0],sq[1][1]);
+						a[1]=getBlockId(sq[2][0],sq[2][1]);
+						a[2]=getBlockId(sq[3][0],sq[3][1]);//获取point位置编号	
+						a[3]=getBlockId(sq[4][0],sq[4][1]);	
+						if(point[a[0]+14]==1||point[a[1]+14]==1||point[a[2]+14]==1){//下边有阻碍，不能移动
+							//alert("下边有阻碍，1号方块不能自动下移");
+							
+							lock=false;//释放方块
+							
+							return;
+						}
+						else{//下边没有阻碍，可以移动
+							
+							var f=document.getElementById("gameArea");
+							var r=f.childNodes;
+							var b;
+							for(var i=0;i<4;i++){//清除旧痕迹
+								point[a[i]]=0; //修改point								
+								b =getSqId(sq[i+1][0],sq[i+1][1]);//获得方块当前实际位置编号
+								r.item(b).style.backgroundColor="black"; //将实际位置痕迹抹除
+							}
+							for(var x=0;x<4;x++){
+								point[a[x]+14]=1;//更新point状态
+								b =getSqId(sq[x+1][0],sq[x+1][1]);//获得方块当前实际位置编号
+								b+=12;   //得到新位置编号								
+								r.item(b).style.backgroundColor="red";//移动到新位置
+								sq[x+1][1]+=1;//更新实际位置编号
+							}
+						}
+					}
+					else if(sq[0]==15){//15号方块
+						var a=new Array(4);
+						a[0]=getBlockId(sq[1][0],sq[1][1]);
+						a[1]=getBlockId(sq[2][0],sq[2][1]);
+						a[2]=getBlockId(sq[3][0],sq[3][1]);//获取point位置编号	
+						a[3]=getBlockId(sq[4][0],sq[4][1]);	
+						if(point[a[0]+14]==1||point[a[3]+14]==1){//下边有阻碍，不能移动
+							//alert("下边有阻碍，1号方块不能自动下移");
+							
+							lock=false;//释放方块
+							
+							return;
+						}
+						else{//下边没有阻碍，可以移动
+							
+							var f=document.getElementById("gameArea");
+							var r=f.childNodes;
+							var b;
+							for(var i=0;i<4;i++){//清除旧痕迹
+								point[a[i]]=0; //修改point								
+								b =getSqId(sq[i+1][0],sq[i+1][1]);//获得方块当前实际位置编号
+								r.item(b).style.backgroundColor="black"; //将实际位置痕迹抹除
+							}
+							for(var x=0;x<4;x++){
+								point[a[x]+14]=1;//更新point状态
+								b =getSqId(sq[x+1][0],sq[x+1][1]);//获得方块当前实际位置编号
+								b+=12;   //得到新位置编号								
+								r.item(b).style.backgroundColor="red";//移动到新位置
+								sq[x+1][1]+=1;//更新实际位置编号
+							}
+						}					
+					}
+					else if(sq[0]==16){//16号方块
+						var a=new Array(4);
+						a[0]=getBlockId(sq[1][0],sq[1][1]);
+						a[1]=getBlockId(sq[2][0],sq[2][1]);
+						a[2]=getBlockId(sq[3][0],sq[3][1]);//获取point位置编号	
+						a[3]=getBlockId(sq[4][0],sq[4][1]);	
+						if(point[a[0]+14]==1||point[a[2]+14]==1||point[a[3]+14]==1){//下边有阻碍，不能移动
+							//alert("下边有阻碍，1号方块不能自动下移");
+							
+							lock=false;//释放方块
+							
+							return;
+						}
+						else{//下边没有阻碍，可以移动
+							
+							var f=document.getElementById("gameArea");
+							var r=f.childNodes;
+							var b;
+							for(var i=0;i<4;i++){//清除旧痕迹
+								point[a[i]]=0; //修改point								
+								b =getSqId(sq[i+1][0],sq[i+1][1]);//获得方块当前实际位置编号
+								r.item(b).style.backgroundColor="black"; //将实际位置痕迹抹除
+							}
+							for(var x=0;x<4;x++){
+								point[a[x]+14]=1;//更新point状态
+								b =getSqId(sq[x+1][0],sq[x+1][1]);//获得方块当前实际位置编号
+								b+=12;   //得到新位置编号								
+								r.item(b).style.backgroundColor="red";//移动到新位置
+								sq[x+1][1]+=1;//更新实际位置编号
+							}
+						}							
+					}
+					else if(sq[0]==17){//17号方块 
+						var a=new Array(4);
+						a[0]=getBlockId(sq[1][0],sq[1][1]);
+						a[1]=getBlockId(sq[2][0],sq[2][1]);
+						a[2]=getBlockId(sq[3][0],sq[3][1]);//获取point位置编号	
+						a[3]=getBlockId(sq[4][0],sq[4][1]);	
+						if(point[a[0]+14]==1||point[a[3]+14]==1){//下边有阻碍，不能移动
+							//alert("下边有阻碍，1号方块不能自动下移");
+							
+							lock=false;//释放方块
+							
+							return;
+						}
+						else{//下边没有阻碍，可以移动
+							
+							var f=document.getElementById("gameArea");
+							var r=f.childNodes;
+							var b;
+							for(var i=0;i<4;i++){//清除旧痕迹
+								point[a[i]]=0; //修改point								
+								b =getSqId(sq[i+1][0],sq[i+1][1]);//获得方块当前实际位置编号
+								r.item(b).style.backgroundColor="black"; //将实际位置痕迹抹除
+							}
+							for(var x=0;x<4;x++){
+								point[a[x]+14]=1;//更新point状态
+								b =getSqId(sq[x+1][0],sq[x+1][1]);//获得方块当前实际位置编号
+								b+=12;   //得到新位置编号								
+								r.item(b).style.backgroundColor="red";//移动到新位置
+								sq[x+1][1]+=1;//更新实际位置编号
+							}
+						}
+					}
+					else if(sq[0]==18){//18号方块
+						var a=new Array(4);
+						a[0]=getBlockId(sq[1][0],sq[1][1]);
+						a[1]=getBlockId(sq[2][0],sq[2][1]);
+						a[2]=getBlockId(sq[3][0],sq[3][1]);//获取point位置编号	
+						a[3]=getBlockId(sq[4][0],sq[4][1]);	
+						if(point[a[0]+14]==1){//下边有阻碍，不能移动
+							//alert("下边有阻碍，1号方块不能自动下移");
+							
+							lock=false;//释放方块
+							
+							return;
+						}
+						else{//下边没有阻碍，可以移动
+							
+							var f=document.getElementById("gameArea");
+							var r=f.childNodes;
+							var b;
+							for(var i=0;i<4;i++){//清除旧痕迹
+								point[a[i]]=0; //修改point								
+								b =getSqId(sq[i+1][0],sq[i+1][1]);//获得方块当前实际位置编号
+								r.item(b).style.backgroundColor="black"; //将实际位置痕迹抹除
+							}
+							for(var x=0;x<4;x++){
+								point[a[x]+14]=1;//更新point状态
+								b =getSqId(sq[x+1][0],sq[x+1][1]);//获得方块当前实际位置编号
+								b+=12;   //得到新位置编号								
+								r.item(b).style.backgroundColor="red";//移动到新位置
+								sq[x+1][1]+=1;//更新实际位置编号
+							}
+						}					
+					}
+					else if(sq[0]==19){//19号方块
+						var a=new Array(4);
+						a[0]=getBlockId(sq[1][0],sq[1][1]);
+						a[1]=getBlockId(sq[2][0],sq[2][1]);
+						a[2]=getBlockId(sq[3][0],sq[3][1]);//获取point位置编号	
+						a[3]=getBlockId(sq[4][0],sq[4][1]);	
+						if(point[a[0]+14]==1||point[a[1]+14]==1||point[a[2]+14]==1||point[a[3]+14]==1){//下边有阻碍，不能移动
+							//alert("下边有阻碍，1号方块不能自动下移");
+							
+							lock=false;//释放方块
+							
+							return;
+						}
+						else{//下边没有阻碍，可以移动
+							
+							var f=document.getElementById("gameArea");
+							var r=f.childNodes;
+							var b;
+							for(var i=0;i<4;i++){//清除旧痕迹
+								point[a[i]]=0; //修改point								
+								b =getSqId(sq[i+1][0],sq[i+1][1]);//获得方块当前实际位置编号
+								r.item(b).style.backgroundColor="black"; //将实际位置痕迹抹除
+							}
+							for(var x=0;x<4;x++){
+								point[a[x]+14]=1;//更新point状态
+								b =getSqId(sq[x+1][0],sq[x+1][1]);//获得方块当前实际位置编号
+								b+=12;   //得到新位置编号								
+								r.item(b).style.backgroundColor="red";//移动到新位置
+								sq[x+1][1]+=1;//更新实际位置编号
+							}
+						}							
+					}
+					else{
+						alert("move_down()出错");
+					}
+					lock=false;//释放方块										
+				}				
+				var d=document.getElementById("test");//显示当前point状态
+					var str="";
+					for(var z=0;z<point.length;z++){
+						if(z%14==13){
+							str+=point[z]+"\n";	
+						}
+						else{
+							str+=point[z];
+						}						
+					}
+					d.innerHTML=str;
+			}					
+			function change_shape(){
+				if(lock==true){//方块已被占据，不允许变形
+					return;
+				}
+				else{
+					locsk=true;
+				}	
+				function clearPosition(){//清理就位置
+					var r=document.getElementById("gameArea");
+					var n=r.childNodes;
+					for(var i=1;i<=4;i++){  //清除旧痕迹
+						var m=getSqId(sq[i][0],sq[i][1]);
+						var node=n.item(m);
+						node.style.backgroundColor="black";
+						var p=getBlockId(sq[i][0],sq[i][1]);
+						point[p]=0
+					}				
+				}
+				function updatePosition(){//更新位置
+					var r=document.getElementById("gameArea");
+					var n=r.childNodes;
+					for(var i=1;i<=4;i++){
+						var m=getSqId(sq[i][0],sq[i][1]);
+						var node=n.item(m);
+						node.style.backgroundColor="red";
+						var p=getBlockId(sq[i][0],sq[i][1]);
+						point[p]=1;
+					}
+				}
+				switch(sq[0]){//计算新位置
+					case 1:break;
+					case 2:
+							var g=getBlockId(sq[1][0],sq[1][1]);
+							if(point[g+14]==1){//遇到阻碍，不能变形
+								return;
+							}
+							else{
+								clearPosition();
+								sq[0]=3;
+								sq[2][0]=sq[1][0];
+								sq[2][1]=sq[1][1]-1;
+								sq[3][0]=sq[1][0]+1;
+								sq[3][1]=sq[1][1];
+								sq[4][0]=sq[1][0];
+								sq[4][1]=sq[1][1]+1;
+								updatePosition();
+							}
+							break;
+					case 3:
+							var g=getBlockId(sq[1][0],sq[1][1]);
+							if(point[g-1]==1){//遇到阻碍，不能变形
+								return;
+							}
+							else{
+								clearPosition();
+								sq[0]=4;
+								sq[2][0]=sq[1][0]+1;
+								sq[2][1]=sq[1][1];
+								sq[3][0]=sq[1][0];
+								sq[3][1]=sq[1][1]+1;
+								sq[4][0]=sq[1][0]-1;
+								sq[4][1]=sq[1][1];
+								updatePosition();
+							}
+							break;
+					case 4:
+							var p=getBlockId(sq[1][0],sq[1][1]);
+							if(sq[1][1]==1){//在第一排，不能变形
+								return;
+							}
+							else if(point[p-14]==1){//遇到阻碍，不能变形
+								return;
+							}
+							else{
+								clearPosition();
+								sq[0]=5;
+								sq[2][0]=sq[1][0];
+								sq[2][1]=sq[1][1]-1;
+								sq[3][0]=sq[1][0];
+								sq[3][1]=sq[1][1]+1;
+								sq[4][0]=sq[1][0]-1;
+								sq[4][1]=sq[1][1];
+								updatePosition();
+							}
+							break;
+					case 5:
+							var g=getBlockId(sq[1][0],sq[1][1]);
+							if(point[g+1]==1){//遇到阻碍，不能变形
+								return;
+							}
+							else{
+								clearPosition();
+								sq[0]=2;
+								sq[2][0]=sq[1][0]-1;
+								sq[2][1]=sq[1][1];
+								sq[3][0]=sq[1][0];
+								sq[3][1]=sq[1][1]-1;
+								sq[4][0]=sq[1][0]+1;
+								sq[4][1]=sq[1][1];
+								updatePosition();
+							}
+							break;
+					case 6:
+							var p=getBlockId(sq[3][0],sq[3][1]);
+							if(sq[3][1]==1){//在第一排，不能变形
+								return ;
+							}
+							else if(point[p-1]==1||point[p-15]==1){//遇到阻碍，不能变形
+								return;
+							}
+							else{
+								clearPosition();
+								sq[0]=7;
+								sq[1][0]=sq[3][0]-1;
+								sq[1][1]=sq[3][1];
+								sq[2][0]=sq[3][0]-1;
+								sq[2][1]=sq[3][1]-1;
+								sq[4][0]=sq[3][0];
+								sq[4][1]=sq[3][1]+1;
+								updatePosition();
+							}
+							break;
+					case 7:
+							var p=getBlockId(sq[3][0],sq[3][1]);							
+							if(point[p+13]==1||point[p+12]==1||point[p+1]==1){//遇到阻碍，不能变形
+								return;
+							}
+							else{
+								clearPosition();
+								sq[0]=6;
+								sq[1][0]=sq[3][0]-1;
+								sq[1][1]=sq[3][1]+1;
+								sq[2][0]=sq[3][0];
+								sq[2][1]=sq[3][1]+1;
+								sq[4][0]=sq[3][0]+1;
+								sq[4][1]=sq[3][1];
+								updatePosition();
+							}
+							break;
+					case 8:
+							var p=getBlockId(sq[2][0],sq[2][1]);
+							if(sq[2][1]==1){//第一排不允许变形
+								return;
+							}
+							else if(point[p+1]==1||point[p-13]==1){//遇到阻碍，不能变形
+								return;
+							}
+							else{
+								clearPosition();
+								sq[0]=9;
+								sq[1][0]=sq[2][0];
+								sq[1][1]=sq[2][1]+1;
+								sq[3][0]=sq[2][0]+1;
+								sq[3][1]=sq[2][1];
+								sq[4][0]=sq[2][0]+1;
+								sq[4][1]=sq[2][1]-1;
+								updatePosition();
+							}
+							break;
+					case 9:
+							var p=getBlockId(sq[2][0],sq[2][1]);							
+							if(point[p-1]==1||point[p+15]==1){//遇到阻碍，不能变形
+								return;
+							}
+							else{
+								clearPosition();
+								sq[0]=8;
+								sq[1][0]=sq[2][0]-1;
+								sq[1][1]=sq[2][1];
+								sq[3][0]=sq[2][0];
+								sq[3][1]=sq[2][1]+1;
+								sq[4][0]=sq[2][0]+1;
+								sq[4][1]=sq[2][1]+1;
+								updatePosition();
+							}
+							break;
+					case 10:
+							var p=getBlockId(sq[2][0],sq[2][1]);							
+							if(point[p+1]==1||point[p+2]==1||point[p+29]==1){//遇到阻碍，不能变形
+								return;
+							}
+							else{
+								clearPosition();
+								sq[0]=11;
+								sq[1][0]=sq[3][0];
+								sq[1][1]=sq[3][1]+1;
+								sq[2][0]=sq[3][0];
+								sq[2][1]=sq[3][1];
+								sq[3][0]=sq[2][0];
+								sq[3][1]=sq[2][1]-1;
+								sq[4][0]=sq[3][0]+1;
+								sq[4][1]=sq[3][1];
+								updatePosition();								
+							}
+							break;
+					case 11:
+							var p=getBlockId(sq[2][0],sq[2][1]);							
+							if(point[p+1]==1||point[p-15]==1){//遇到阻碍，不能变形
+								return;
+							}
+							else{
+								clearPosition();
+								sq[0]=12;
+								sq[1][0]=sq[3][0]-1;
+								sq[1][1]=sq[3][1];
+								sq[2][0]=sq[1][0]+1;
+								sq[2][1]=sq[1][1];
+								sq[3][0]=sq[1][0]+2;
+								sq[3][1]=sq[2][1];
+								sq[4][0]=sq[1][0]+2;
+								sq[4][1]=sq[1][1]+1;
+								updatePosition();								
+							}
+							break;
+					case 12:
+							var p=getBlockId(sq[2][0],sq[2][1]);
+							if(sq[1][1]==1){//第一排不允许变形
+								return;
+							}							
+							else if(point[p-14]==1||point[p+14]==1||point[p+13]==1){//遇到阻碍，不能变形
+								return;
+							}
+							else{
+								clearPosition();
+								sq[0]=13;
+								sq[1][0]=sq[1][0];
+								sq[1][1]=sq[1][1]+1;
+								sq[2][0]=sq[1][0]+1;
+								sq[2][1]=sq[1][1];
+								sq[3][0]=sq[1][0]+1;
+								sq[3][1]=sq[2][1]-1;
+								sq[4][0]=sq[1][0]+1;
+								sq[4][1]=sq[1][1]-2;
+								updatePosition();								
+							}
+							break;
+					case 13:
+							var p=getBlockId(sq[1][0],sq[1][1]);
+														
+							if(point[p-14]==1||point[p+2]==1){//遇到阻碍，不能变形
+								return;
+							}
+							else{
+								clearPosition();
+								sq[0]=10;								
+								sq[2][0]=sq[1][0];
+								sq[2][1]=sq[1][1]-1;
+								sq[3][0]=sq[1][0]+1;
+								sq[3][1]=sq[1][1];
+								sq[4][0]=sq[1][0]+2;
+								sq[4][1]=sq[1][1];
+								updatePosition();								
+							}
+							break;
+					case 14:
+							var p=getBlockId(sq[2][0],sq[2][1]);
+							if(sq[4][1]==1){//第一排不允许变形
+								return;
+							}							
+							if(point[p-14]==1||point[p+2]==1){//遇到阻碍，不能变形
+								return;
+							}
+							else{
+								clearPosition();
+								sq[0]=15;
+								sq[1][0]=sq[2][0];
+								sq[1][0]=sq[2][0];								
+								sq[2][0]=sq[1][0];
+								sq[2][1]=sq[1][1]-1;
+								sq[3][0]=sq[1][0];
+								sq[3][1]=sq[1][1]-2;
+								sq[4][0]=sq[1][0]+1;
+								sq[4][1]=sq[1][1];
+								updatePosition();								
+							}
+							break;
+					case 15:
+							var p=getBlockId(sq[2][0],sq[2][1]);													
+							if(point[p-1]==1||point[p+1]==1||point[p+13]==1){//遇到阻碍，不能变形
+								return;
+							}
+							else{
+								clearPosition();
+								sq[0]=16;
+								sq[1][0]=sq[2][0]-1;
+								sq[1][1]=sq[2][1]+1;
+
+								sq[2][0]=sq[1][0];
+								sq[2][1]=sq[1][1]-1;
+
+								sq[3][0]=sq[1][0]+1;
+								sq[3][1]=sq[1][1]-1;
+
+								sq[4][0]=sq[1][0]+2;
+								sq[4][1]=sq[1][1]-1;
+								updatePosition();								
+							}
+							break;
+					case 16:
+							var p=getBlockId(sq[1][0],sq[1][1]);													
+							if(point[p+1]==1||point[p+15]==1){//遇到阻碍，不能变形
+								return;
+							}
+							else{
+								clearPosition();
+								sq[0]=17;
+								sq[1][0]=sq[2][0];
+								sq[1][0]=sq[2][0];							
+								sq[2][0]=sq[1][0]+1;
+								sq[2][1]=sq[1][1];
+								sq[3][0]=sq[1][0]+1;
+								sq[3][1]=sq[1][1]+1;
+								sq[4][0]=sq[1][0]+1;
+								sq[4][1]=sq[1][1]+2;
+								updatePosition();								
+							}
+							break;
+					case 17:
+							var p=getBlockId(sq[3][0],sq[3][1]);													
+							if(point[p-1]==1||point[p+1]==1||point[p-13]==1){//遇到阻碍，不能变形
+								return;
+							}
+							else{
+								clearPosition();
+								sq[0]=14;
+								sq[1][0]=sq[3][0]-1;
+								sq[1][1]=sq[3][1];	
+
+								sq[2][0]=sq[1][0]+1;
+								sq[2][1]=sq[1][1];
+
+								sq[3][0]=sq[1][0]+2;
+								sq[3][1]=sq[1][1];
+
+								sq[4][0]=sq[1][0]+2;
+								sq[4][1]=sq[1][1]-1;
+								updatePosition();								
+							}
+							break;
+					case 18:
+							var p=getBlockId(sq[3][0],sq[3][1]);							
+							if(point[p-1]==1||point[p+1]==1||point[p-2]==1){//遇到阻碍，不能变形
+								return;
+							}
+							else{
+								clearPosition();
+								sq[0]=19;
+								sq[1][0]=sq[3][0]-2;
+								sq[1][1]=sq[3][1];	
+
+								sq[2][0]=sq[3][0]-1;
+								sq[2][1]=sq[3][1];
+								
+								sq[4][0]=sq[3][0]+1;
+								sq[4][1]=sq[3][1];
+								updatePosition();								
+							}
+							break;
+					case 19:
+							var p=getBlockId(sq[3][0],sq[3][1]);
+							if(sq[1][1]<=2){//第一、二排不能变形
+								return;
+							}													
+							if(point[p-14]==1||point[p+14]==1||point[p+28]==1){//遇到阻碍，不能变形
+								return;
+							}
+							else{
+								clearPosition();
+								sq[0]=18;
+								sq[1][0]=sq[3][0];
+								sq[1][1]=sq[3][1]+2;	
+
+								sq[2][0]=sq[3][0];
+								sq[2][1]=sq[3][1]+1;
+								
+								sq[4][0]=sq[3][0];
+								sq[4][1]=sq[3][1]-1;
+								updatePosition();								
+							}
+							break;
+					default:alert("change_shape()出错！"); break;
+				}							
+				lock=false;
+			}
+			setControl=function(e){//开启控制键
+				var currKey = e.which;				
+				switch (currKey)
+				{ 
+				    case 37: move_left();  break;//左移
+					case 38: change_shape(); break;//变形
+					case 39: move_right(); break;//右移
+					case 40: move_down();  break;
+				    default : keyName = "";    break;
+ 			    }
+			}
+			offControl=function(){//关闭控制键
+				document.onkeydown=null;
+			}
+			merge=function(){//判断方块是否存在可合并行，有则合并
+				var cols=22;//从第22行开始扫描是否有可合并行
+				while(cols>0){
+					//alert("第 "+cols+"行");
+					var s=1;
+					var id=14*(cols-1);//第cols行的第一个节点的point编号（从左到右）
+					for(var i=1;i<=12;i++){
+						var p=id+i;
+						if(point[p]==0){
+							s=0;
+							break;
+						}
+					}
+					if(s==0){//本行未满格
+						cols--;
+						continue;//扫描上一行
+					}
+					else{//本行满格，开始合并
+						//alert(cols+"行满格");
+						var k=12*(cols-1);
+						//alert("k="+k+"\tcols="+cols);
+						var lis=document.getElementById("gameArea");
+						var nodes=lis.childNodes;
+						//alert("清空"+cols+"行");
+						for(var r=0;r<12;r++){//清空本行
+							var node=nodes.item(k+r);
+							node.style.backgroundColor="black";	
+							var n=getBlockId(r+1,cols);
+							point[n]=0;	//更新point状态
+						}
+						//alert("下降");
+						for(var po=k-1;po>=0;po--){//合并行上面的所有方块下降一格
+							//alert("预下降"+po);
+							var x=po%12+1; //从第cols-1行最右方开始下降
+							var y=parseInt(po/12)+1;
+							var g=getBlockId(x,y);
+							//alert("g="+g+"\t x= "+x+"\t y="+y);
+							if(point[g]==1){
+							//	alert("下降"+po);
+								var m=nodes.item(po);
+								m.style.backgroundColor="black";
+								point[g]=0;
+								m=nodes.item(po+12);
+								m.style.backgroundColor="red";
+								point[g+14]=1;
+							}
+						}	
+						scoreNum+=10;
+						eli+=1;
+						document.getElementById("num1").innerHTML=scoreNum.toString();
+						document.getElementById("num2").innerHTML=eli.toString();
+						cols=22;//已合并一行，重新扫描			
+					}
+				}
+			}
+			this.run=function(gameArea){//开始运行游戏
+				
+				init(gameArea);//初始化游戏界面
+				runState=true;
+				var a=document.getElementById("controlBtn");
+				a.innerHTML="重新开始";	
+				produceShape();//产生方块
+				//return;	
+				document.onkeydown=setControl;//开启控制键控制功能
+				//selfDown();	//自动下降
+				timer=setInterval(function(){
+					if(lock==true){//方块已被占据，不允许下移
+						alert("已被占据");
+						return;
+					}
+					else{
+						lock=true;//占据方块，开始下移					
+						if(sq[0]==1){//1号方块
+							var a=new Array(4);
+							a[0]=getBlockId(sq[1][0],sq[1][1]);
+							a[3]=getBlockId(sq[4][0],sq[4][1]);						
+							if(point[a[0]+14]==1||point[a[3]+14]==1){//下边有阻碍，不能移动
+								//alert("下边有阻碍，1号方块不能自动下移");
+								offControl();
+								merge();
+								lock=false;//释放方块
+								produceShape();//产生新方块	
+								document.onkeydown=setControl;//开启控制键控制功能
+								return;
+							}
+							else{//下边没有阻碍，可以移动
+								a[1]=getBlockId(sq[2][0],sq[2][1]);//获取point位置编号
+								a[2]=getBlockId(sq[3][0],sq[3][1]);
+								var f=document.getElementById("gameArea");
+								var r=f.childNodes;
+								var b;
+								for(var i=0;i<4;i++){//清除旧痕迹
+									point[a[i]]=0; //修改point								
+									b =getSqId(sq[i+1][0],sq[i+1][1]);//获得方块当前实际位置编号
+									r.item(b).style.backgroundColor="black"; //将实际位置痕迹抹除
+								}
+								for(var x=0;x<4;x++){
+									point[a[x]+14]=1;//更新point状态
+									b =getSqId(sq[x+1][0],sq[x+1][1]);//获得方块当前实际位置编号
+									b+=12;   //得到新位置编号								
+									r.item(b).style.backgroundColor="red";//移动到新位置
+									sq[x+1][1]+=1;//更新实际位置编号
+								}
+							}
+						}
+						else if(sq[0]==2){//2号方块	
+							var a=new Array(4);
+							a[0]=getBlockId(sq[1][0],sq[1][1]);
+							a[1]=getBlockId(sq[2][0],sq[2][1]);
+							a[3]=getBlockId(sq[4][0],sq[4][1]);						
+							if(point[a[0]+14]==1||point[a[1]+14]==1||point[a[3]+14]==1){//下边有阻碍，不能移动
+								//alert("下边有阻碍，1号方块不能自动下移");
+								offControl();//关闭控制键功能
+								merge();
+								lock=false;//释放方块
+								produceShape();//产生新方块	
+								document.onkeydown=setControl;//开启控制键控制功能
+								return;
+							}
+							else{//下边没有阻碍，可以移动
+								a[2]=getBlockId(sq[3][0],sq[3][1]);//获取point位置编号
+								var f=document.getElementById("gameArea");
+								var r=f.childNodes;
+								var b;
+								for(var i=0;i<4;i++){//清除旧痕迹
+									point[a[i]]=0; //修改point								
+									b =getSqId(sq[i+1][0],sq[i+1][1]);//获得方块当前实际位置编号
+									r.item(b).style.backgroundColor="black"; //将实际位置痕迹抹除
+								}
+								for(var x=0;x<4;x++){
+									point[a[x]+14]=1;//更新point状态
+									b =getSqId(sq[x+1][0],sq[x+1][1]);//获得方块当前实际位置编号
+									b+=12;   //得到新位置编号								
+									r.item(b).style.backgroundColor="red";//移动到新位置
+									sq[x+1][1]+=1;//更新实际位置编号
+								}
+							}
+						}
+						else if(sq[0]==3){//3号方块 
+							var a=new Array(4);
+							a[0]=getBlockId(sq[1][0],sq[1][1]);
+							a[1]=getBlockId(sq[2][0],sq[2][1]);
+							a[2]=getBlockId(sq[3][0],sq[3][1]);//获取point位置编号	
+							a[3]=getBlockId(sq[4][0],sq[4][1]);	
+							if(point[a[2]+14]==1||point[a[3]+14]==1){//下边有阻碍，不能移动
+								//alert("下边有阻碍，1号方块不能自动下移");
+								offControl();//关闭控制键功能
+								merge();
+								lock=false;//释放方块
+								produceShape();//产生新方块	
+								document.onkeydown=setControl;//开启控制键控制功能
+								return;
+							}
+							else{//下边没有阻碍，可以移动
+								
+								var f=document.getElementById("gameArea");
+								var r=f.childNodes;
+								var b;
+								for(var i=0;i<4;i++){//清除旧痕迹
+									point[a[i]]=0; //修改point								
+									b =getSqId(sq[i+1][0],sq[i+1][1]);//获得方块当前实际位置编号
+									r.item(b).style.backgroundColor="black"; //将实际位置痕迹抹除
+								}
+								for(var x=0;x<4;x++){
+									point[a[x]+14]=1;//更新point状态
+									b =getSqId(sq[x+1][0],sq[x+1][1]);//获得方块当前实际位置编号
+									b+=12;   //得到新位置编号								
+									r.item(b).style.backgroundColor="red";//移动到新位置
+									sq[x+1][1]+=1;//更新实际位置编号
+								}
+							}
+						}
+						else if(sq[0]==4){//4号方块
+							var a=new Array(4);
+							a[0]=getBlockId(sq[1][0],sq[1][1]);
+							a[1]=getBlockId(sq[2][0],sq[2][1]);
+							a[2]=getBlockId(sq[3][0],sq[3][1]);//获取point位置编号	
+							a[3]=getBlockId(sq[4][0],sq[4][1]);	
+							if(point[a[1]+14]==1||point[a[2]+14]==1||point[a[3]+14]==1){//下边有阻碍，不能移动
+								//alert("下边有阻碍，1号方块不能自动下移");
+								offControl();//关闭控制键功能
+								merge();
+								lock=false;//释放方块
+								produceShape();//产生新方块	
+								document.onkeydown=setControl;//开启控制键控制功能
+								return;
+							}
+							else{//下边没有阻碍，可以移动
+								
+								var f=document.getElementById("gameArea");
+								var r=f.childNodes;
+								var b;
+								for(var i=0;i<4;i++){//清除旧痕迹
+									point[a[i]]=0; //修改point								
+									b =getSqId(sq[i+1][0],sq[i+1][1]);//获得方块当前实际位置编号
+									r.item(b).style.backgroundColor="black"; //将实际位置痕迹抹除
+								}
+								for(var x=0;x<4;x++){
+									point[a[x]+14]=1;//更新point状态
+									b =getSqId(sq[x+1][0],sq[x+1][1]);//获得方块当前实际位置编号
+									b+=12;   //得到新位置编号								
+									r.item(b).style.backgroundColor="red";//移动到新位置
+									sq[x+1][1]+=1;//更新实际位置编号
+								}
+							}					
+						}
+						else if(sq[0]==5){//5号方块
+							var a=new Array(4);
+							a[0]=getBlockId(sq[1][0],sq[1][1]);
+							a[1]=getBlockId(sq[2][0],sq[2][1]);
+							a[2]=getBlockId(sq[3][0],sq[3][1]);//获取point位置编号	
+							a[3]=getBlockId(sq[4][0],sq[4][1]);	
+							if(point[a[2]+14]==1||point[a[3]+14]==1){//下边有阻碍，不能移动
+								//alert("下边有阻碍，1号方块不能自动下移");
+								offControl();//关闭控制键功能
+								merge();
+								lock=false;//释放方块
+								produceShape();//产生新方块	
+								document.onkeydown=setControl;//开启控制键控制功能
+								return;
+							}
+							else{//下边没有阻碍，可以移动
+								
+								var f=document.getElementById("gameArea");
+								var r=f.childNodes;
+								var b;
+								for(var i=0;i<4;i++){//清除旧痕迹
+									point[a[i]]=0; //修改point								
+									b =getSqId(sq[i+1][0],sq[i+1][1]);//获得方块当前实际位置编号
+									r.item(b).style.backgroundColor="black"; //将实际位置痕迹抹除
+								}
+								for(var x=0;x<4;x++){
+									point[a[x]+14]=1;//更新point状态
+									b =getSqId(sq[x+1][0],sq[x+1][1]);//获得方块当前实际位置编号
+									b+=12;   //得到新位置编号								
+									r.item(b).style.backgroundColor="red";//移动到新位置
+									sq[x+1][1]+=1;//更新实际位置编号
+								}
+							}							
+						}
+						else if(sq[0]==6){//6号方块	
+							var a=new Array(4);
+							a[0]=getBlockId(sq[1][0],sq[1][1]);
+							a[1]=getBlockId(sq[2][0],sq[2][1]);
+							a[2]=getBlockId(sq[3][0],sq[3][1]);//获取point位置编号
+							a[3]=getBlockId(sq[4][0],sq[4][1]);						
+							if(point[a[0]+14]==1||point[a[1]+14]==1||point[a[3]+14]==1){//下边有阻碍，不能移动
+								//alert("下边有阻碍，1号方块不能自动下移");
+								offControl();//关闭控制键功能
+								merge();
+								lock=false;//释放方块
+								produceShape();//产生新方块	
+								document.onkeydown=setControl;//开启控制键控制功能
+								return;
+							}
+							else{//下边没有阻碍，可以移动
+								
+								var f=document.getElementById("gameArea");
+								var r=f.childNodes;
+								var b;
+								for(var i=0;i<4;i++){//清除旧痕迹
+									point[a[i]]=0; //修改point								
+									b =getSqId(sq[i+1][0],sq[i+1][1]);//获得方块当前实际位置编号
+									r.item(b).style.backgroundColor="black"; //将实际位置痕迹抹除
+								}
+								for(var x=0;x<4;x++){
+									point[a[x]+14]=1;//更新point状态
+									b =getSqId(sq[x+1][0],sq[x+1][1]);//获得方块当前实际位置编号
+									b+=12;   //得到新位置编号								
+									r.item(b).style.backgroundColor="red";//移动到新位置
+									sq[x+1][1]+=1;//更新实际位置编号
+								}
+							}
+						}
+						else if(sq[0]==7){//7号方块 
+							var a=new Array(4);
+							a[0]=getBlockId(sq[1][0],sq[1][1]);
+							a[1]=getBlockId(sq[2][0],sq[2][1]);
+							a[2]=getBlockId(sq[3][0],sq[3][1]);//获取point位置编号	
+							a[3]=getBlockId(sq[4][0],sq[4][1]);	
+							if(point[a[0]+14]==1||point[a[3]+14]==1){//下边有阻碍，不能移动
+								//alert("下边有阻碍，1号方块不能自动下移");
+								offControl();//关闭控制键功能
+								merge();
+								lock=false;//释放方块
+								produceShape();//产生新方块	
+								document.onkeydown=setControl;//开启控制键控制功能
+								return;
+							}
+							else{//下边没有阻碍，可以移动
+								
+								var f=document.getElementById("gameArea");
+								var r=f.childNodes;
+								var b;
+								for(var i=0;i<4;i++){//清除旧痕迹
+									point[a[i]]=0; //修改point								
+									b =getSqId(sq[i+1][0],sq[i+1][1]);//获得方块当前实际位置编号
+									r.item(b).style.backgroundColor="black"; //将实际位置痕迹抹除
+								}
+								for(var x=0;x<4;x++){
+									point[a[x]+14]=1;//更新point状态
+									b =getSqId(sq[x+1][0],sq[x+1][1]);//获得方块当前实际位置编号
+									b+=12;   //得到新位置编号								
+									r.item(b).style.backgroundColor="red";//移动到新位置
+									sq[x+1][1]+=1;//更新实际位置编号
+								}
+							}
+						}
+						else if(sq[0]==8){//8号方块
+							var a=new Array(4);
+							a[0]=getBlockId(sq[1][0],sq[1][1]);
+							a[1]=getBlockId(sq[2][0],sq[2][1]);
+							a[2]=getBlockId(sq[3][0],sq[3][1]);//获取point位置编号	
+							a[3]=getBlockId(sq[4][0],sq[4][1]);	
+							if(point[a[0]+14]==1||point[a[2]+14]==1||point[a[3]+14]==1){//下边有阻碍，不能移动
+								//alert("下边有阻碍，1号方块不能自动下移");
+								offControl();//关闭控制键功能
+								merge();
+								lock=false;//释放方块
+								produceShape();//产生新方块	
+								document.onkeydown=setControl;//开启控制键控制功能
+								return;
+							}
+							else{//下边没有阻碍，可以移动
+								
+								var f=document.getElementById("gameArea");
+								var r=f.childNodes;
+								var b;
+								for(var i=0;i<4;i++){//清除旧痕迹
+									point[a[i]]=0; //修改point								
+									b =getSqId(sq[i+1][0],sq[i+1][1]);//获得方块当前实际位置编号
+									r.item(b).style.backgroundColor="black"; //将实际位置痕迹抹除
+								}
+								for(var x=0;x<4;x++){
+									point[a[x]+14]=1;//更新point状态
+									b =getSqId(sq[x+1][0],sq[x+1][1]);//获得方块当前实际位置编号
+									b+=12;   //得到新位置编号								
+									r.item(b).style.backgroundColor="red";//移动到新位置
+									sq[x+1][1]+=1;//更新实际位置编号
+								}
+							}					
+						}
+						else if(sq[0]==9){//9号方块
+							var a=new Array(4);
+							a[0]=getBlockId(sq[1][0],sq[1][1]);
+							a[1]=getBlockId(sq[2][0],sq[2][1]);
+							a[2]=getBlockId(sq[3][0],sq[3][1]);//获取point位置编号	
+							a[3]=getBlockId(sq[4][0],sq[4][1]);	
+							if(point[a[0]+14]==1||point[a[2]+14]==1){//下边有阻碍，不能移动
+								//alert("下边有阻碍，1号方块不能自动下移");
+								offControl();//关闭控制键功能
+								merge();
+								lock=false;//释放方块
+								produceShape();//产生新方块	
+								document.onkeydown=setControl;//开启控制键控制功能
+								return;
+							}
+							else{//下边没有阻碍，可以移动
+								
+								var f=document.getElementById("gameArea");
+								var r=f.childNodes;
+								var b;
+								for(var i=0;i<4;i++){//清除旧痕迹
+									point[a[i]]=0; //修改point								
+									b =getSqId(sq[i+1][0],sq[i+1][1]);//获得方块当前实际位置编号
+									r.item(b).style.backgroundColor="black"; //将实际位置痕迹抹除
+								}
+								for(var x=0;x<4;x++){
+									point[a[x]+14]=1;//更新point状态
+									b =getSqId(sq[x+1][0],sq[x+1][1]);//获得方块当前实际位置编号
+									b+=12;   //得到新位置编号								
+									r.item(b).style.backgroundColor="red";//移动到新位置
+									sq[x+1][1]+=1;//更新实际位置编号
+								}
+							}							
+						}
+						else if(sq[0]==10){//10号方块 
+							var a=new Array(4);
+							a[0]=getBlockId(sq[1][0],sq[1][1]);
+							a[1]=getBlockId(sq[2][0],sq[2][1]);
+							a[2]=getBlockId(sq[3][0],sq[3][1]);//获取point位置编号	
+							a[3]=getBlockId(sq[4][0],sq[4][1]);	
+							if(point[a[0]+14]==1||point[a[2]+14]==1||point[a[3]+14]==1){//下边有阻碍，不能移动
+								//alert("下边有阻碍，1号方块不能自动下移");
+								offControl();//关闭控制键功能
+								merge();
+								lock=false;//释放方块
+								produceShape();//产生新方块	
+								document.onkeydown=setControl;//开启控制键控制功能
+								return;
+							}
+							else{//下边没有阻碍，可以移动
+								
+								var f=document.getElementById("gameArea");
+								var r=f.childNodes;
+								var b;
+								for(var i=0;i<4;i++){//清除旧痕迹
+									point[a[i]]=0; //修改point								
+									b =getSqId(sq[i+1][0],sq[i+1][1]);//获得方块当前实际位置编号
+									r.item(b).style.backgroundColor="black"; //将实际位置痕迹抹除
+								}
+								for(var x=0;x<4;x++){
+									point[a[x]+14]=1;//更新point状态
+									b =getSqId(sq[x+1][0],sq[x+1][1]);//获得方块当前实际位置编号
+									b+=12;   //得到新位置编号								
+									r.item(b).style.backgroundColor="red";//移动到新位置
+									sq[x+1][1]+=1;//更新实际位置编号
+								}
+							}
+						}
+						else if(sq[0]==11){//11号方块
+							var a=new Array(4);
+							a[0]=getBlockId(sq[1][0],sq[1][1]);
+							a[1]=getBlockId(sq[2][0],sq[2][1]);
+							a[2]=getBlockId(sq[3][0],sq[3][1]);//获取point位置编号	
+							a[3]=getBlockId(sq[4][0],sq[4][1]);	
+							if(point[a[0]+14]==1||point[a[3]+14]==1){//下边有阻碍，不能移动
+								//alert("下边有阻碍，1号方块不能自动下移");
+								offControl();//关闭控制键功能
+								merge();
+								lock=false;//释放方块
+								produceShape();//产生新方块	
+								document.onkeydown=setControl;//开启控制键控制功能
+								return;
+							}
+							else{//下边没有阻碍，可以移动
+								
+								var f=document.getElementById("gameArea");
+								var r=f.childNodes;
+								var b;
+								for(var i=0;i<4;i++){//清除旧痕迹
+									point[a[i]]=0; //修改point								
+									b =getSqId(sq[i+1][0],sq[i+1][1]);//获得方块当前实际位置编号
+									r.item(b).style.backgroundColor="black"; //将实际位置痕迹抹除
+								}
+								for(var x=0;x<4;x++){
+									point[a[x]+14]=1;//更新point状态
+									b =getSqId(sq[x+1][0],sq[x+1][1]);//获得方块当前实际位置编号
+									b+=12;   //得到新位置编号								
+									r.item(b).style.backgroundColor="red";//移动到新位置
+									sq[x+1][1]+=1;//更新实际位置编号
+								}
+							}					
+						}
+						else if(sq[0]==12){//12号方块
+							var a=new Array(4);
+							a[0]=getBlockId(sq[1][0],sq[1][1]);
+							a[1]=getBlockId(sq[2][0],sq[2][1]);
+							a[2]=getBlockId(sq[3][0],sq[3][1]);//获取point位置编号	
+							a[3]=getBlockId(sq[4][0],sq[4][1]);	
+							if(point[a[0]+14]==1||point[a[1]+14]==1||point[a[3]+14]==1){//下边有阻碍，不能移动
+								//alert("下边有阻碍，1号方块不能自动下移");
+								offControl();//关闭控制键功能
+								merge();
+								lock=false;//释放方块
+								produceShape();//产生新方块	
+								document.onkeydown=setControl;//开启控制键控制功能
+								return;
+							}
+							else{//下边没有阻碍，可以移动
+								
+								var f=document.getElementById("gameArea");
+								var r=f.childNodes;
+								var b;
+								for(var i=0;i<4;i++){//清除旧痕迹
+									point[a[i]]=0; //修改point								
+									b =getSqId(sq[i+1][0],sq[i+1][1]);//获得方块当前实际位置编号
+									r.item(b).style.backgroundColor="black"; //将实际位置痕迹抹除
+								}
+								for(var x=0;x<4;x++){
+									point[a[x]+14]=1;//更新point状态
+									b =getSqId(sq[x+1][0],sq[x+1][1]);//获得方块当前实际位置编号
+									b+=12;   //得到新位置编号								
+									r.item(b).style.backgroundColor="red";//移动到新位置
+									sq[x+1][1]+=1;//更新实际位置编号
+								}
+							}							
+						}
+						else if(sq[0]==13){//13号方块	
+							var a=new Array(4);
+							a[0]=getBlockId(sq[1][0],sq[1][1]);
+							a[1]=getBlockId(sq[2][0],sq[2][1]);
+							a[2]=getBlockId(sq[3][0],sq[3][1]);//获取point位置编号
+							a[3]=getBlockId(sq[4][0],sq[4][1]);						
+							if(point[a[0]+14]==1||point[a[1]+14]==1){//下边有阻碍，不能移动
+								//alert("下边有阻碍，1号方块不能自动下移");
+								offControl();//关闭控制键功能
+								merge();
+								lock=false;//释放方块
+								produceShape();//产生新方块	
+								document.onkeydown=setControl;//开启控制键控制功能
+								return;
+							}
+							else{//下边没有阻碍，可以移动
+								
+								var f=document.getElementById("gameArea");
+								var r=f.childNodes;
+								var b;
+								for(var i=0;i<4;i++){//清除旧痕迹
+									point[a[i]]=0; //修改point								
+									b =getSqId(sq[i+1][0],sq[i+1][1]);//获得方块当前实际位置编号
+									r.item(b).style.backgroundColor="black"; //将实际位置痕迹抹除
+								}
+								for(var x=0;x<4;x++){
+									point[a[x]+14]=1;//更新point状态
+									b =getSqId(sq[x+1][0],sq[x+1][1]);//获得方块当前实际位置编号
+									b+=12;   //得到新位置编号								
+									r.item(b).style.backgroundColor="red";//移动到新位置
+									sq[x+1][1]+=1;//更新实际位置编号
+								}
+							}
+						}
+						else if(sq[0]==14){//14号方块 
+							var a=new Array(4);
+							a[0]=getBlockId(sq[1][0],sq[1][1]);
+							a[1]=getBlockId(sq[2][0],sq[2][1]);
+							a[2]=getBlockId(sq[3][0],sq[3][1]);//获取point位置编号	
+							a[3]=getBlockId(sq[4][0],sq[4][1]);	
+							if(point[a[0]+14]==1||point[a[1]+14]==1||point[a[2]+14]==1){//下边有阻碍，不能移动
+								//alert("下边有阻碍，1号方块不能自动下移");
+								offControl();//关闭控制键功能
+								merge();
+								lock=false;//释放方块
+								produceShape();//产生新方块	
+								document.onkeydown=setControl;//开启控制键控制功能
+								return;
+							}
+							else{//下边没有阻碍，可以移动
+								
+								var f=document.getElementById("gameArea");
+								var r=f.childNodes;
+								var b;
+								for(var i=0;i<4;i++){//清除旧痕迹
+									point[a[i]]=0; //修改point								
+									b =getSqId(sq[i+1][0],sq[i+1][1]);//获得方块当前实际位置编号
+									r.item(b).style.backgroundColor="black"; //将实际位置痕迹抹除
+								}
+								for(var x=0;x<4;x++){
+									point[a[x]+14]=1;//更新point状态
+									b =getSqId(sq[x+1][0],sq[x+1][1]);//获得方块当前实际位置编号
+									b+=12;   //得到新位置编号								
+									r.item(b).style.backgroundColor="red";//移动到新位置
+									sq[x+1][1]+=1;//更新实际位置编号
+								}
+							}
+						}
+						else if(sq[0]==15){//15号方块
+							var a=new Array(4);
+							a[0]=getBlockId(sq[1][0],sq[1][1]);
+							a[1]=getBlockId(sq[2][0],sq[2][1]);
+							a[2]=getBlockId(sq[3][0],sq[3][1]);//获取point位置编号	
+							a[3]=getBlockId(sq[4][0],sq[4][1]);	
+							if(point[a[0]+14]==1||point[a[3]+14]==1){//下边有阻碍，不能移动
+								//alert("下边有阻碍，1号方块不能自动下移");
+								offControl();//关闭控制键功能
+								merge();
+								lock=false;//释放方块
+								produceShape();//产生新方块	
+								document.onkeydown=setControl;//开启控制键控制功能
+								return;
+							}
+							else{//下边没有阻碍，可以移动
+								
+								var f=document.getElementById("gameArea");
+								var r=f.childNodes;
+								var b;
+								for(var i=0;i<4;i++){//清除旧痕迹
+									point[a[i]]=0; //修改point								
+									b =getSqId(sq[i+1][0],sq[i+1][1]);//获得方块当前实际位置编号
+									r.item(b).style.backgroundColor="black"; //将实际位置痕迹抹除
+								}
+								for(var x=0;x<4;x++){
+									point[a[x]+14]=1;//更新point状态
+									b =getSqId(sq[x+1][0],sq[x+1][1]);//获得方块当前实际位置编号
+									b+=12;   //得到新位置编号								
+									r.item(b).style.backgroundColor="red";//移动到新位置
+									sq[x+1][1]+=1;//更新实际位置编号
+								}
+							}					
+						}
+						else if(sq[0]==16){//16号方块
+							var a=new Array(4);
+							a[0]=getBlockId(sq[1][0],sq[1][1]);
+							a[1]=getBlockId(sq[2][0],sq[2][1]);
+							a[2]=getBlockId(sq[3][0],sq[3][1]);//获取point位置编号	
+							a[3]=getBlockId(sq[4][0],sq[4][1]);	
+							if(point[a[0]+14]==1||point[a[2]+14]==1||point[a[3]+14]==1){//下边有阻碍，不能移动
+								//alert("下边有阻碍，1号方块不能自动下移");
+								offControl();//关闭控制键功能
+								merge();
+								lock=false;//释放方块
+								produceShape();//产生新方块	
+								document.onkeydown=setControl;//开启控制键控制功能
+								return;
+							}
+							else{//下边没有阻碍，可以移动
+								
+								var f=document.getElementById("gameArea");
+								var r=f.childNodes;
+								var b;
+								for(var i=0;i<4;i++){//清除旧痕迹
+									point[a[i]]=0; //修改point								
+									b =getSqId(sq[i+1][0],sq[i+1][1]);//获得方块当前实际位置编号
+									r.item(b).style.backgroundColor="black"; //将实际位置痕迹抹除
+								}
+								for(var x=0;x<4;x++){
+									point[a[x]+14]=1;//更新point状态
+									b =getSqId(sq[x+1][0],sq[x+1][1]);//获得方块当前实际位置编号
+									b+=12;   //得到新位置编号								
+									r.item(b).style.backgroundColor="red";//移动到新位置
+									sq[x+1][1]+=1;//更新实际位置编号
+								}
+							}							
+						}
+						else if(sq[0]==17){//17号方块 
+							var a=new Array(4);
+							a[0]=getBlockId(sq[1][0],sq[1][1]);
+							a[1]=getBlockId(sq[2][0],sq[2][1]);
+							a[2]=getBlockId(sq[3][0],sq[3][1]);//获取point位置编号	
+							a[3]=getBlockId(sq[4][0],sq[4][1]);	
+							if(point[a[0]+14]==1||point[a[3]+14]==1){//下边有阻碍，不能移动
+								//alert("下边有阻碍，1号方块不能自动下移");
+								offControl();//关闭控制键功能
+								merge();
+								lock=false;//释放方块
+								produceShape();//产生新方块	
+								document.onkeydown=setControl;//开启控制键控制功能
+								return;
+							}
+							else{//下边没有阻碍，可以移动
+								
+								var f=document.getElementById("gameArea");
+								var r=f.childNodes;
+								var b;
+								for(var i=0;i<4;i++){//清除旧痕迹
+									point[a[i]]=0; //修改point								
+									b =getSqId(sq[i+1][0],sq[i+1][1]);//获得方块当前实际位置编号
+									r.item(b).style.backgroundColor="black"; //将实际位置痕迹抹除
+								}
+								for(var x=0;x<4;x++){
+									point[a[x]+14]=1;//更新point状态
+									b =getSqId(sq[x+1][0],sq[x+1][1]);//获得方块当前实际位置编号
+									b+=12;   //得到新位置编号								
+									r.item(b).style.backgroundColor="red";//移动到新位置
+									sq[x+1][1]+=1;//更新实际位置编号
+								}
+							}
+						}
+						else if(sq[0]==18){//18号方块
+							var a=new Array(4);
+							a[0]=getBlockId(sq[1][0],sq[1][1]);
+							a[1]=getBlockId(sq[2][0],sq[2][1]);
+							a[2]=getBlockId(sq[3][0],sq[3][1]);//获取point位置编号	
+							a[3]=getBlockId(sq[4][0],sq[4][1]);	
+							if(point[a[0]+14]==1){//下边有阻碍，不能移动
+								//alert("下边有阻碍，1号方块不能自动下移");
+								offControl();//关闭控制键功能
+								merge();
+								lock=false;//释放方块
+								produceShape();//产生新方块	
+								document.onkeydown=setControl;//开启控制键控制功能
+								return;
+							}
+							else{//下边没有阻碍，可以移动
+								
+								var f=document.getElementById("gameArea");
+								var r=f.childNodes;
+								var b;
+								for(var i=0;i<4;i++){//清除旧痕迹
+									point[a[i]]=0; //修改point								
+									b =getSqId(sq[i+1][0],sq[i+1][1]);//获得方块当前实际位置编号
+									r.item(b).style.backgroundColor="black"; //将实际位置痕迹抹除
+								}
+								for(var x=0;x<4;x++){
+									point[a[x]+14]=1;//更新point状态
+									b =getSqId(sq[x+1][0],sq[x+1][1]);//获得方块当前实际位置编号
+									b+=12;   //得到新位置编号								
+									r.item(b).style.backgroundColor="red";//移动到新位置
+									sq[x+1][1]+=1;//更新实际位置编号
+								}
+							}					
+						}
+						else if(sq[0]==19){//19号方块
+							var a=new Array(4);
+							a[0]=getBlockId(sq[1][0],sq[1][1]);
+							a[1]=getBlockId(sq[2][0],sq[2][1]);
+							a[2]=getBlockId(sq[3][0],sq[3][1]);//获取point位置编号	
+							a[3]=getBlockId(sq[4][0],sq[4][1]);	
+							if(point[a[0]+14]==1||point[a[1]+14]==1||point[a[2]+14]==1||point[a[3]+14]==1){//下边有阻碍，不能移动
+								//alert("下边有阻碍，1号方块不能自动下移");
+								offControl();//关闭控制键功能
+								merge();
+								lock=false;//释放方块
+								produceShape();//产生新方块	
+								document.onkeydown=setControl;//开启控制键控制功能
+								return;
+							}
+							else{//下边没有阻碍，可以移动
+								
+								var f=document.getElementById("gameArea");
+								var r=f.childNodes;
+								var b;
+								for(var i=0;i<4;i++){//清除旧痕迹
+									point[a[i]]=0; //修改point								
+									b =getSqId(sq[i+1][0],sq[i+1][1]);//获得方块当前实际位置编号
+									r.item(b).style.backgroundColor="black"; //将实际位置痕迹抹除
+								}
+								for(var x=0;x<4;x++){
+									point[a[x]+14]=1;//更新point状态
+									b =getSqId(sq[x+1][0],sq[x+1][1]);//获得方块当前实际位置编号
+									b+=12;   //得到新位置编号								
+									r.item(b).style.backgroundColor="red";//移动到新位置
+									sq[x+1][1]+=1;//更新实际位置编号
+								}
+							}							
+						}
+						else{
+							alert("run()出错");
+						}
+
+						lock=false;//释放方块										
+					}				
+					var d=document.getElementById("test");//显示当前point状态
+						var str="";
+						for(var z=0;z<point.length;z++){
+							if(z%14==13){
+								str+=point[z]+"\n";	
+							}
+							else{
+								str+=point[z];
+							}						
+						}
+						d.innerHTML=str;
+				},800);
+			}
+		}
+		var gameTetris=null;
+		function startGame(gameArea){
+			if (gameTetris==null) {//游戏进入运行状态
+				gameTetris=new runGame();
+				gameTetris.run(gameArea);
+			}
+			else{//结束本次游戏，重新开始
+				alert("重新开始");
+					gameTetris.offRun();//关闭旧进程
+				gameTetris.run(gameArea);
+			}	
+		}
+		/*var startGame=(function(gameArea){
+			var gameTetris=null;
+			if (gameTetris==null) {//游戏进入运行状态
+				gameTetris=new runGame();
+				gameTetris.run(gameArea);
+			}
+			else{//结束本次游戏，重新开始
+				alert("重新开始");
+					gameTetris.offRun();//关闭旧进程
+				gameTetris.run(gameArea);
+			}	
+		})();*/
+	</script>
+</html>
