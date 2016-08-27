@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>console.html</title>
+    <meta http-equiv="keywords" content="keyword1,keyword2,keyword3">
+    <meta http-equiv="description" content="this is my page">
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+   </head>
+  <body>
+		<script type="text/javascript" src="jquery/jquery.min.js"></script>  
+ 		<script type="text/javascript">
+ 			var time=setInterval(function(){
+ 				function getTi(millis){
+ 					var ti=new Date(millis);
+ 					var year=ti.getFullYear();
+ 					var month=ti.getMonth()+1;
+ 					var day=ti.getDate();
+ 					var hour=ti.getHours();
+ 					var second=ti.getSeconds();
+ 					var minute=ti.getMinutes();
+ 					var str=year+"-"+month+"-"+day+"--"+hour+":"+minute+":"+second;
+ 					return str;
+ 				}
+ 				$.ajax({
+ 					url:"inline",
+ 					success:function(message){
+ 						var json=JSON.parse(message).message;
+ 						var num=json.length;
+ 						if(num==0){
+ 							document.body.innerHTML="";
+ 							document.write("暂无信息");
+ 						}
+ 						else{
+ 							document.body.innerHTML="";
+ 							document.write("id\t"+"登录时间\t"+"最后访问时间"+"<br/>");
+ 							for(var i=0;i<num;i++){
+ 								var id=json[i].id;
+ 								var start=parseInt(json[i].start);
+ 								var end=parseInt(json[i].end); 								 								
+ 								document.write((i+1)+".\t\t\t"+id+"\t"+getTi(start)+"\t"+getTi(end)+"<br/>");
+ 							}
+ 						}
+ 					},
+ 					error:function(message){
+ 						document.write(message.responseText);
+ 						clearInterval(time);
+ 					}
+ 				});
+ 			},200);
+ 			
+ 		</script>
+  </body>
+</html>

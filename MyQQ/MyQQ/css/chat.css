@@ -1,0 +1,148 @@
+#wrap .main-container .header{
+	width:100%;
+	height:45px;
+	line-height:45px;
+	font-size:1em;
+	background:#484848;
+	text-align:center;
+	color:white;
+	margin-top:60px;
+}
+#wrap .main-container .panel{
+	width:100%;
+	height:455px;
+	background:#808080;	
+	overflow:auto;
+}
+#wrap .main-container .footer{
+	width:100%;
+	height:50px;
+	line-height:45px;
+	font-size:1em;
+	background:#484848;	
+	color:white;
+}
+#wrap .main-container .footer .talk{
+	width:25%;
+	height:50px;
+	line-height:45px;
+	font-size:1em;
+	background:#3A3A3A;
+	float:left;	
+	text-align:center;
+	cursor: pointer;	
+}
+#wrap .main-container .footer .talk:hover{
+	background:#303030;
+	
+}
+#wrap .main-container .footer .friends{
+	width:25%;
+	height:50px;
+	line-height:45px;
+	font-size:1em;
+	background:#3A3A3A;
+	float:left;		
+	text-align:center;
+	cursor: pointer;
+}
+#wrap .main-container .footer .friends:hover{
+	background:#303030;
+	
+}
+#wrap .main-container .footer .find{
+	width:25%;
+	height:50px;
+	line-height:45px;
+	font-size:1em;
+	background:#3A3A3A;
+	float:left;		
+	text-align:center;
+	cursor: pointer;
+}
+#wrap .main-container .footer .find:hover{
+	background:#303030;
+	
+}
+#wrap .main-container .footer .set{
+	width:25%;
+	height:50px;
+	line-height:45px;
+	font-size:1em;
+	background:#3A3A3A;
+	float:left;		
+	text-align:center;
+	cursor: pointer;
+}
+#wrap .main-container .footer .set:hover{
+	background:#303030;
+	
+}
+#wrap  .container .chat-panel{
+	margin-top: 60px;
+	width:700px;
+	height:550px;
+	background:#89B4E7;	
+	display:none;	
+}
+#wrap  .container .chat-panel .header{	
+	width:700px;
+	height:45px;
+	background:#484848;		
+}
+#wrap  .container .chat-panel .panel-body{	
+	width:700px;
+	height:455px;
+	background:#624219;	
+	overflow:auto;	
+}
+#wrap  .container .chat-panel .panel-footer{	
+	width:700px;
+	height:50px;
+	background:#484848;		
+}
+#wrap  .container .chat-panel .panel-footer .text {
+    width: 538px;
+    height: 29px;
+    margin-top: 7px;
+    margin-left:33px;
+    font-size: 1em;
+}
+#wrap  .container .chat-panel .panel-footer .send {
+    width: 76px;
+    height: 29px;
+    font-size: 1em;
+}
+#wrap  .container .chat-panel .panel-body .txt{
+	display:inline-block;
+	margin-left:5px;
+	margin-top:3px;
+	margin-bottom:3px;
+	background:#1EAC10;
+	padding:5px;
+	border:1px solid #287C76;
+}
+#wrap  .container .chat-panel .panel-body .message{
+	display:inline-block;
+	margin-left:5px;
+	margin-top:3px;
+	margin-bottom:3px;
+	background:#D6E137;
+	padding:5px;
+	border:1px solid #287C76;
+	color:#2C1057;
+}
+#wrap .main-container .panel .list{
+	
+}
+#wrap .main-container .panel .list .friend{
+	width:100%;
+	height:20px;
+	background:#F5F5F5;
+	overflow:hidden;
+	cursor:pointer;
+	border-bottom:1px solid #B68A8A;
+}
+#wrap .main-container .panel .list .friend:hover:{
+	background:#D89090;
+}

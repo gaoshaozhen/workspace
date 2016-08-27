@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app version="3.0" 
+	xmlns="http://java.sun.com/xml/ns/javaee" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee 
+	http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd">		
+     <filter>
+	   <filter-name>LogFilter</filter-name>
+	   <filter-class>webFilter.WebFilter</filter-class>
+	</filter>
+    <!-- 过滤器，检测在线状态 -->
+	<filter-mapping>
+	   <filter-name>LogFilter</filter-name>
+	   <url-pattern>/*</url-pattern>
+	</filter-mapping>
+	<!-- 登录 -->
+	<servlet>
+		<servlet-name>loginServlet</servlet-name>
+		<servlet-class>com.Login</servlet-class>
+	</servlet>
+	<!-- 注册 -->
+	<servlet>
+		<servlet-name>regionServlet</servlet-name>
+		<servlet-class>com.Region</servlet-class>
+	</servlet>
+	<!-- 保持登录状态-->
+	<servlet>
+		<servlet-name>loginingServlet</servlet-name>
+		<servlet-class>com.Logining</servlet-class>
+	</servlet>
+	<!-- 检查指定id登录状态-->
+	<servlet>
+		<servlet-name>IdLoginConditionServlet</servlet-name>
+		<servlet-class>com.IdLoginCondition</servlet-class>
+	</servlet>
+	<!-- 发送消息-->
+	<servlet>
+		<servlet-name>transmitServlet</servlet-name>
+		<servlet-class>com.Transmit</servlet-class>
+	</servlet>
+	
+    <servlet-mapping>
+    	<servlet-name>loginServlet</servlet-name>
+    	<url-pattern>/loginServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+    	<servlet-name>regionServlet</servlet-name>
+    	<url-pattern>/regionServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+    	<servlet-name>loginingServlet</servlet-name>
+    	<url-pattern>/loginingServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+    	<servlet-name>IdLoginConditionServlet</servlet-name>
+    	<url-pattern>/IdLoginConditionServlet</url-pattern>
+    </servlet-mapping>
+ 	<servlet-mapping>
+    	<servlet-name>transmitServlet</servlet-name>
+    	<url-pattern>/transmitServlet</url-pattern>
+    </servlet-mapping>
+ 	   
+    <session-config>  
+		<session-timeout>20</session-timeout>  
+	</session-config>
+</web-app>

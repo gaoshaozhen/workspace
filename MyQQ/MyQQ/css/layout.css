@@ -1,0 +1,20 @@
+*{
+	margin:0px;
+	paddind:0px;
+}
+#wrap{
+	width:1000px;
+	height:660px;
+}
+#wrap .main-container{
+	width:280px;
+	height:660px;
+	float:left;
+	background:#DFAC6B;
+}
+#wrap  .container{
+	width:700px;
+	height:660px;
+	float:left;
+	border:0px blue solid;
+}
