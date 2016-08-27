@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app version="3.0" 
+	xmlns="http://java.sun.com/xml/ns/javaee" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee 
+	http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd">
+	<!-- 主机地址 -->
+	<context-param>
+		<param-name>host</param-name>
+		<param-value>http://localhost:8080/</param-value>
+	</context-param>
+	<!-- 应用名 -->
+	<context-param>
+		<param-name>webName</param-name>
+		<param-value>MyQQ</param-value>
+	</context-param>
+	<!-- 版本号-->
+	<context-param>
+		<param-name>version</param-name>
+		<param-value>5</param-value>
+	</context-param>
+	<!-- 登录地址-->
+	<context-param>
+		<param-name>loginUrl</param-name>
+		<param-value>/qq/login/login.html</param-value>
+	</context-param>
+	<!-- 聊天地址 -->
+	<context-param>
+		<param-name>chatUrl</param-name>
+		<param-value>/qq/chat/chat.html</param-value>
+	</context-param>
+		
+	
+	<filter>
+		<filter-name>WebFilter</filter-name>
+		<filter-class>webFilter.WebFilter</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>WebFilter</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+	
+	<!-- 管理-->
+  	<servlet>
+  		<servlet-name>ConsoleServlet</servlet-name>
+  		<servlet-class>console.Console</servlet-class>
+  	</servlet>
+	<!-- 注册-->
+  	<servlet>
+  		<servlet-name>RegionServlet</servlet-name>
+  		<servlet-class>com.RegionServlet</servlet-class>
+  	</servlet>
+	<!-- 登录 -->
+  	<servlet>
+  		<servlet-name>LoginServlet</servlet-name>
+  		<servlet-class>com.LoginServlet</servlet-class>
+  	</servlet>
+  	<!-- 取得好友id -->
+  	<servlet>
+  		<servlet-name>AllFriendServlet</servlet-name>
+  		<servlet-class>com.AllFriendServlet</servlet-class>
+  	</servlet>
+  	 <!-- 保持在线 -->
+  	 <servlet>
+  	 	<servlet-name>InlineServlet</servlet-name>
+  	 	<servlet-class>com.InlineServlet</servlet-class>
+  	 </servlet>
+  	 <!-- 增加好友 -->
+  	 <servlet>
+  	 	<servlet-name>AddFriendServlet</servlet-name>
+  	 	<servlet-class>com.AddFriendServlet</servlet-class>
+  	 </servlet>
+  	 <!-- 删除好友 -->
+  	 <servlet>
+  	 	<servlet-name>DeleteFriendServlet</servlet-name>
+  	 	<servlet-class>com.DeleteFriendServlet</servlet-class>
+  	 </servlet>
+  	 <!-- 存储消息 -->
+  	 <servlet>
+  	 	<servlet-name>SetMessageServlet</servlet-name>
+  	 	<servlet-class>com.SetMessageServlet</servlet-class>
+  	 </servlet>
+  	   <!-- 检查消息 -->
+  	 <servlet>
+  	 	<servlet-name>CheckNewMessageServlet</servlet-name>
+  	 	<servlet-class>com.CheckNewMessageServlet</servlet-class>
+  	 </servlet>
+  	  <!-- 获取消息 -->
+  	 <servlet>
+  	 	<servlet-name>GetMessageServlet</servlet-name>
+  	 	<servlet-class>com.GetMessageServlet</servlet-class>
+  	 </servlet>
+  	 <!-- 管理-->  
+  	<servlet-mapping>
+  		<servlet-name>ConsoleServlet</servlet-name>
+  		<url-pattern>/ConsoleServlet</url-pattern>
+  	</servlet-mapping>
+  	 <!-- 登注册-->  
+  	<servlet-mapping>
+  		<servlet-name>RegionServlet</servlet-name>
+  		<url-pattern>/RegionServlet</url-pattern>
+  	</servlet-mapping>
+	<!-- 登录 -->  
+  	<servlet-mapping>
+  		<servlet-name>LoginServlet</servlet-name>
+  		<url-pattern>/LoginServlet</url-pattern>
+  	</servlet-mapping>
+  	<!-- 取得好友id -->
+  	<servlet-mapping>
+  		<servlet-name>AllFriendServlet</servlet-name>
+  		<url-pattern>/AllFriendServlet</url-pattern>
+  	</servlet-mapping>
+  	 <!-- 保持在线 -->
+  	 <servlet-mapping>
+  	 	<servlet-name>InlineServlet</servlet-name>
+  	 	<url-pattern>/InlineServlet</url-pattern>
+  	 </servlet-mapping>
+  	 <!-- 增加好友 -->
+  	 <servlet-mapping>
+  	 	<servlet-name>AddFriendServlet</servlet-name>
+  	 	<url-pattern>/AddFriendServlet</url-pattern>
+  	 </servlet-mapping>
+  	 <!-- 删除好友 -->
+  	 <servlet-mapping>
+  	 	<servlet-name>DeleteFriendServlet</servlet-name>
+  	 	<url-pattern>/DeleteFriendServlet</url-pattern>
+  	 </servlet-mapping>
+  	 <!-- 存储消息 -->
+  	 <servlet-mapping>
+  	 	<servlet-name>SetMessageServlet</servlet-name>
+  	 	<url-pattern>/SetMessageServlet</url-pattern>
+  	 </servlet-mapping>
+  	   <!-- 检查消息 -->
+  	 <servlet-mapping>
+  	 	<servlet-name>CheckNewMessageServlet</servlet-name>
+  	 	<url-pattern>/CheckNewMessageServlet</url-pattern>
+  	 </servlet-mapping>
+  	  <!-- 获取消息 -->
+  	 <servlet-mapping>
+  	 	<servlet-name>GetMessageServlet</servlet-name>
+  	 	<url-pattern>/GetMessageServlet</url-pattern>
+  	 </servlet-mapping>
+</web-app>

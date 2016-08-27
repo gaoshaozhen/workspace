@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>console.html</title>
+    <meta charset="utf-8">
+    <script type="text/javascript" src="jquery.min.js"></script>
+  </head>
+  <body>
+	    <script type="text/javascript">
+	    	var timer=setInterval(function(){
+	    		$.ajax({
+	    			url:"http://192.168.8.7:8080/MyQQ4/ConsoleServlet",
+	    			success:function(message){//{all:[{id:id,from:...,end:...}]}
+	    			//console.log(message);
+	    				var json=JSON.parse(message);
+	    				var all=json.all;
+	    				$("body").html("");
+	    				for(var x in all){
+	    					var id=all[x].id;
+	    					var from=all[x].from;
+	    					var end=all[x].end;
+	    					document.write(id+"----"+from+"----"+end+"<br/>");
+	    				}
+	    			},
+	    			error:function(message){
+	    				document.write(message.responseText);
+	    			}
+	    		});
+	    	},1000);
+	    </script>
+  </body>
+</html>
