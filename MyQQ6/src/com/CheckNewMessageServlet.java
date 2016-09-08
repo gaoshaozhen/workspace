@@ -3,12 +3,13 @@ import java.util.*;
 import javax.servlet.*;
 import javax.servlet.http.*;
 
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.io.*;
 
 import data.*;
-
+@Controller
 public class CheckNewMessageServlet extends HttpServlet{
 	private Message message =Message.getInstance();
 //	public void init()throws ServletException{

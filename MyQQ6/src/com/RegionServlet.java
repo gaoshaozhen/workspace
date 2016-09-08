@@ -3,9 +3,11 @@ import java.io.*;
 import javax.servlet.*;
 import javax.servlet.http.*;
 
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import dao.*;
+@Controller
 public class RegionServlet{	
 	User user=new User();
 //	public void init()throws ServletException{//读取新id初始值		

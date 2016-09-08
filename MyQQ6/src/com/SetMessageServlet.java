@@ -5,10 +5,12 @@ import java.net.URLEncoder;
 import javax.servlet.*;
 import javax.servlet.http.*;
 
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import data.Message;
+@Controller
 public class SetMessageServlet extends HttpServlet{
 	private Message message=null;
 	public void init()throws ServletException{

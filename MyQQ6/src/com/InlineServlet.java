@@ -3,9 +3,11 @@ import java.io.*;
 import javax.servlet.ServletException;
 import javax.servlet.http.*;
 
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import data.*;
+@Controller
 public class InlineServlet extends HttpServlet{
 	private InlineIdTime inline=null;
 	public void init()throws ServletException{

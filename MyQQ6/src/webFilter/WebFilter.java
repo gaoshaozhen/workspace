@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import data.InlineIdTime;
 //import java.util.*;
 // 实现 Filter 类
+@Controller
 public class WebFilter   {
 	InlineIdTime users=null;
 	String loginUrl="";
@@ -34,7 +35,7 @@ public void  doFilter(ServletRequest req,ServletResponse res,FilterChain chain) 
 		||sourse.indexOf("LoginServlet")!=-1
 		||sourse.indexOf("RegionServlet")!=-1){  //该项url不检查session
 		  // System.out.println(sourse);
-		   return;
+		   return ;
 	   }
 	   HttpSession session=((HttpServletRequest)request).getSession(false);
 		if(session==null){//未登陆，返回登录页面

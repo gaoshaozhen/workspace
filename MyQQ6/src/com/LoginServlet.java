@@ -3,10 +3,12 @@ import java.io.*;
 import javax.servlet.*;
 import javax.servlet.http.*;
 
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import data.*;
 import dao.*;
+@Controller
 public class LoginServlet extends HttpServlet{
 	InlineIdTime usersInline=null;	
 	User userSql=null;
