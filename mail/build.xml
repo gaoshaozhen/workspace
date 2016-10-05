@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project>
+	<!-- 编译引入的包路径 -->
+	<path id="library.classpath">
+		<pathelement path="./library/"></pathelement>
+		<fileset dir="./library">
+			<include name="*.jar"/>
+		</fileset>
+	</path>
+	<!-- 运行所需要的类、库路径 -->
+	<path id="run.classpath">
+		<path refid="library.classpath"/>
+		<pathelement path="./class"></pathelement>
+	</path>
+
+	<!-- 编译命令 -->
+	<target name="0">
+		<javac srcdir="./src" destdir="./class">
+			<classpath refid="library.classpath"/>
+			<compilerarg line="-encoding UTF-8"/>
+		</javac>
+
+	</target>
+	<!-- 运行命令 -->
+	<target name="1">
+		<java  classname="cn.toMail.sendMail.SendMail">
+			<classpath refid="run.classpath"/>
+		</java>
+	</target>
+
+</project>
