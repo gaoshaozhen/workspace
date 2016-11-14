@@ -2,16 +2,20 @@ package cn.plate.javaBean;
 
 public class TestBean
 {
-    User user;
+    String testStr;
 
-    public User getUser()
+    public String getTestStr()
     {
-        return user;
+        return testStr;
     }
 
-    public void setUser(User user)
+    public void setTestStr(String testStr)
     {
-        this.user = user;
+        this.testStr = testStr;
     }
 
+    public void std(String str)
+    {
+        System.out.println(str);
+    }
 }

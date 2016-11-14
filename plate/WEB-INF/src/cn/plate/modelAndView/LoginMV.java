@@ -11,7 +11,7 @@ public class LoginMV
         mv = new ModelAndView();
     }
 
-    public ModelAndView getModelAndView()
+    public ModelAndView getMV()
     {
         deal();
         return mv;

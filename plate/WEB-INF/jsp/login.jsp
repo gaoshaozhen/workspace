@@ -10,8 +10,8 @@
 	<form action="${webPath}/login/signIn" method="post">
 		<table>
 			<tr>
-				<td>id</td>
-				<td><input type="text" name="id"></input></td>
+				<td>userId</td>
+				<td><input type="text" name="userId"></input></td>
 			</tr>
 			<tr>
 				<td>password</td>

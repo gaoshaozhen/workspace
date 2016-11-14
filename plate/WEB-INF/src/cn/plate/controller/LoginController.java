@@ -8,31 +8,33 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
-import cn.plate.javaBean.ResAndRep;
-import cn.plate.javaBean.User;
+import cn.gsz.tools.ContextTool;
+import cn.plate.javaBean.UserBean;
 import cn.plate.modelAndView.LoginMV;
-import cn.plate.modelAndView.SignInModelandView;
+import cn.plate.modelAndView.SignInMV;
 
 @Controller
+@RequestMapping(value = "/login")
 public class LoginController
 {
     private static Logger log = Logger.getLogger(LoginController.class);
 
-    @RequestMapping(value = "/login")
+    @RequestMapping(value = "/sign")
     public ModelAndView login()
     {
         LoginMV login = new LoginMV();
-        return login.getModelAndView();
+        return login.getMV();
     }
 
-    @RequestMapping(value = "/login/signIn", method = RequestMethod.POST)
-    public ModelAndView checkUser(User user, HttpServletRequest request)
+    @RequestMapping(value = "/signIn", method = RequestMethod.POST)
+    public ModelAndView checkUser(UserBean userBean, HttpServletRequest request)
     {
-        log.info(user.getId() + "\t" + user.getPassword());
-        SignInModelandView s = new SignInModelandView();
-        ResAndRep tp = new ResAndRep();
-        tp.setRequest(request);
-        return new SignInModelandView().getModelAndView(user, tp);
+        log.info(userBean.getUserId() + "\t" + userBean.getPassword() + "\t"
+                + "请求登录");
+        SignInMV mv = (SignInMV) ContextTool.getBean("signInMV");
+        mv.setUserBean(userBean);
+        mv.setRequest(request);
+        return mv.getMV();
     }
 
 }
