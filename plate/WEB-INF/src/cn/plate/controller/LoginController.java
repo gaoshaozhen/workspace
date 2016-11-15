@@ -1,6 +1,10 @@
 package cn.plate.controller;
 
+import java.io.IOException;
+import java.io.PrintWriter;
+
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Controller;
@@ -20,8 +24,9 @@ public class LoginController
     private static Logger log = Logger.getLogger(LoginController.class);
 
     @RequestMapping(value = "/sign")
-    public ModelAndView login()
+    public ModelAndView login(HttpServletRequest request)
     {
+        log.info("gsz-" + request.getRemoteAddr() + "请求登陆");
         LoginMV login = new LoginMV();
         return login.getMV();
     }
@@ -37,4 +42,25 @@ public class LoginController
         return mv.getMV();
     }
 
+    @RequestMapping(value = "*")
+    public void test(HttpServletRequest request, HttpServletResponse response)
+    {
+        PrintWriter w = null;
+        try
+        {
+            w = response.getWriter();
+            w.print("404");
+
+        }
+        catch (IOException e)
+        {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } finally
+        {
+            if (w != null)
+                w.close();
+        }
+
+    }
 }

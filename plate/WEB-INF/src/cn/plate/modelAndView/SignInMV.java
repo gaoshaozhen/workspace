@@ -41,15 +41,15 @@ public class SignInMV
             mv = new ModelAndView();
             mv.addObject(userBean);
             log.info(userBean.getUserId() + "通过验证");
-            HttpSession session = request.getSession();
-            session.setAttribute("userBean", userBean);
+            HttpSession session = request.getSession(true);
+            session.setAttribute("userId", userBean.getUserId());
             mv.setViewName("redirect:/service/init");
             log.info(userBean.getUserId() + "登录成功");
         }
         else
         {
             log.info("登录失败");
-            mv.setViewName("redirect:/login/sign");
+            mv.setViewName("redirect:/login/sign");// 重定向到登录页面
         }
     }
 
