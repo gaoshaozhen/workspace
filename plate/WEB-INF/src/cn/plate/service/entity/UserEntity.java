@@ -11,11 +11,11 @@ public class UserEntity
 {
     @Id
     @Column(name = "userId", nullable = false)
-    String userId;
+    String userId = null;
     @Column
-    String password;
+    String password = null;
     @Column
-    String username;
+    String username = null;
 
     public String getUserId()
     {

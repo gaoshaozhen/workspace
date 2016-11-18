@@ -1,5 +1,7 @@
 package cn.plate.service;
 
+import java.util.List;
+
 import cn.plate.javaBean.UserBean;
 import cn.plate.service.dao.Dao;
 
@@ -25,15 +27,18 @@ public class UserService implements UserControl
         }
     }
 
+    // 获得所有用户
+    @SuppressWarnings("unchecked")
+    public List<Object[]> getAllUser()
+    {
+        List<Object[]> list = null;
+
+        list = (List<Object[]>) dao.getAllUser();
+        return list;
+    }
+
     public boolean addUser(UserBean userBean)
     {
-        if (dao.addUser(userBean))
-        {
-            return true;
-        }
-        else
-        {
-            return false;
-        }
+        return dao.addUser(userBean);
     }
 }

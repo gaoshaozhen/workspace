@@ -27,24 +27,24 @@ public class CommonInterceptor extends HandlerInterceptorAdapter// 检查用户�
     {
         log.info("gsz-" + request.getMethod());
 
-        log.info("============== 1、preHandle================");
+        // log.info("============== 1、preHandle================");
         String requestUri = request.getRequestURI();
         String contextPath = request.getContextPath();
         String url = requestUri.substring(contextPath.length());
 
         log.info("requestUri:" + requestUri);
-        log.info("contextPath:" + contextPath);
-        log.info("url:" + url);
-        String userId = (String) request.getSession().getAttribute("userId");
+        // log.info("contextPath:" + contextPath);
+        // log.info("url:" + url);
+        // String userId = (String) request.getSession().getAttribute("userId");
         HttpSession session = request.getSession(false);
 
         if ((session == null || session.getAttribute("userId") == null)
                 && url.indexOf("login") != 1)//
         {
 
-            log.info("Interceptor：跳转到login页面！");
-            response.sendRedirect(contextPath + "/login/sign");
-            log.info("跳转成功");
+            // log.info("Interceptor：跳转到login页面！");
+            // response.sendRedirect(contextPath + "/login/sign");
+            // log.info("跳转成功");
             return false;
         }
         else
@@ -59,7 +59,7 @@ public class CommonInterceptor extends HandlerInterceptorAdapter// 检查用户�
             HttpServletResponse response, Object handler,
             ModelAndView modelAndView) throws Exception
     {
-        log.info("==============2、postHandle================");
+        // log.info("==============2、postHandle================");
     }
 
     /**
@@ -71,6 +71,6 @@ public class CommonInterceptor extends HandlerInterceptorAdapter// 检查用户�
             HttpServletResponse response, Object handler, Exception ex)
             throws Exception
     {
-        log.info("==============3、afterCompletion================");
+        // log.info("==============3、afterCompletion================");
     }
 }

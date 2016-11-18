@@ -26,7 +26,7 @@ public class LoginController
     @RequestMapping(value = "/sign")
     public ModelAndView login(HttpServletRequest request)
     {
-        log.info("gsz-" + request.getRemoteAddr() + "请求登陆");
+        log.info("gsz-" + request.getRemoteAddr() + "请求登陆页面");
         LoginMV login = new LoginMV();
         return login.getMV();
     }
@@ -34,8 +34,8 @@ public class LoginController
     @RequestMapping(value = "/signIn", method = RequestMethod.POST)
     public ModelAndView checkUser(UserBean userBean, HttpServletRequest request)
     {
-        log.info(userBean.getUserId() + "\t" + userBean.getPassword() + "\t"
-                + "请求登录");
+        log.info("gsz-" + userBean.getUserId() + "\t" + userBean.getPassword()
+                + "\t" + "请求登录验证");
         SignInMV mv = (SignInMV) ContextTool.getBean("signInMV");
         mv.setUserBean(userBean);
         mv.setRequest(request);
@@ -45,6 +45,7 @@ public class LoginController
     @RequestMapping(value = "*")
     public void test(HttpServletRequest request, HttpServletResponse response)
     {
+        log.info("找不到页面");
         PrintWriter w = null;
         try
         {

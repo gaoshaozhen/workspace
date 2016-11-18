@@ -20,12 +20,14 @@ var displayUI={
 
 jQuery().ready(function(){
 	jQuery("#left-side .order-center").click(function(){
-		if(jQuery("#left-side .order-list").css("display")=="block"){
-			displayUI.hideOrderList();
-		}
-		else{
-			displayUI.showOrderList();		
-		}
+		// if(jQuery("#left-side .order-list").css("display")=="block"){
+		// 	displayUI.hideOrderList();
+		// }
+		// else{
+		// 	displayUI.showOrderList();		
+		// }
+		jQuery("#left-side .order-list").toggle();
+		console.log("开/关");
 	});	
 });
   // window.open("test.html","","width=200,height=200");

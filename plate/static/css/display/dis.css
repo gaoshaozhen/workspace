@@ -4,7 +4,6 @@
 }
 
 #left-side .order-center-box{
-	padding: 5px;
 	border-bottom: 1px solid white;
 	text-align: center;
 	overflow: hidden;
@@ -13,10 +12,10 @@
 #left-side .order-center{
 	cursor: pointer;
 	color: #FFEB3B;
+	border-bottom: 1px solid white;
 }
 #left-side .order-list{
-	margin-top:10px; 
-	display: none;
+	/*margin:10px 0 10px 0; */
 }
 #left-side li{
 	cursor: pointer;
@@ -30,6 +29,7 @@
 	z-index: 99999;
 	border: 1px solid blue;
 	position: absolute;
+	display: none;
 }
 
 #cover{
@@ -42,4 +42,5 @@
 	height: 100%;
 	opacity: 0.5;
 	background: #909096;
+	display: none;
 }
