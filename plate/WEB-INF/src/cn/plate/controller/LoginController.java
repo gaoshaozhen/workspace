@@ -16,6 +16,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.context.ContextLoader;
 import org.springframework.web.context.WebApplicationContext;
 
@@ -87,33 +88,9 @@ public class LoginController
         }
     }
 
-    //
-    // @RequestMapping(value = "*")
-    // public void test(HttpServletRequest request, HttpServletResponse
-    // response)
-    // {
-    // log.info("找不到页面");
-    // PrintWriter w = null;
-    // try
-    // {
-    // w = response.getWriter();
-    // w.print("404");
-    //
-    // }
-    // catch (IOException e)
-    // {
-    // // TODO Auto-generated catch block
-    // e.printStackTrace();
-    // } finally
-    // {
-    // if (w != null)
-    // w.close();
-    // }
-    //
-    // }
-    //
     @RequestMapping(value = "/test")
-    public void test(HttpServletResponse rp)
+    @ResponseBody
+    public String test(HttpServletResponse rp)
     {
 
         ApplicationContext context = null;
@@ -136,8 +113,9 @@ public class LoginController
         {
             if (w != null)
             {
-                w.close();
+                // w.close();
             }
         }
+        return "{\"we\":\"ww\"}";
     }
 }

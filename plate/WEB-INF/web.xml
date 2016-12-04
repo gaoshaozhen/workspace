@@ -3,7 +3,11 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee 
 					http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
-					
+	<context-param>
+        <param-name>spring.profiles.active</param-name>
+        <param-value>development</param-value>
+    </context-param>
+    
 	<!--  日志配置文件-->		
 	<context-param>
 		<param-name>log4jConfigLocation</param-name>
@@ -51,11 +55,21 @@
 	    </init-param>
 	    <load-on-startup>1</load-on-startup> 
 	</servlet> 
+	
+	 <filter>
+      <filter-name>sitemesh</filter-name>
+      <filter-class>org.sitemesh.config.ConfigurableSiteMeshFilter</filter-class>
+    </filter>
+    <filter-mapping>
+    <filter-name>sitemesh</filter-name>
+     <url-pattern>/*</url-pattern>
+   </filter-mapping>
+   
 	<servlet-mapping> 
 	  <servlet-name>spring</servlet-name> 
 	  <url-pattern>/</url-pattern>	   
 	</servlet-mapping>
-	
+
 	<!-- 错误页面 -->
 	<error-page> 
 		<error-code>404</error-code>

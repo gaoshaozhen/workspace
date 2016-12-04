@@ -93,11 +93,11 @@
         <property name="mapperLocations" value="WEB-INF/conf/mapping/*.xml"></property>  
     </bean>
     
-    <bean name="userDao" class="cn.plate.service.dao.da.UserDao">
+    <bean id="userDao" class="cn.plate.service.dao.da.UserDao">
     	 <constructor-arg index="0" ref="sqlSessionFactory"></constructor-arg>  
     </bean>
     
-    <bean name="door" class="cn.plate.service.Door">
+    <bean id="door" class="cn.plate.service.Door">
     	<property name="userDao" ref="userDao"></property>
     </bean>
 </beans>
