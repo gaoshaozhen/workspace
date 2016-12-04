@@ -18,22 +18,22 @@
 	        </property>
 	        <!--  连接池保留最大连接数-->
 	        <property name="maxPoolSize"> 
-	            <value>12</value> 
+	            <value>5</value> 
 	        </property> 
 	        
 	        <!--  连接池保留最小连接数-->
 	        <property name="minPoolSize"> 
-	            <value>5</value> 
+	            <value>2</value> 
 	        </property>
 	        
 	        <!--初始创建连接数  -->
 	        <property  name="initialPoolSize">
-	        	<value>10</value>
+	        	<value>3</value>
 	        </property>
 	        
 	        <!--  连接用完新创建的连接数-->
 	         <property name="acquireIncrement"> 
-	            <value>0</value> 
+	            <value>1</value> 
 	        </property>
 	        
 	        <!--  最大空闲时间-->
@@ -46,18 +46,18 @@
 	             <value>120000</value> 
 	        </property> 
 	    </bean>
-        
+     <!--    
     <bean id="sessionFactory" class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">        
 	        <property name="dataSource" ref="dataSource"></property>
 		        <property name="hibernateProperties">
 		            <props>
-		           	    <!--设置sql方言  -->  
+		           	    设置sql方言   
 		                <prop key="hibernate.dialect">org.hibernate.dialect.MySQLDialect</prop>
 		                  
 		                <prop key="hibernate.hbm2ddl.auto">validate</prop>
-		                <!-- 控制台输出sql语句 -->  
+		                控制台输出sql语句  
 		                <prop key="hibernate.show_sql">true</prop>
-		                <!-- 控制台输出格式化sql语句 -->  
+		                控制台输出格式化sql语句  
 		                <prop key="hibernate.format_sql">true</prop>  
 		            </props>  
 		        </property>
@@ -68,24 +68,36 @@
         	</property>
     	</bean>
     	
-    	<!-- 开启HibernateTemplate，并且为其注入SessionFactory
-    使用HibernateTemplate不太方便的就是要获取session得通过getSessionFactory()方法获取 -->
-    <!-- <bean class="org.springframework.orm.hibernate4.HibernateTemplate" id="hibernateTemplate">
-        <property name="sessionFactory" ref="sessionFactory"></property>
-    </bean>
-     -->
     <bean name="dao" class="cn.plate.service.dao.Dao">
     	<property name="sessionFactory" ref="sessionFactory"></property>
     </bean>
-    
+     -->
+     <!-- 
 	<bean name="userService" class="cn.plate.service.UserService">
 		<property name="dao" ref="dao"></property>
 	</bean>
-	<!--  验证用户身份是否有效-->
+	 验证用户身份是否有效
 	<bean name="signInMV" class="cn.plate.modelAndView.SignInMV" scope="prototype">
 		<property name="userService" ref="userService"></property>
 	</bean>
-	<!-- 验证用户是否已经登录  -->
+	验证用户是否已经登录 
 	<bean name="serviceMV" class="cn.plate.modelAndView.ServiceMV" scope="prototype"></bean>
-	<bean name="testBean" class="cn.plate.javaBean.TestBean"></bean>    
+	<bean name="testBean" class="cn.plate.javaBean.TestBean"></bean> -->
+	
+	    
+	<bean name="userPojo" class="cn.plate.pojo.UserPojo"></bean>
+	
+	<!-- spring和MyBatis完美整合，不需要mybatis的配置映射文件 -->  
+    <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">  
+        <property name="dataSource" ref="dataSource" />  
+        <property name="mapperLocations" value="WEB-INF/conf/mapping/*.xml"></property>  
+    </bean>
+    
+    <bean name="userDao" class="cn.plate.service.dao.da.UserDao">
+    	 <constructor-arg index="0" ref="sqlSessionFactory"></constructor-arg>  
+    </bean>
+    
+    <bean name="door" class="cn.plate.service.Door">
+    	<property name="userDao" ref="userDao"></property>
+    </bean>
 </beans>

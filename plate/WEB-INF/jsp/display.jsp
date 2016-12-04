@@ -40,7 +40,9 @@
 		<h1>商城后台管理系统</h1>
 			<nav class="navbar navbar-inverse">
         </nav>
-
+		<div class="">
+			
+		</div>
 	</div>
 </body>
 	<script type="text/javascript">
