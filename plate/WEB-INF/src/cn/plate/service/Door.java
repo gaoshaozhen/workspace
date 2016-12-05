@@ -13,7 +13,7 @@ public class Door implements UserDaoInterface
 
     public UserDaoInterface getUserDao()
     {
-        return userDao;
+        return this.userDao;
     }
 
     public void setUserDao(UserDao userDao)

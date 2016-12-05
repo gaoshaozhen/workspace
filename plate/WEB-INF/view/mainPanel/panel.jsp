@@ -24,8 +24,6 @@
 			<ul>
 				<li></li>
 			</ul>
-			
-			
 		</div>
 	</aside>
 

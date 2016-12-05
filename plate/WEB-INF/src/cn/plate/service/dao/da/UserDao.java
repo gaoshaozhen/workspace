@@ -23,7 +23,11 @@ public class UserDao implements UserDaoInterface
     public int addUser(UserModel userModel)
     {
         // TODO Auto-generated method stub
-        return 0;
+        SqlSession session = sqlSessionFactory.openSession();
+        int r = session.insert("userMapper.addUser", userModel);
+        close(session);
+        log.info("r=" + r);
+        return r;
     }
 
     public int update(UserModel userModel)

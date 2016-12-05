@@ -7,7 +7,7 @@ import cn.plate.service.model.UserModel;
 
 public interface UserDaoInterface
 {
-    public int addUser(UserModel userModel);
+    public int addUser(UserModel userModel);// 返回1代表插入成功，返回 0 表示失败
 
     public int update(UserModel userModel);
 

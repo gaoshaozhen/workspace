@@ -1,6 +1,5 @@
 package cn.plate.controller;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -17,6 +16,7 @@ import org.springframework.web.context.ContextLoader;
 import org.springframework.web.context.WebApplicationContext;
 
 import cn.plate.javaBean.UserBean;
+import cn.plate.pojo.UserPojo;
 import cn.plate.service.Door;
 
 @Controller
@@ -70,9 +70,6 @@ public class UserController
     @ResponseBody
     public String getAllUser()
     {
-        Map<String, Map<String, String>> map = new HashMap<String, Map<String, String>>();
-        Map<String, Object> user = new HashMap<String, Object>();
-
         JSONObject json = new JSONObject();
         JSONArray array = new JSONArray();
 
@@ -84,9 +81,32 @@ public class UserController
                 array.add(userInfo);
             }
         }
-
         json.put("list", array);
         log.info("返回结果" + json.toString());
+        return json.toString();
+    }
+
+    @RequestMapping(value = "/addUser")
+    @ResponseBody
+    public String addUser(UserPojo userPojo)
+    {
+        JSONObject json = new JSONObject();
+        if (userPojo.getUsername() == null || userPojo.getPassword() == null
+                || userPojo.getPowerId() < 0)
+        {
+            json.put("result", "fail");
+        }
+        else
+        {
+            if (door.addUser(userPojo) > 0)
+            {
+                json.put("result", "success");
+            }
+            else
+            {
+                json.put("result", "fail");
+            }
+        }
         return json.toString();
     }
 }

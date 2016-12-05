@@ -2,10 +2,10 @@ package cn.plate.service.model;
 
 public class UserModel
 {
-    int userId;
-    String username;
-    String password;
-    int powerId;
+    int userId = -1;
+    String username = null;
+    String password = null;
+    int powerId = -1;
 
     public int getUserId()
     {

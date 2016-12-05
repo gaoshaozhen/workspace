@@ -34,4 +34,10 @@
     <select id="selectAllUser" resultType="java.util.Map">
     	select * from user
     </select>
+    
+     <insert id="addUser" parameterType="cn.plate.service.model.UserModel" 
+        useGeneratedKeys="true" keyProperty="id"> 
+        insert into user(password,username,powerId)  
+             values(#{password},#{username},#{powerId})  
+    </insert>
 </mapper>
