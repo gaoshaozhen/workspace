@@ -31,8 +31,8 @@ public class UserDao implements UserDaoInterface
         try
         {
             session = sqlSessionFactory.openSession();
-            session.
             r = session.insert("userMapper.addUser", userModel);
+            session.toString();
             session.commit();
         }
         catch (Exception e)
