@@ -6,5 +6,7 @@
   <!-- 指明满足“/*”的页面，将被“/WEB-INF/views/decorators/decorator.html”所装饰 -->
      <mapping path="/panel/test" decorator="/WEB-INF/view/mainPanel/panel.jsp" />
      <mapping path="/include/*" decorator="/WEB-INF/view/mainPanel/panel.jsp" />
+
+     <mapping path="/shop/*" decorator="/WEB-INF/view/shop/include/mother.jsp"/>
  
 </sitemesh>

@@ -27,17 +27,45 @@
 
 
 <mapper namespace="userMapper">
+	<!-- 查询单个用户 -->
     <select id ="getOneUser"  parameterType="cn.plate.service.model.UserModel" resultType="cn.plate.service.model.UserModel">
         select * from user where username=#{username} and password=#{password}
     </select>
-    
+    <!-- 查询所有用户 -->
     <select id="selectAllUser" resultType="java.util.Map">
     	select * from user
     </select>
-    
+    <!-- 插入用户信息 -->
      <insert id="addUser" parameterType="cn.plate.service.model.UserModel" 
         useGeneratedKeys="true" keyProperty="id"> 
         insert into user(password,username,powerId)  
              values(#{password},#{username},#{powerId})  
     </insert>
+    <!-- 删除用户 -->
+    <delete id="deleteUser" parameterType="cn.plate.service.model.UserModel">
+    	delete from user 
+    	<where>
+    		<if test="userId &lt; 0">
+    			userId = #{userId}
+    		</if>
+    		<if test="username != null">
+    			username=#{username}
+    		</if>
+    	</where>
+    </delete>
+    <!--更新用户信息  -->
+    <update id="updateUser" parameterType="cn.plate.service.model.UserModel">
+    	update user 
+    	<set>
+    		<if test="username != null">
+    			username = #{username}
+    		</if>
+    		<if test="password != null">
+    			password = #{password}
+    		</if>
+    		<if test="powerId &gt; 0">
+    			powerId = #{powerId}
+    		</if>
+    	</set>
+    </update>
 </mapper>

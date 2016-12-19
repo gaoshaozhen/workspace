@@ -45,7 +45,7 @@ public class Door implements UserDaoInterface
         return userDao.getUser(userModel);
     }
 
-    public List<Map> getAllUser()
+    public List<Map<String, Object>> getAllUser()
     {
         // TODO Auto-generated method stub
         return userDao.getAllUser();

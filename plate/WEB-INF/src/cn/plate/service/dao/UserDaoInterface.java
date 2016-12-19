@@ -15,5 +15,5 @@ public interface UserDaoInterface
 
     public UserModel getUser(UserModel userModel);
 
-    public List<Map> getAllUser();
+    public List<Map<String, Object>> getAllUser();
 }

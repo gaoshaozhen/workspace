@@ -66,14 +66,14 @@ public class UserController
         // }
     }
 
+    // 获得所有用户信息
     @RequestMapping(value = "/getAllUser")
     @ResponseBody
     public String getAllUser()
     {
         JSONObject json = new JSONObject();
         JSONArray array = new JSONArray();
-
-        List<Map> list = door.getAllUser();
+        List<Map<String, Object>> list = door.getAllUser();
         if (list != null)
         {
             for (Map<String, Object> userInfo : list)
@@ -86,6 +86,7 @@ public class UserController
         return json.toString();
     }
 
+    // 添加新用户
     @RequestMapping(value = "/addUser")
     @ResponseBody
     public String addUser(UserPojo userPojo)
@@ -105,6 +106,46 @@ public class UserController
             else
             {
                 json.put("result", "fail");
+            }
+        }
+        return json.toString();
+    }
+
+    // 删除用户
+    @RequestMapping(value = "deleteUser")
+    @ResponseBody
+    public String deleteUser(UserPojo userPojo)
+    {
+        JSONObject json = new JSONObject();
+        if (userPojo.getUsername() == null)
+        {
+            json.put("result", "fail");
+        }
+        else
+        {
+            if (door.delete(userPojo) > 0)
+            {
+                json.put("result", "success");
+            }
+        }
+        return json.toString();
+    }
+
+    // 更新用户信息
+    @RequestMapping(value = "updateUser")
+    @ResponseBody
+    public String updateUser(UserPojo userPojo)
+    {
+        JSONObject json = new JSONObject();
+        if (userPojo.getUsername() == null)
+        {
+            json.put("result", "fail");
+        }
+        else
+        {
+            if (door.delete(userPojo) > 0)
+            {
+                json.put("result", "success");
             }
         }
         return json.toString();

@@ -34,15 +34,18 @@
   <!-- 对转向页面的路径解析。prefix：前缀， suffix：后缀 -->
   <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
 	   <property name="prefix" value="/WEB-INF/view/"></property>  
-	   <property name="suffix" value=".jsp"></property>  
-  </bean>
-  <!-- 
+	   <property name="suffix" value=""></property> 
+	   <property name="order" value="0" /> 
+	</bean>
+	   	  
 	<mvc:interceptors>  
-		 使用bean定义一个Interceptor，直接定义在mvc:interceptors根下面的Interceptor将拦截所有的请求
+		<!--  使用bean定义一个Interceptor，直接定义在mvc:interceptors根下面的Interceptor将拦截所有的请求 -->
 		 <mvc:interceptor>  
-		     <mvc:mapping path="/service/**"/>  
-		     定义在mvc:interceptor下面的表示是对特定的请求才进行拦截的  
-		     <bean class="cn.plate.interceptor.CommonInterceptor"/>  
+		     <!-- <mvc:mapping path="/service/**"/> -->  
+		     <!-- 定义在mvc:interceptor下面的表示是对特定的请求才进行拦截的   -->
+		     <!-- <bean class="cn.plate.interceptor.CommonInterceptor"/> -->
+		     <mvc:mapping path="/shop**"/>
+		     <bean class = "cn.plate.interceptor.ShopInterceptor"></bean>  
 		</mvc:interceptor>  
-	</mvc:interceptors> -->    
+	</mvc:interceptors>    
 </beans>

@@ -15,8 +15,6 @@ public class Test
     public static void main(String[] args)
     {
         PropertyConfigurator.configure("WEB-INF/conf/log4j.properties");
-        // Dao dao;
-        // dao = WebContext.getBean("dao", Dao.class);
         JSONObject json = new JSONObject();
         Map<String, Object> map = new HashMap<String, Object>();
         Map<String, Object> map1 = new HashMap<String, Object>();
