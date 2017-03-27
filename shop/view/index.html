@@ -1,0 +1,192 @@
+<!doctype>
+<html>
+	<head>
+		<title>示例商城</title>
+		<meta charset="utf-8">
+		<link rel="stylesheet" type="text/css" href="./lib/jquery-easyui-1.5.1/themes/default/easyui.css">
+		<link rel="stylesheet" type="text/css" href="./lib/jquery-easyui-1.5.1/themes/icon.css">
+		<link rel="stylesheet" type="text/css" href="./lib/jquery-easyui-1.5.1/demo/demo.css">
+		<link rel="stylesheet" type="text/css" href="./css/index.css">
+		<script type="text/javascript" src="./lib/jquery-easyui-1.5.1/jquery.min.js"></script>
+		<script type="text/javascript" src="./lib/jquery-easyui-1.5.1/jquery.easyui.min.js"></script>
+		<script type="text/javascript" src="./js/index.js"></script>
+	</head>
+	<body>			
+		<div class="easyui-layout" style="width:100%;height:100%;">	
+			<div data-options="region:'north'" style="height:50px">
+				<h1 class="web-name">商城</h1>
+			</div>
+			<div data-options="region:'west',split:true,collapsed:false" title="菜单列表" style="width:180px;">
+				<!-- 日常操作 -->
+				<ul class="easyui-tree">
+					<li>
+						<span>日常操作</span>
+						<ul>
+							<li></li>
+						</ul>
+					</li>
+				</ul>
+				<!-- 商品设置 -->
+				<ul class="easyui-tree">
+					<li>
+						<span>商品设置</span>
+						<ul>
+							<li>
+								<span>分类管理</span>
+								<ul>
+									<li>分类列表</li>
+									<li>
+										<a href="#" onclick="addTab('添加分类','./goods/addCategory.html')">添加分类</a>
+									</li>
+								</ul>
+							</li>
+						</ul>
+						<ul>
+							<li>
+								<span>品牌管理</span>
+								<ul>
+									<li>品牌管理</li>
+									<li>
+										<a href="#" onclick="addTab('添加品牌','./goods/addBrand.html')">添加品牌</a>
+									</li>
+								</ul>
+							</li>
+						</ul>
+						<ul>
+							<li>
+								<span>类型管理</span>
+								<ul>
+									<li>类型列表</li>
+									<li>
+										<a href="#" onclick="addTab('添加类型','./goods/addType.html')">添加类型</a>
+									</li>
+								</ul>
+							</li>
+						</ul>
+						<ul>
+							<li>
+								<span>标签管理</span>
+								<ul>
+									<li>标签商品设置</li>
+									<li>标签列表</li>
+									<li><a href="addTab('添加标签', './goods/addTab.html')"></a></li>
+								</ul>
+							</li>
+						</ul>
+						<ul>
+							<li>
+								<span>商品管理</span>
+								<ul>
+									<li><a href="#" onclick="addTab('商品列表','./goods/goodsList.html')">商品列表</a></li>
+									<li><a href="#" onclick="addTab('添加商品','./goods/addGoods.html')">添加商品</a></li>
+								</ul>
+							</li>
+						</ul>
+					</li>					
+				</ul>
+				<!-- 订单 -->
+				<ul class="easyui-tree">
+			        <li>
+			            <span>订单</span>					            
+			            <ul>
+			            	<li>
+			            		<span>订单管理</span>
+			            		<ul>
+				        			<li><a href="#" onclick="addTab('订单列表','./order/orderList.html')">订单列表</a></li>
+			            			<li>待结算订单</li>
+			            			<li>待发货订单</li>
+			            			<li>待收货订单</li>
+			            		</ul>	
+			            	</li>
+				        	<li>
+				        		<span>单据管理</span>
+				        		<ul>
+				        			<li>收款单</li>
+				        			<li>退货单</li>
+				        		</ul>
+				        	</li>
+				        	<li>
+				        		<span>退货申请</span>
+				        		<ul>
+				        			<li><a href="#" onclick="addTab('退货申请', './order/returnOrderList.html')">退货申请</a></li>
+				        		</ul>
+				        	</li>
+			       		</ul>
+			        </li>
+			    </ul>
+			    <ul class="easyui-tree">
+			        <li>
+			            <span>会员</span>
+			        </li>
+			    </ul>
+			    <ul class="easyui-tree">
+			        <li>
+			            <span>促销</span>
+			        </li>
+			    </ul>
+			    <ul class="easyui-tree">
+			        <li>
+			            <span>页面</span>
+			        </li>
+			    </ul>
+			    <!-- 设置 -->
+			    <ul class="easyui-tree">
+			    	<li>
+			    		<span>设置</span>
+			    		<ul>
+			    			<li>
+			    				<span>网店设置</span>
+			    				<ul>
+			    					<li>系统设置</li>
+			    					<li><a href="#" onclick="addTab('站点设置','./set/siteSet.html')">站点设置</a></li>
+			    					<li>smtp设置</li>
+			    					<li>组件管理</li>
+			    				</ul>
+			    			</li>			    			
+			    		</ul>
+			    		<ul>
+			    			<li>
+			    				<span>配送管理</span>
+			    				<ul>
+			    					<li><a href="#" onclick="addTab('配送方式', './set/sendType.html')">配送方式</a></li>
+			    					<li><a href="#" onclick="addTab('地区管理', './set/areaEdit.html')">地区管理</a></li>
+			    					<li><a href="#" onclick="addTab('物流公司', './set/company.html')">物流公司</a></li>
+			    				</ul>
+			    			</li>
+			    		</ul>
+			    		<ul>
+			    			<li>
+			    				<span>支付方式设置</span>
+			    				<ul>
+			    					<li><a href="#" onclick="addTab('支付方式','set/payType.html')">支付方式</a></li>
+			    				</ul>
+			    			</li>
+			    		</ul>
+			    		<ul>
+			    			<li>
+			    				<span>仓库管理</span>
+			    				<ul>
+			    					<li>
+			    						<a href="#" onclick="addTab('进货','./set/repository.html')">进货</a>
+			    					</li>
+			    				</ul>
+			    			</li>
+			    		</ul>
+			    		<!-- 规格管理 -->
+			    		<ul>
+			    			<li>
+			    				<span>规格管理</span>
+			    				<ul>
+			    					<li><a href="#" onclick="addTab('规格列表','./set/standardList.html')">规格列表</a></li>
+			    					<li><a href="#" onclick="addTab('添加规格','./set/addStandard.html')">添加规格</a></li>
+			    				</ul>
+			    			</li>
+			    		</ul>
+			    	</li>
+			    </ul>
+			</div>
+			<div id="page-content" class="easyui-tabs" data-options="region:'center'" style="width: 100%;height: 100%"></div>
+		</div>
+	</body>
+	<script type="text/javascript" src="./js/index.js"></script>
+</html>

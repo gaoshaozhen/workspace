@@ -1,0 +1,37 @@
+*{
+	margin:0;
+	padding: 0;
+}
+ul li{
+	list-style: none;
+}
+.web-footer{
+	border-top:1px solid black;
+	height: 45px;
+	position: fixed;
+	left:0;
+	bottom: 0;
+	background: white;
+}
+.web-footer .icon{
+	font-size: 1.5em;
+}
+.web-footer .footer-title{
+	font-size: 12px;
+}
+
+.web-footer a:link{
+	color: #5F5959;
+}
+.web-footer .index:visited{
+	color: red;	
+}
+.web-footer .classify:visited{
+	color: red;	
+}
+.web-footer .buying:visited{
+	color: red;	
+}
+.web-footer .me:visited{
+	color: red;	
+}

@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>支付方式</title>
+		<link rel="stylesheet" type="text/css" href="../lib/jquery-easyui-1.5.1/themes/default/easyui.css">
+		<link rel="stylesheet" type="text/css" href="../lib/jquery-easyui-1.5.1/themes/icon.css">
+		<link rel="stylesheet" type="text/css" href="../lib/jquery-easyui-1.5.1/demo/demo.css">
+		<link rel="stylesheet" type="text/css" href="../lib/font-awesome-4.7.0/css/font-awesome.min.css">
+		<script type="text/javascript" src="../lib/jquery-easyui-1.5.1/jquery.min.js"></script>
+		<script type="text/javascript" src="../lib/jquery-easyui-1.5.1/jquery.easyui.min.js"></script>
+	</head>
+	<body>
+		<div class="wrapper">
+			<div class="menu-header">
+				<button class="easyui-linkbutton" iconCls="icon-add">添加</button>				
+				<button class="easyui-linkbutton" iconCls="icon-cancel">删除</button>				
+			</div>
+			<table id="tt" class="easyui-datagrid" 
+				rownumbers="true"
+				fitColumns="true"
+				striped="true"
+				style="width:400px;height:auto;">
+				<thead>
+					<tr>
+						<th data-options="field:'ck',checkbox:'true'"></th>
+						<th field="name1" align="center" width="50">支付方式名称</th>
+						<th field="name2" align="center" width="50">修改</th>	
+					</tr>
+				</thead>
+				<tbody>
+					<tr>		
+						<td></td>				
+						<td>支付宝</td>
+						<td><span class="fa fa-edit"></span></td>
+					</tr>
+					<tr>
+						<td></td>
+						<td>财付通</td>
+						<td><span class="fa fa-edit"></span></td>
+					</tr>
+					<tr>
+						<td></td>
+						<td>货到付款</td>
+						<td><span class="fa fa-edit"></span></td>
+					</tr>
+					<tr>
+						<td></td>
+						<td>预存款支付</td>
+						<td><span class="fa fa-edit"></span></td>
+					</tr>
+				</tbody>
+			</table>
+			<table>
+				<tr>
+					<td>支付方式：</td>
+					<td>
+						<select>
+							<option>请选择要添加的支付方式</option>
+							<option>支付宝</option>
+						</select>
+					</td>
+				</tr>
+				<tr>
+					<td>支付方式：</td>
+					<td><input type="" value="支付宝"></td>
+				</tr>
+				<tr>
+					<td>支付宝合作伙伴id</td>
+					<td><input type="" value="123456"></td>
+				</tr>
+				<tr>
+					<td>支付宝安全校验码</td>
+					<td><input type="" value="123456"></td>
+				</tr>
+				<tr>
+					<td>卖家支付宝账户</td>
+					<td><input type="" value="deao@qq.com"></td>
+				</tr>
+				<tr>
+					<td></td>
+					<td>
+						下面两个参数定义接受支付宝回调通知和成功返回页面时的参数编码<br>
+						如果编码不正确会导致签名验证失败<br>
+						请根据Web服务的配置情况选择
+					</td>
+				</tr>
+				<tr>
+					<td>notify编码：</td>
+					<td>
+						<select>
+							<option>不编码</option>
+							<option>utf-8</option>
+							<option>gbk</option>
+						</select>
+					</td>
+				</tr>
+				<tr>
+					<td>return编码：</td>
+					<td>
+						<select>
+							<option>不编码</option>
+							<option>utf-8</option>
+							<option>gbk</option>
+						</select>
+					</td>
+				</tr>
+				<tr>
+					<td>介绍</td>
+					<td>
+						<textarea value="演示用，支付宝担保交易接口，请在后台修改相应参数"></textarea>
+					</td>
+				</tr>
+				<tr>
+					<td></td>
+					<td><button>确定</button></td>
+				</tr>
+			</table>	
+		</div>
+	</body>
+</html>

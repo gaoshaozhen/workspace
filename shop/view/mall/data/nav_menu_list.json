@@ -1,0 +1,74 @@
+{
+	"menuList":[
+		{
+			"name": "商城首页",
+			"url" : "#",
+			"familyId":"",
+			"children":[]
+		},
+		{
+			"name": "进口食品",
+			"url" : "#",
+			"familyId":"",
+			"children":[
+				{"name" : "进口乳制品", "url" : "#","familyId":""},
+				{"name" : "进口乳制品", "url" : "#","familyId":""},
+				{"name" : "进口饼干糕点", "url" : "#","familyId":""},
+				{"name" : "进口咖啡/茶点", "url" : "#","familyId":""}
+			]
+		},
+		{
+			"name": "美容化妆",
+			"url" : "#",
+			"familyId":"",
+			"children":[
+				{"name" : "面部护理", "url" : "#","familyId":""},
+				{"name" : "男士护理", "url" : "#","familyId":""}
+			]
+		},
+		{
+			"name": "食品饮料",
+			"url" : "#",
+			"familyId":"",
+			"children":[
+				{"name" : "休闲零食", "url" : "#","familyId":""},
+				{"name" : "糖果/巧克力", "url" : "#","familyId":""},
+				{"name" : "饮料", "url" : "#", "familyId":""},
+				{"name" : "酒水", "url" : "#", "familyId":""}
+			]
+		},
+		{
+			"name": "手机通讯",
+			"url" : "#",
+			"familyId":"",
+			"children":[]
+		},
+		{
+			"name": "服装鞋帽",
+			"url" : "#",
+			"familyId":"",
+			"children":[
+				{"name" : "短裤", "url" : "#", "familyId":""},
+				{"name" : "裙子", "url" : "#", "familyId":""}
+			]
+		},
+		{
+			"name": "营养保健",
+			"url" : "#",
+			"familyId":"",
+			"children":[]
+		},
+		{
+			"name": "团购",
+			"url" : "#",
+			"familyId":"",
+			"children":[]
+		},
+		{
+			"name": "积分抽奖",
+			"url" : "#",
+			"familyId":"",
+			"children":[]
+		}
+	]
+}

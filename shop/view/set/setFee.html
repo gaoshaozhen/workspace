@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>设置运费</title>
+		<link rel="stylesheet" type="text/css" href="../lib/jquery-easyui-1.5.1/themes/default/easyui.css">
+		<link rel="stylesheet" type="text/css" href="../lib/jquery-easyui-1.5.1/themes/icon.css">
+		<link rel="stylesheet" type="text/css" href="../lib/jquery-easyui-1.5.1/demo/demo.css">
+		<link rel="stylesheet" type="text/css" href="../lib/font-awesome-4.7.0/css/font-awesome.min.css">
+		<script type="text/javascript" src="../lib/jquery-easyui-1.5.1/jquery.min.js"></script>
+		<script type="text/javascript" src="../lib/jquery-easyui-1.5.1/jquery.easyui.min.js"></script>
+	</head>
+	<body>
+		<h3>设置运费</h3>
+		<table>
+			<tr>
+				<td>配送方式名称</td>
+				<td><input type="text" value="圆通速递"></td>
+				<td>选择默认物流公司</td>
+				<td>
+					<select>
+						<option value ="圆通速递">圆通速递</option>
+					</select>
+				</td>  				
+			</tr>
+			<tr>
+				<td>重量设置：</td>
+				<td>首重重量
+					<select>
+						<option>1公斤</option>
+					</select>
+				</td>
+				<td>续重重量
+					<select>
+						<option>1公斤</option>
+					</select>
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<input type="checkbox" name="">
+					启用默认费用 
+					<!-- 注意：未启用默认费用时，不能指定配送地区的顾客不能用本配送方式下单 -->
+				</td>
+			</tr>
+			<tr>
+				<td>支持的配送地区：</td>
+				<td><button>为制定的地区设置运费</button></td>
+			</tr>
+			<tr>
+				<td>排序：</td>
+				<td><input type="" value="1"></td>				
+			</tr>
+			<tr>
+				<td>状态：</td>
+				<td>
+					<input type="radio" name="">启用
+					<input type="radio" name="">关闭
+				</td>
+			</tr>
+		</table>
+		<!-- 对话框集 -->
+		<div>
+			<div id="dd" class="easyui-dialog" style="padding:5px;width:400px;height:200px;"
+			title="My Dialog" iconCls="icon-ok"
+			toolbar="#dlg-toolbar" buttons="#dlg-buttons" style="display: none;">
+				<ul class="easyui-tree">
+					<li><span>北京</span></li>
+				</ul>
+				<ul class="easyui-tree">
+					<li><span>上海</span></li>
+				</ul>
+				<ul class="easyui-tree">
+					<li><span>黑龙江</span></li>
+				</ul>
+				<ul class="easyui-tree">
+					<li><span>吉林</span></li>
+				</ul>
+			</div>
+		</div>
+	</body>
+	<script type="text/javascript" src="./js/setFee.js"></script>
+</html>

@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>配送方式</title>
+		<link rel="stylesheet" type="text/css" href="../lib/jquery-easyui-1.5.1/themes/default/easyui.css">
+		<link rel="stylesheet" type="text/css" href="../lib/jquery-easyui-1.5.1/themes/icon.css">
+		<link rel="stylesheet" type="text/css" href="../lib/jquery-easyui-1.5.1/demo/demo.css">
+		<link rel="stylesheet" type="text/css" href="../lib/font-awesome-4.7.0/css/font-awesome.min.css">
+		<script type="text/javascript" src="../lib/jquery-easyui-1.5.1/jquery.min.js"></script>
+		<script type="text/javascript" src="../lib/jquery-easyui-1.5.1/jquery.easyui.min.js"></script>
+	</head>
+	<body>
+		<div class="wrapper">
+			<h3>配送方式</h3>
+			<div class="menu-header">
+				<button class="easyui-linkbutton" iconCls="icon-add">添加</button>				
+				<button class="easyui-linkbutton" iconCls="icon-concel">删除</button>				
+			</div>	
+			<table id="tt" class="easyui-datagrid" style="width:600px;height:250px"
+			 toolbar="#tb" rownumbers="true" fitColumns="true" striped="true" method="get"
+			  >
+			 	<thead>
+			 		<th data-options="field:'ck',checkbox:'true'"></th>
+			 		<th data-options="field:'type',align:'center'">配送方式</th>
+					<th data-options="field:'supportValue',align:'center'">支持保价</th>
+					<th data-options="field:'cashOnDelivery',align:'center'">支持货到付款</th>
+					<th data-options="field:'operator',align:'center'">操作</th>
+			 	</thead>
+			 </table>	
+		</div>
+	</body>
+	<script type="text/javascript" src="./js/sendType.js"></script>
+</html>

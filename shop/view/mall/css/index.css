@@ -1,0 +1,21 @@
+.row {
+  margin: 0;
+}
+.def-color {
+  color: #49a9cf;
+}
+.search-products {
+  display: inline-flex;
+}
+.search-products .input-group-addon {
+  padding-left: 9px;
+  padding-right: 20px;
+  padding-top: 6px;
+}
+.web-header-info {
+  padding: 19px 0px;
+}
+.nav-menu-list {
+  margin-top: 10px;
+}
+/*# sourceMappingURL=index.css.map */

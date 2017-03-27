@@ -1,0 +1,28 @@
+{
+	"brand":[
+		{
+			"name":"爱尔曼",
+			"brandId":"1"
+		},
+		{
+			"name":"百味林",
+			"brandId":"1"
+		},
+		{
+			"name":"新农哥",
+			"brandId":"1"
+		},
+		{
+			"name":"旺旺",
+			"brandId":"1"
+		},
+		{
+			"name":"多美鲜",
+			"brandId":"1"
+		},
+		{
+			"name":"欧德宝",
+			"brandId":"1"
+		}
+	]
+}

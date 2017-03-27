@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans  
+	xmlns="http://www.springframework.org/schema/beans" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xsi:schemaLocation="http://www.springframework.org/schema/mvc 
+	http://www.springframework.org/schema/mvc/spring-mvc.xsd
+	http://www.springframework.org/schema/beans 
+	http://www.springframework.org/schema/beans/spring-beans.xsd
+	http://www.springframework.org/schema/context
+	http://www.springframework.org/schema/context/spring-context.xsd">
+	
+	<mvc:annotation-driven />
+    <mvc:resources location="/store/"  mapping="/store/**" />  
+	<mvc:resources location="/sto/"  mapping="/sto/**" />
+	<mvc:resources location="/view/"  mapping="/view/**" />
+    <context:component-scan base-package="cn.shop.controller"></context:component-scan>
+	  
+  	<!-- 对转向页面的路径解析。prefix：前缀， suffix：后缀 -->
+  	<bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+	   <property name="prefix" value="/WEB-INF/view/"></property>  
+	   <property name="suffix" value=".jsp"></property> 
+	   <property name="order" value="0" /> 
+	</bean>
+	 
+	<mvc:interceptors>  
+		 <mvc:interceptor>  
+		     <mvc:mapping path="/shop/**"/>
+		     <bean class = "cn.shop.interceptor.LoginInterceptor"></bean>  
+		</mvc:interceptor>  
+	</mvc:interceptors>    
+</beans>

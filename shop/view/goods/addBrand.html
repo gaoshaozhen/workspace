@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>添加品牌</title>
+		<link rel="stylesheet" type="text/css" href="../lib/jquery-easyui-1.5.1/themes/default/easyui.css">
+		<link rel="stylesheet" type="text/css" href="../lib/jquery-easyui-1.5.1/themes/icon.css">
+		<link rel="stylesheet" type="text/css" href="../lib/jquery-easyui-1.5.1/demo/demo.css">
+		<script type="text/javascript" src="../lib/jquery-easyui-1.5.1/jquery.min.js"></script>
+		<script type="text/javascript" src="../lib/jquery-easyui-1.5.1/jquery.easyui.min.js"></script>
+	</head>
+	<body>
+		<div class="wrapper">
+			<div>				
+				<button class="easyui-linkbutton" iconCls="icon-add">添加</button>
+				<button class="easyui-linkbutton" iconCls="icon-cancel">删除</button>				
+			</div>
+			<div>
+				品牌名称：<input type="" name="">
+				商品类型：
+				<select>
+					<option>所有类型</option>
+				</select>
+				<button>搜索</button>
+			</div>
+			
+			<table id="tt" class="easyui-datagrid" 
+				rownumbers="true"
+				fitColumns="true"
+				style="width:400px;height:auto;">
+			 		<thead>
+			 			<th data-options="field:'ck',checkbox:'true'"></th>
+			 			<th field="name1" align="center" width="50">品牌名称</th>
+						<th field="name2" align="center" width="50">品牌地址</th>	
+			 		</thead>
+			 		<tbody>
+			 			<tr>
+			 				<td></td>
+			 				<td>金士顿</td>
+			 				<td>http://www.baidu.com</td>
+			 			</tr>
+			 			<tr>
+			 				<td></td>
+			 				<td>张小泉</td>
+			 				<td>http://www.goole.com</td>
+			 			</tr>
+			 		</tbody>
+			</table>
+			<table>
+				<tr>
+					<td>品牌名称</td>
+					<td><input type="" value="金士顿"></td>
+				</tr>
+				<tr>
+					<td>品牌网址</td>
+					<td><input type="" value="http://www.baidu.com"></td>
+				</tr>
+				<tr>
+					<td>品牌logo</td>
+					<td>
+						<input type="" value="">
+						<input type="file" name="">
+					</td>
+				</tr>
+				<tr>
+					<td>详细说明</td>
+					<td>
+						<textarea></textarea>
+					</td>
+				</tr>
+			</table>
+		</div>
+	</body>
+</html>

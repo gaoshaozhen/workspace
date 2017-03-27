@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>订单列表</title>
+		<link rel="stylesheet" type="text/css" href="../lib/jquery-easyui-1.5.1/themes/default/easyui.css">
+		<link rel="stylesheet" type="text/css" href="../lib/jquery-easyui-1.5.1/themes/icon.css">
+		<link rel="stylesheet" type="text/css" href="../lib/jquery-easyui-1.5.1/demo/demo.css">
+		<script type="text/javascript" src="../lib/jquery-easyui-1.5.1/jquery.min.js"></script>
+		<script type="text/javascript" src="../lib/jquery-easyui-1.5.1/jquery.easyui.min.js"></script>
+	</head>
+	<body>
+		<div class="wrapper">
+			<div>
+				<button class="easyui-linkbutton" iconCls="icon-cancel">删除</button>
+				<button class="easyui-linkbutton" iconCls="icon-search">搜索</button>
+			</div>
+			<table class="easyui-datagrid"
+				rownumbers="true"
+				fitColumns="true"
+				pagination="true"
+				style="width: 100%;height: auto;">
+				<thead>
+					<th field="ck" checkbox="true"></th>
+					<th field="orderId" align="center" width="50">订单号</th>
+					<th field="userName" align="center" width="50">下单日期</th>
+					<th field="status" align="center" width="50">订单状态</th>
+					<th field="mpney" align="center" width="50">订单总额</th>
+					<th field="type" align="center" width="50">收货人</th>
+					<th field="applyTime" align="center" width="50">付款状态</th>
+					<th field="operation1" align="center" width="50">发货状态</th>
+					<th field="operation2" align="center" width="50">配送方式</th>
+					<th field="operation3" align="center" width="50">支付方式</th>
+					<th field="operation4" align="center" width="50">操作</th>
+				</thead>
+				<tbody>
+					<tr>
+						<td></td>
+						<td>123456</td>
+						<td>2017-01-21</td>
+						<td>已发货</td>
+						<td>￥345</td>
+						<td>abc</td>
+						<td>已确认付款</td>
+						<td>已发货</td>
+						<td>宅急送</td>
+						<td>银行付款</td>
+						<td>操作</td>
+					</tr>
+				</tbody>
+			</table>
+			<!-- 订单详细信息 -->
+			<div>
+				<div>
+					<button>确认收款</button>
+					<button>退款</button>
+					<button>配货</button>
+					<button>发货</button>
+					<button>退货</button>
+					<button>作废</button>
+					<button>上一订单</button>
+					<button>下一订单</button>
+				</div>
+				<div class="easyui-tabs">
+					<div title="基本信息"></div>
+					<div title="订单日志"></div>
+					<div title="收退款记录"></div>
+					<div title="发退货记录"></div>
+					<div title="配货信息"></div>
+					<div title="发票"></div>
+				</div>
+			</div>
+		</div>
+	</body>
+</html>

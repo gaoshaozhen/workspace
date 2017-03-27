@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+ <!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN"   
+ "http://www.springframework.org/dtd/spring-beans.dtd">
+<beans>
+	<bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource" destroy-method="close">
+        <property name="driverClass">
+            <value>com.mysql.jdbc.Driver</value>
+        </property>
+        <property name="jdbcUrl">
+            <value>jdbc:mysql://localhost:3306/shop</value>
+        </property>
+        <property name="user">
+            <value>root</value>
+        </property>
+        <property name="password">
+            <value>123456</value>
+        </property>
+        <!--  连接池保留最大连接数-->
+        <property name="maxPoolSize"> 
+            <value>3</value> 
+        </property> 
+        
+        <!--  连接池保留最小连接数-->
+        <property name="minPoolSize"> 
+            <value>2</value> 
+        </property>
+        
+        <!--初始创建连接数  -->
+        <property  name="initialPoolSize">
+        	<value>1</value>
+        </property>
+        
+        <!--  连接用完新创建的连接数-->
+         <property name="acquireIncrement"> 
+            <value>0</value> 
+        </property>
+        
+        <!--  最大空闲时间-->
+        <property name="maxIdleTime"> 
+            <value>12000</value> 
+        </property>
+                
+        <!-- 检查空闲连接的间隔  -->
+        <property name="idleConnectionTestPeriod"> 
+             <value>120000</value> 
+        </property> 
+    </bean>
+     <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">  
+        <property name="dataSource" ref="dataSource" />  
+        <!-- <property name="mapperLocations" value="WEB-INF/conf/mapping/*.xml"></property> -->  
+    </bean>
+    
+    <bean id="daoShop" class="cn.shop.dao.DaoShop"></bean>
+</beans>
