@@ -1,15 +1,10 @@
-
-ReactDOM.render(
-  <div>
-  	<Header/>
-  	<Nav/>
-  	<article>
-  		<Search/>
-  		<FilterProducts/>
-  		<Products/>
-  	</article>
-  	<footer><Footer/></footer>
-  </div>
-  ,
+ReactDOM.render(  
+	<div>
+	  	<Header/>
+	  	<Nav/>
+	  	<Article/>
+  		<footer><Footer/></footer>
+  	</div>
+  	,
   document.getElementById('wrapper')
 );

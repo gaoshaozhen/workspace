@@ -1,0 +1,71 @@
+{
+	"recommendedProducts" : [
+		{
+			"name" : "复古连衣裙",
+			"imgUrl" : "img/1.png",
+			"priceName":"商城价",
+			"price" : "169.00"
+		},
+		{
+			"name" : "短裤",
+			"imgUrl" : "img/1.png",
+			"priceName":"商城价",
+			"price" : "19.00"
+		},
+		{
+			"name" : "金士顿",
+			"imgUrl" : "img/1.png",
+			"priceName":"商城价",
+			"price" : "129.00"
+		},
+		{
+			"name" : "复古连衣裙",
+			"imgUrl" : "img/1.png",
+			"priceName":"商城价",
+			"price" : "119.80"
+		}
+	],
+
+	"hotProducts":[
+		{
+			"name" : "复古连衣裙",
+			"imgUrl" : "img/1.png",
+			"priceName":"商城价",
+			"price" : "169.00"
+		},
+		{
+			"name" : "短裤",
+			"imgUrl" : "img/1.png",
+			"priceName":"商城价",
+			"price" : "19.00"
+		},
+		{
+			"name" : "金士顿",
+			"imgUrl" : "img/1.png",
+			"priceName":"商城价",
+			"price" : "129.00"
+		},
+		{
+			"name" : "复古连衣裙",
+			"imgUrl" : "img/1.png",
+			"priceName":"商城价",
+			"price" : "119.80"
+		}
+	],
+
+	"recentProducts" : [
+		{
+			"name" : "金士顿",
+			"imgUrl" : "img/1.png",
+			"priceName":"商城价",
+			"price" : "129.00"
+		},
+		{
+			"name" : "复古连衣裙",
+			"imgUrl" : "img/1.png",
+			"priceName":"商城价",
+			"price" : "119.80"
+		}
+	] 
+
+}

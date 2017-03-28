@@ -1,0 +1,28 @@
+{
+	"brands":[
+		{
+			"name":"爱尔曼",
+			"brandId":"1"
+		},
+		{
+			"name":"百味林",
+			"brandId":"1"
+		}
+	],
+	"products":[
+		{
+			"imgUrl":"#",
+			"name" : "休闲短裤",
+			"marketPrice" : "120.00",
+			"mallPrice" : "123.32"
+		},
+		{
+			"imgUrl":"#",
+			"name" : "翻边短裤",
+			"marketPrice" : "120.00",
+			"mallPrice" : "123.32"
+		}
+	],
+	"total" : "2",
+	"current" : "1"
+}

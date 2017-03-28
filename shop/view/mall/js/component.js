@@ -103,40 +103,6 @@ var Nav = React.createClass({
     }   
 });
 
-var FilterProducts=React.createClass({
-    getInitialState: function(){
-        return {
-            brand:{}
-        };
-    },
-
-    
-    componentDidMount: function () {
-        $.get("/mall/data/brand.json",null,function (ret) {
-            this.setState({brand:ret});
-        }.bind(this))
-    },    
-
-
-    render: function(){
-        var doms=[];
-        for (var i in this.state.brand.brand){
-            var temp ="?brandId=" + this.state.brand.brand[i].brandId;
-            doms.push(<a href={temp}>{this.state.brand.brand[i].name}、</a>);
-        }
-        return (
-            <div className="panel panel-default">
-                <div className="panel-heading">
-                    <h3 className="panel-title">商品筛选</h3>
-                </div>
-                <div className="panel-body">
-                    品牌：{doms}
-                </div>
-            </div>
-        );
-    }
-});
-
 var Search = React.createClass({
     render: function(){
         return (
@@ -152,16 +118,16 @@ var Search = React.createClass({
     }
 });
 
-var Products = React.createClass({
-    render: function(){
-        return (
+var Article = React.createClass({
+   render: function(){
 
-            <ul>
-                <li>商品1</li>
-                <li>商品2</li>
-            </ul>
-        );
-    }
+    return (
+        <article className="row">
+            <div className="col-md-9"><Content/></div>
+            <div className="col-md-3"><RightAside/></div>
+        </article>
+    );
+   } 
 });
 
 var Footer = React.createClass({
@@ -218,9 +184,4 @@ var Footer = React.createClass({
             </div>
         );        
     }
-});
-var Test = React.createClass({
-   render: function(){
-    return <div>asd</div>
-   }
 });
