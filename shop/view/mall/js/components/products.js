@@ -20,7 +20,7 @@ var RightAside = React.createClass({
 			list1.push(
 				<li>
 					<img src={this.state.data.recommendedProducts[i].imgUrl}></img>
-					<ul>
+					<ul className="products-list">
 						<li>{this.state.data.recommendedProducts[i].name}</li>
 						<li>{this.state.data.recommendedProducts[i].priceName}：{this.state.data.recommendedProducts[i].price}</li>
 					</ul>
@@ -31,7 +31,7 @@ var RightAside = React.createClass({
 			list2.push(
 				<li>
 					<img src={this.state.data.hotProducts[i].imgUrl}></img>
-					<ul>
+					<ul className="products-list">
 						<li>{this.state.data.hotProducts[i].name}</li>
 						<li>{this.state.data.hotProducts[i].priceName}：{this.state.data.hotProducts[i].price}</li>
 					</ul>
@@ -42,7 +42,7 @@ var RightAside = React.createClass({
 			list3.push(
 				<li>
 					<img src={this.state.data.recentProducts[i].imgUrl}></img>
-					<ul>
+					<ul className="products-list">
 						<li>{this.state.data.recentProducts[i].name}</li>
 						<li>{this.state.data.recentProducts[i].priceName}：{this.state.data.recentProducts[i].price}</li>
 					</ul>
@@ -50,17 +50,17 @@ var RightAside = React.createClass({
 			);
 		}		
 		return(
-			<div>
+			<div className="products-side">
 				<section>
-					<header>推荐商品</header>
+					<header className="header-recommend">推荐商品</header>
 					<ul>{list1}</ul>
 				</section>
 				<section>
-					<header>热卖排行榜</header>
+					<header className="header-shop">热卖排行榜</header>
 					<ul>{list2}</ul>
 				</section>
 				<section>
-					<header>最近浏览</header>
+					<header className="header-shop">最近浏览</header>
 					<ul>{list3}</ul>
 				</section>
 			</div>

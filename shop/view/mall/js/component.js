@@ -14,11 +14,14 @@ var Header = React.createClass({
 
     render: function() {
         var login;
-        if (typeof this.state.user.userName == "undefined") {
+        var username = this.state.user.userName;
+        var loginUrl = window.location.pathname + '?operator=login'; 
+        var registUrl = window.location.pathname + '?operator=login'; 
+        if (typeof userName == "undefined" || userName.length < 1) {
             login = (
                 <div className="col-xs-6">
-                    <span>登录{this.state.user.userName}</span>|
-                    <span>注册</span>
+                    <a href={loginUrl}>登录</a>|
+                    <a href={registUrl}>注册</a>
                 </div>       
             );
         }
@@ -33,7 +36,7 @@ var Header = React.createClass({
         }
         return (
             <header className="def-color web-header">
-                <div className="row">
+                <div className="row header-operator">
                     {login}
                     <div className="col-md-6 text-right">
                         <a href="#">购物车</a>|
@@ -120,12 +123,30 @@ var Search = React.createClass({
 
 var Article = React.createClass({
    render: function(){
-
-    return (
-        <article className="row">
-            <div className="col-md-9"><Content/></div>
-            <div className="col-md-3"><RightAside/></div>
-        </article>
+    var leftContent;
+    var rightContent;
+    var operator = Util.getUrlParam("operator");
+    console.log(operator);
+    console.log(operator == "login");
+    switch (Util.getUrlParam("operator"))
+    {
+        case "login":
+            leftContent = (<div className="col-md-5">登录</div>);
+            rightContent = (<div className="col-md-5">假一赔十</div>);
+            break;
+        case "regist":
+            leftContent = (<div className="col-md-5">注册</div>);
+            rightContent = (<div className="col-md-5">已有账号</div>);
+            break;
+        default:
+            leftContent = (<div className="col-md-9"><Content/></div>);
+            rightContent = (<div className="col-md-3"><RightAside/></div>);
+    }
+    return (        
+            <article className="row">
+                {leftContent}
+                {rightContent}
+            </article>
     );
    } 
 });

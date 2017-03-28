@@ -6,12 +6,19 @@
 .row{
 	margin: 0;
 }
+ul{
+	padding-left: 0;
+}
 .def-color{
 	color: @def-color;
 }
 
 .web-header{
 	// border-bottom: 1px solid #9EBDEA;	
+}
+.header-operator{
+	background: #F5F5F5;
+	padding: 7px;
 }
 .search-products {
 	display: inline-flex;
@@ -22,7 +29,8 @@
 	}
 }
 .web-header-info{
-	padding: 19px 0px;
+	padding: 10px 0px;
+    font-size: 17px;
 }
 .nav-menu-list{
 	margin-top: 10px;
@@ -36,4 +44,24 @@
 .box-products{
 	display: inline-block;
 	padding: 3px 10px;	
+}
+
+.products-side{
+	background: #F5F5F1;
+    padding: 18px;
+    text-align: center;
+	
+	.products-list{
+		display: inline-table;	
+	}
+	.header-recommend{
+		background: #FFA800;
+	    margin-bottom: 9px;
+	    color: white;
+	}
+	.header-shop{
+		background: #E973AF;
+	    margin-bottom: 9px;
+	    color: white;
+	}
 }

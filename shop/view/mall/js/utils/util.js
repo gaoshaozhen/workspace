@@ -1,14 +1,13 @@
 var Util = {
 	// 获取url参数
 	getUrlParam : function(name){
-		var str = window.location.search;
-		console.info(typeof str);
+		var str = window.location.search.substring(1);
 		var params = str.split("&");
 		var value = null;
 		for (var i in params) {
 			var p = params[i].split("=");
 			if (name == p[0]) {
-				value = params[1];
+				value = p[1];
 			}
 		}
 		return value;
