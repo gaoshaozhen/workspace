@@ -10,6 +10,12 @@ ul {
 .def-color {
   color: #49a9cf;
 }
+.text-center {
+  text-align: center;
+}
+.margin-auto {
+  margin: auto;
+}
 .header-operator {
   background: #F5F5F5;
   padding: 7px;

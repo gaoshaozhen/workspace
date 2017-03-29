@@ -15,8 +15,8 @@ var Header = React.createClass({
     render: function() {
         var login;
         var username = this.state.user.userName;
-        var loginUrl = window.location.pathname + '?operator=login'; 
-        var registUrl = window.location.pathname + '?operator=login'; 
+        var loginUrl = AppUrl.getLoginUrl; 
+        var registUrl = AppUrl.getRegistUrl; 
         if (typeof userName == "undefined" || userName.length < 1) {
             login = (
                 <div className="col-xs-6">
@@ -122,30 +122,31 @@ var Search = React.createClass({
 });
 
 var Article = React.createClass({
-   render: function(){
-    var leftContent;
-    var rightContent;
-    var operator = Util.getUrlParam("operator");
-    console.log(operator);
-    console.log(operator == "login");
+   render: function(){    
+    var box;
+    var operator = Util.getUrlParam("operator");        
     switch (Util.getUrlParam("operator"))
     {
         case "login":
-            leftContent = (<div className="col-md-5">登录</div>);
-            rightContent = (<div className="col-md-5">假一赔十</div>);
+            box = (<LoginBox />);            
             break;
         case "regist":
-            leftContent = (<div className="col-md-5">注册</div>);
-            rightContent = (<div className="col-md-5">已有账号</div>);
+            box = (<RegistBox />);  
+            break;
+        case "memberIndex":
+            box = (<MemberBox />);
             break;
         default:
-            leftContent = (<div className="col-md-9"><Content/></div>);
-            rightContent = (<div className="col-md-3"><RightAside/></div>);
+            box = (
+                <div>
+                    <div className="col-md-9"><Content/></div>
+                    <div className="col-md-3"><RightAside/></div>
+                </div>
+            );            
     }
     return (        
             <article className="row">
-                {leftContent}
-                {rightContent}
+                {box}                
             </article>
     );
    } 

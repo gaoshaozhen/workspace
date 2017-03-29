@@ -67,5 +67,4 @@ var Util = {
 
 };
 
-console.info(Util.getAllParams());
 
