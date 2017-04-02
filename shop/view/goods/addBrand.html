@@ -11,8 +11,9 @@
 	<body>
 		<div class="wrapper">
 			<div>				
-				<button class="easyui-linkbutton" iconCls="icon-add">添加</button>
+				<button class="easyui-linkbutton show" iconCls="icon-add">添加</button>
 				<button class="easyui-linkbutton" iconCls="icon-cancel">删除</button>				
+				<button class="easyui-linkbutton reload-brand" iconCls="icon-reload">刷新</button>				
 			</div>
 			<div>
 				品牌名称：<input type="" name="">
@@ -23,51 +24,52 @@
 				<button>搜索</button>
 			</div>
 			
-			<table id="tt" class="easyui-datagrid" 
+			<table id="brand-table" class="easyui-datagrid" 
 				rownumbers="true"
 				fitColumns="true"
-				style="width:400px;height:auto;">
+				style="width:100%;height:auto;">
 			 		<thead>
 			 			<th data-options="field:'ck',checkbox:'true'"></th>
-			 			<th field="name1" align="center" width="50">品牌名称</th>
-						<th field="name2" align="center" width="50">品牌地址</th>	
-			 		</thead>
-			 		<tbody>
-			 			<tr>
-			 				<td></td>
-			 				<td>金士顿</td>
-			 				<td>http://www.baidu.com</td>
-			 			</tr>
-			 			<tr>
-			 				<td></td>
-			 				<td>张小泉</td>
-			 				<td>http://www.goole.com</td>
-			 			</tr>
-			 		</tbody>
+			 			<th field="brand_id" align="center" width="50">品牌ID</th>
+			 			<th field="name" align="center" width="50">品牌名称</th>
+						<th field="url" align="center" width="50">品牌地址</th>	
+						<th field="logo" align="center" width="50">logo</th>	
+						<th field="brief" align="center" width="50">备注</th>	
+						<th field="keywords" align="center" width="50">关键字</th>	
+						<th field="disabled" align="center" width="50">有效</th>	
+			 		</thead>			 		
 			</table>
-			<table>
-				<tr>
-					<td>品牌名称</td>
-					<td><input type="" value="金士顿"></td>
-				</tr>
-				<tr>
-					<td>品牌网址</td>
-					<td><input type="" value="http://www.baidu.com"></td>
-				</tr>
-				<tr>
-					<td>品牌logo</td>
-					<td>
-						<input type="" value="">
-						<input type="file" name="">
-					</td>
-				</tr>
-				<tr>
-					<td>详细说明</td>
-					<td>
-						<textarea></textarea>
-					</td>
-				</tr>
-			</table>
+			<div id="win" class="easyui-window" title="添加品牌" 
+				closed="true"
+				style="width:500px;height:330px;padding:5px;">
+				<form id="brand-form" action="/shop/brand/addBrand.action"
+					enctype="multipart/form-data">
+					<table>
+						<tr>
+							<td>品牌名称:</td>
+							<td><input type="text" name="name"/></td>
+						</tr>
+						<tr>
+							<td>品牌网址:</td>
+							<td><input type="url"></td>
+						</tr>
+						<tr>
+							<td>品牌logo:</td>
+							<td>								
+								<input type="file" name="logo">
+							</td>
+						</tr>
+						<tr>
+							<td>详细说明:</td>
+							<td>
+								<textarea name="brief" style="width: 363px;height: 137px;"></textarea>
+							</td>
+						</tr>						
+					</table>					
+				</form>
+				<button id="submit-brand-btn">保存数据</button>
+			</div>
 		</div>
 	</body>
+	<script type="text/javascript" src="./js/addBrand.js"></script>
 </html>

@@ -7,7 +7,7 @@
             <value>com.mysql.jdbc.Driver</value>
         </property>
         <property name="jdbcUrl">
-            <value>jdbc:mysql://localhost:3306/shop</value>
+            <value>jdbc:mysql://localhost:3306/shop1</value>
         </property>
         <property name="user">
             <value>root</value>
@@ -17,7 +17,7 @@
         </property>
         <!--  连接池保留最大连接数-->
         <property name="maxPoolSize"> 
-            <value>3</value> 
+            <value>2</value> 
         </property> 
         
         <!--  连接池保留最小连接数-->
@@ -32,7 +32,7 @@
         
         <!--  连接用完新创建的连接数-->
          <property name="acquireIncrement"> 
-            <value>0</value> 
+            <value>1</value> 
         </property>
         
         <!--  最大空闲时间-->
@@ -47,8 +47,13 @@
     </bean>
      <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">  
         <property name="dataSource" ref="dataSource" />  
-        <!-- <property name="mapperLocations" value="WEB-INF/conf/mapping/*.xml"></property> -->  
+        <property name="mapperLocations" value="WEB-INF/conf/mapping/*.xml"></property>   
     </bean>
     
-    <bean id="daoShop" class="cn.shop.dao.DaoShop"></bean>
+    <bean id="userDao" class="cn.shop.dao.UserDao">            
+        <property name="sqlSessionFactory" ref="sqlSessionFactory"></property>  
+    </bean>
+    <bean id="brandDao" class="cn.shop.dao.BrandDao">            
+        <property name="sqlSessionFactory" ref="sqlSessionFactory"></property>  
+    </bean>
 </beans>

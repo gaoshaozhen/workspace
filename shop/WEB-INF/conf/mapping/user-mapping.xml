@@ -1,61 +1,46 @@
 <?xml version="1.0" encoding="UTF-8" ?>  
-<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">  
-<!-- <mapper namespace="StudentMapper">  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
   
-    <resultMap type="StudentEntity" id="studentResultMap">  
-        <id property="studentID" column="STUDENT_ID"/>  
-        <result property="studentName" column="STUDENT_NAME"/>  
-        <result property="studentSex" column="STUDENT_SEX"/>  
-        <result property="studentBirthday" column="STUDENT_BIRTHDAY"/>  
-    </resultMap>  
-       
-    查询学生，根据id  
-    <select id="getStudent" parameterType="String" resultType="StudentEntity" resultMap="studentResultMap">  
-        <![CDATA[  
-            SELECT * from STUDENT_TBL ST  
-                WHERE ST.STUDENT_ID = #{studentID}   
-        ]]>    
-    </select>  
-       
-    查询学生列表  
-    <select id="getStudentAll"  resultType="com.manager.data.model.StudentEntity" resultMap="studentResultMap">  
-        <![CDATA[  
-            SELECT * from STUDENT_TBL  
-        ]]>    
-    </select>      
-</mapper>   -->
-
-
 <mapper namespace="userMapper">
-	<!-- 查询单个用户 -->
-    <select id ="getOneUser"  parameterType="cn.plate.service.model.UserModel" resultType="cn.plate.service.model.UserModel">
-        select * from user where username=#{username} and password=#{password}
+	<select id ="getOneUserById"  parameterType="java.util.Map" resultType="java.util.Map">
+        select * from eop_user where id=#{id}        
     </select>
+        
+	<!-- 查询单个用户 -->
+    <select id ="getUser"  parameterType="java.util.Map" resultType="java.util.Map">
+        select * from eop_user where  1=1      
+     	<if test="username != null">
+     		and username = #{username}
+      	</if>
+      	<if test="password != null">
+      		and password = #{password}
+      	</if>        	        
+    </select>
+        
     <!-- 查询所有用户 -->
     <select id="selectAllUser" resultType="java.util.Map">
-    	select * from user
+    	select * from eop_user
     </select>
+    
     <!-- 插入用户信息 -->
-     <insert id="addUser" parameterType="cn.plate.service.model.UserModel" 
+     <insert id="insertUser" parameterType="java.util.Map" 
         useGeneratedKeys="true" keyProperty="id"> 
-        insert into user(password,username,powerId)  
-             values(#{password},#{username},#{powerId})  
+        insert into eop_user(username, companyName, password, address, legalrepresentative,
+        		linkman, tel, mobile, email, logofile,licensefile, defaultsiteid, deleteflag,
+        		usertype, createtime)  
+             values(#{username}, #{companyName}, #{password}, #{address}, #{legalrepresentative},
+        		#{linkman}, #{tel}, #{mobile}, #{email}, #{logofile}, #{licensefile}, #{defaultsiteid}, #{deleteflag},
+        		#{usertype}, #{createtime})  
     </insert>
+    
     <!-- 删除用户 -->
-    <delete id="deleteUser" parameterType="cn.plate.service.model.UserModel">
-    	delete from user 
-    	<where>
-    		<if test="userId &lt; 0">
-    			userId = #{userId}
-    		</if>
-    		<if test="username != null">
-    			username=#{username}
-    		</if>
-    	</where>
+    <delete id="deleteUser" parameterType="java.util.Map">
+    	delete from eop_user where id = #{id}     	
     </delete>
+    
     <!--更新用户信息  -->
-    <update id="updateUser" parameterType="cn.plate.service.model.UserModel">
-    	update user 
+    <update id="updateUser" parameterType="java.util.Map">
+    	update eop_user 
     	<set>
     		<if test="username != null">
     			username = #{username}
@@ -63,9 +48,11 @@
     		<if test="password != null">
     			password = #{password}
     		</if>
-    		<if test="powerId &gt; 0">
-    			powerId = #{powerId}
+    		<if test="email != null">
+    			email = #{email}
     		</if>
     	</set>
+    	where id = #{id}
     </update>
+            
 </mapper>

@@ -15,6 +15,7 @@
     <mvc:resources location="/store/"  mapping="/store/**" />  
 	<mvc:resources location="/sto/"  mapping="/sto/**" />
 	<mvc:resources location="/view/"  mapping="/view/**" />
+	<mvc:resources location="/upload/"  mapping="/file/**" />
     <context:component-scan base-package="cn.shop.controller"></context:component-scan>
 	  
   	<!-- 对转向页面的路径解析。prefix：前缀， suffix：后缀 -->

@@ -1,23 +1,47 @@
 package cn.shop.dao;
 
+import java.util.List;
+import java.util.Map;
+
+import org.apache.ibatis.session.SqlSession;
+import org.apache.ibatis.session.SqlSessionFactory;
+
+
 public class UserDao
 {
+    SqlSessionFactory sqlSessionFactory;
+
+    public void setSqlSessionFactory(SqlSessionFactory sqlSessionFactory)
+    {
+        this.sqlSessionFactory = sqlSessionFactory;
+    }
+
+    public SqlSessionFactory getSqlSessionFactory()
+    {
+        return this.sqlSessionFactory;
+    }
+
     /**
      * 获得用户列表
      * 
      * @return
      */
-    public Object getUser()
+    public Object getUser(Map<String, Object> param)
     {
-        return null;
+        SqlSession session = sqlSessionFactory.openSession();
+        List<Object> list;
+        list = session.selectList("userMapper.getUser", param);
+        session.close();
+        return list;
     }
 
     /**
      * 新增用户
      */
-    public Object addUser()
+    public void addUser(Map<String, Object> param)
     {
-        return null;
+        SqlSession session = sqlSessionFactory.openSession();
+        session.insert("userMapper.insertUser", param);
     }
 
     /**
