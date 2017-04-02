@@ -7,9 +7,9 @@ import java.util.Map;
 
 import org.apache.log4j.Logger;
 
-public class DaoShop
+public class ShopDao
 {
-    static Logger log = Logger.getLogger(DaoShop.class);
+    static Logger log = Logger.getLogger(ShopDao.class);
 
     public List<Map<String, Object>> getGoodsInfo(Map<String, Object> map)
     {

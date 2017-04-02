@@ -1,4 +1,4 @@
-var RightAside = React.createClass({
+var ProductRightAside = React.createClass({
 	getInitialState: function(){
 		return {
 			data:[]
@@ -68,7 +68,82 @@ var RightAside = React.createClass({
 	}
 });
 
-var Content = React.createClass({
+var ProductDetail = React.createClass({	
+
+	render : function(){
+		console.info("产品：" + this.props.productId);
+		return (
+			<div>
+				<div className="row">
+	                <div className="col-md-5"></div>
+	                <div className="col-md-5">
+	                	<ul>
+	                		<li>商品名</li>
+	                		<li>商品货号</li>
+	                		<li>重量：155g</li>
+	                		<li>销售价：323</li>
+	                		<li>市场价：</li>
+	                		<li>vip价</li>
+	                		<li>赠送积分</li>                		
+	                	</ul>
+	                	<div>
+		                	<span className="fa fa-minus-circle fa-2x"></span>
+		                	<input type="text" />
+		                	<span className="fa fa-plus-circle fa-2x"></span>
+	                	</div>              
+	                	<button>立即购买</button>  	
+	                </div>
+	            </div>	
+	            <div  className="row">
+	            	<table>
+	            		<caption>商品属性</caption>
+	            		<tr>
+	            			<td>产地</td>
+	            			<td></td>
+	            		</tr>
+	            		<tr>
+	            			<td>包装</td>
+	            			<td></td>
+	            		</tr>
+	            	</table>
+	            	<table>
+	            		<caption>规格参数</caption>
+	            		<tr>
+	            			<td>规格</td>
+	            			<td></td>
+	            		</tr>
+	            		<tr>
+	            			<td>重量</td>
+	            			<td></td>
+	            		</tr>
+	            		<tr>
+	            			<td>保质期</td>
+	            			<td></td>
+	            		</tr>
+	            		<tr>
+	            			<td>储存方法</td>
+	            			<td></td>
+	            		</tr>
+	            		<tr>
+	            			<td>配料</td>
+	            			<td></td>
+	            		</tr>
+	            		<tr>
+	            			<td>产地</td>
+	            			<td></td>
+	            		</tr>
+	            		<tr>
+	            			<td>厂家</td>
+	            			<td></td>
+	            		</tr>	            			            		
+	            	</table>
+	            </div>
+	        </div>
+		);
+	}
+});
+
+var ProductContent = React.createClass({
 	getInitialState : function(){
 		return ({data:{}});	
 	},
@@ -115,10 +190,12 @@ var Content = React.createClass({
 		for (var j in this.state.data.products){
 			productsDom.push(
 				<li className="box-products">
-					<img src={this.state.data.products[j].imgUrl}></img>
-					<center>{this.state.data.products[j].name}</center>
-					<center>市场价：{this.state.data.products[j].marketPrice}</center>
-					<center>商城价：￥{this.state.data.products[j].mallPrice}</center>
+					<a href="">
+						<img src={this.state.data.products[j].imgUrl}></img>
+						<center>{this.state.data.products[j].name}</center>
+						<center>市场价：{this.state.data.products[j].marketPrice}</center>
+						<center>商城价：￥{this.state.data.products[j].mallPrice}</center>
+					</a>
 				</li>
 			);
 		}
@@ -139,6 +216,25 @@ var Content = React.createClass({
 	                </div>
 	            </div>
             </div>
+		);
+	}
+});
+
+var ProductBox = React.createClass({	
+	render : function(){
+		var box;
+		var productId = Util.getUrlParam("productId");
+		if (productId != null) {
+			box = (<ProductDetail productId={productId}/>);
+		}
+		else{
+			box = (<div className="col-md-9"><ProductContent/></div>);
+		}
+		return (
+			<div>
+			<div className="col-md-9">{box}</div>
+                <div className="col-md-3"><ProductRightAside/></div>
+            </div>	
 		);
 	}
 });

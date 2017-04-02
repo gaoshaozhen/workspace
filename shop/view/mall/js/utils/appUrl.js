@@ -10,5 +10,18 @@ var AppUrl = {
 	getMemberUrl : window.location.pathname + "?operator=memberIndex",
 
 	// 获得个人信息
-	getUserInfoUrl : "/mall/data/user.json"
+	getUserInfoUrl : "/mall/data/user.json",
+
+	// 个人中心
+	memberIndex : "/mall/index.html?operator=memberIndex",
+
+	// 管理收货地址
+	memberAddress : "/mall/index.html?operator=memberAddress",
+
+	// 订单地址
+	memberOrder : "/mall/index.html?operator=memberOrder",		
+
+	// 完善基本资料
+	memberInfo : "/mall/index.html?operator=memberInfo"		
+
 };

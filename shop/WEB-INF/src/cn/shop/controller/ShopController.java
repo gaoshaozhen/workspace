@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.context.ContextLoader;
 
-import cn.shop.dao.DaoShop;
+import cn.shop.dao.ShopDao;
 
 /**
  * 处理商品购买流程
@@ -45,14 +45,14 @@ public class ShopController
     {
         String goodsName;
         String goodsId;
-        DaoShop daoShop;
+        ShopDao daoShop;
         Integer goodsPrice;
         Map<String, Object> map = new HashMap<String, Object>();
 
         goodsName = param.get("goodsName");
         goodsId = param.get("goodsId");
         map.put("goodsId", goodsId);
-        daoShop = context.getBean("daoShop", DaoShop.class);
+        daoShop = context.getBean("daoShop", ShopDao.class);
         daoShop.getGood(map);
         goodsPrice = (Integer) daoShop.getGood(map).get(0).get("goodsPrice");
         model.addAttribute("goodsName", goodsName);

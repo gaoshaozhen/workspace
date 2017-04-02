@@ -1,20 +1,8 @@
 
-var Header = React.createClass({
-    getInitialState: function(){
-        return {
-            user:{}
-        };
-    },
-
-    componentDidMount: function () {
-        $.get("/mall/data/user.json",null,function (ret) {
-            this.setState({user:ret});
-        }.bind(this))
-    },    
-
+var Header = React.createClass({    
     render: function() {
         var login;
-        var username = this.state.user.userName;
+        var username = this.props.username;
         var loginUrl = AppUrl.getLoginUrl; 
         var registUrl = AppUrl.getRegistUrl; 
         if (typeof userName == "undefined" || userName.length < 1) {
@@ -28,7 +16,7 @@ var Header = React.createClass({
         else {
             login = (
                 <div className="col-xs-6">
-                    <span>您好：{this.state.user.userName}</span>|
+                    <span>您好：{this.state.user.username}</span>|
                     <a href="#">[会员中心]</a>
                     <a href="#">[退出]</a>
                 </div>       
@@ -54,6 +42,7 @@ var Header = React.createClass({
         );
   }
 });
+
 var Nav = React.createClass({
     getInitialState: function(){
         return {
@@ -121,28 +110,28 @@ var Search = React.createClass({
     }
 });
 
-var Article = React.createClass({
+var Article = React.createClass({    
    render: function(){    
     var box;
-    var operator = Util.getUrlParam("operator");        
-    switch (Util.getUrlParam("operator"))
-    {
-        case "login":
-            box = (<LoginBox />);            
-            break;
-        case "regist":
-            box = (<RegistBox />);  
-            break;
-        case "memberIndex":
-            box = (<MemberBox />);
-            break;
-        default:
-            box = (
-                <div>
-                    <div className="col-md-9"><Content/></div>
-                    <div className="col-md-3"><RightAside/></div>
-                </div>
-            );            
+    var operator = Util.getUrlParam("operator");
+
+    if (operator == "login") {
+        box = (<LoginBox />);
+    }
+    else  if (operator == "regist") {
+        box = (<RegistBox />);
+    }        
+    else if (operator != null && operator.indexOf("member") > -1) {
+        var username = this.props.user.username;
+        if (typeof username != "undefined" && username.length > 1) {
+            box = (<MemberBox user={this.props.user}/>);
+        }
+        else {
+            box = (<LoginBox />);
+        }
+    }
+    else{
+        box = (<ProductBox/>);
     }
     return (        
             <article className="row">
