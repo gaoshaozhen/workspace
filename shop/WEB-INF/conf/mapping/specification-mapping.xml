@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="specificationMapper">
+	<select id ="getOneSpecificationById"  parameterType="java.util.Map" resultType="java.util.Map">
+        select * from es_specification where spec_id=#{spec_id}        
+    </select>
+            
+	<!-- 查询规格 -->
+    <select id ="getSpecification"  parameterType="java.util.Map" resultType="java.util.Map">
+        select * from es_specification where  1=1      
+     	<if test="specification_id != null">
+     		and spec_id = #{spec_id}
+      	</if>
+      	<if test="spec_name != null">
+      		and spec_name= #{spec_name}
+      	</if>
+    </select>
+        
+    <!-- 插入规格信息 -->
+     <insert id="insertSpecification" parameterType="java.util.Map" 
+        useGeneratedKeys="true" keyProperty="specification_id"> 
+        insert into es_specification(spec_name,
+	         spec_show_type,
+	         spec_type,
+	         spec_memo,
+	         spec_order,
+	         disabled)	         
+        	values(#{spec_name},
+	         #{spec_show_type},
+	         #{spec_type},
+	         #{spec_memo},
+	         #{spec_order},
+	         0)             
+    </insert>
+    
+    <!-- 删除规格 -->
+    <delete id="deleteSpecification" parameterType="java.util.Map">
+    	delete from es_specification 
+    		where spec_id in (#{spec_ids})    	
+    </delete>
+    
+    <!--更新规格信息  -->
+    <update id="updateSpecification" parameterType="java.util.Map">
+    	update es_specification 
+    	<set>
+    		<if test="spec_name!= null">
+    			spec_name = #{spec_name}
+    		</if>
+    		<if test="spec_show_type != null">
+    			spec_show_type = #{spec_show_type}
+    		</if>
+    		<if test="spec_type != null">
+    			spec_type = #{spec_type}
+    		</if>
+    		<if test="spec_memo != null">
+    			spec_memo = #{spec_memo}
+    		</if>
+    		<if test="spec_memo != null">
+    			spec_order = #{spec_order}
+    		</if>
+    		<if test="disabled != null">
+    			disabled = #{disabled}
+    		</if>
+    	</set>
+    	where spec_id = #{spec_id}
+    </update>            
+</mapper>

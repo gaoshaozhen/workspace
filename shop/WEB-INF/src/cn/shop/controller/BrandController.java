@@ -80,11 +80,12 @@ public class BrandController
     public Object deleteBrand(@RequestParam Map<String, Object> param)
     {
         Map<String, Object> result = new HashMap<String, Object>();
+        Map<String, Object> dbParam = new HashMap<String, Object>();
         ApplicationContext context = ContextLoader
                 .getCurrentWebApplicationContext();
         BrandDao dao = (BrandDao) context.getBean("brandDao");
-
-        dao.deleteBrand(param);
+        dbParam.put("brand_ids", param.get("brand_ids"));
+        dao.deleteBrand(dbParam);
         result.put("result", true);
         return result;
     }

@@ -56,4 +56,7 @@
     <bean id="brandDao" class="cn.shop.dao.BrandDao">            
         <property name="sqlSessionFactory" ref="sqlSessionFactory"></property>  
     </bean>
+    <bean id="specificationDao" class="cn.shop.dao.SpecificationDao">            
+        <property name="sqlSessionFactory" ref="sqlSessionFactory"></property>  
+    </bean>
 </beans>

@@ -11,6 +11,9 @@
      	<if test="brand_id != null">
      		and brand_id = #{brand_id}
       	</if>
+      	<if test="name != null">
+      		and name= #{name}
+      	</if>
     </select>
         
     <!-- 查询所有品牌 -->
@@ -21,16 +24,14 @@
     <!-- 插入品牌信息 -->
      <insert id="insertBrand" parameterType="java.util.Map" 
         useGeneratedKeys="true" keyProperty="brand_id"> 
-        insert into es_brand(name, logo, 
-        	keywords, brief,url, disabled)  
-             values(#{name},#{logo},#{keywords},
-             #{brief},#{url}
+        insert into es_brand(name, logo,keywords, brief,url, disabled)
+        	values(#{name},#{logo},#{keywords}, #{brief},#{url}
              <choose>
              	<when test="disabled != null">
              		,#{disabled}
              	</when>
              	<otherwise>
-             		,0}
+             		,0
              	</otherwise>
              </choose>
              )

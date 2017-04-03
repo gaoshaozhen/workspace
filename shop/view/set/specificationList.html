@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>规格列表</title>
+		<link rel="stylesheet" type="text/css" href="../lib/jquery-easyui-1.5.1/themes/default/easyui.css">
+		<link rel="stylesheet" type="text/css" href="../lib/jquery-easyui-1.5.1/themes/icon.css">
+		<link rel="stylesheet" type="text/css" href="../lib/jquery-easyui-1.5.1/demo/demo.css">
+		<link rel="stylesheet" type="text/css" href="../lib/font-awesome-4.7.0/css/font-awesome.min.css">
+		<script type="text/javascript" src="../lib/jquery-easyui-1.5.1/jquery.min.js"></script>
+		<script type="text/javascript" src="../lib/jquery-easyui-1.5.1/jquery.easyui.min.js"></script>
+	</head>
+	<body>
+		<div class="wrapper">
+			<b>规格列表</b>
+			<div>
+				<button class="add-specification easyui-linkbutton" iconCls="icon-add">添加</button>
+				<button class="delete-specification easyui-linkbutton" iconCls="icon-cancel">删除</button>
+				<button class="reload-specification easyui-linkbutton" iconCls="icon-reload">刷新</button>
+			</div>
+			<table id="specification-table" class="easyui-datagrid"
+				rownumbers="true"
+				fitColumns="true"
+				style="width: 100%;height: auto;">
+			</table>
+		</div>
+		<!-- 控件集 -->
+		<div id="win" class="easyui-window" title="添加品牌" 
+				closed=true
+				style="width:500px;height:330px;padding:5px;">
+			<form id="spec-form">
+				<table>
+					<tr>
+						<td>规格名称：</td>
+						<td><input type="" name="spec_name"></td>
+					</tr>
+					<tr>
+						<td>规格备注：</td>
+						<td><input type="" name="spec_meno"></td>
+					</tr>
+					<tr>
+						<td>显示类型：</td>
+						<td>
+							<label><input type="radio" name="spec_type" value="0" checked="true" />文字</label>
+							<label><input type="radio" name="spec_type" value="1"/>图片</label>
+						</td>
+					</tr>					
+				</table>
+			</form>
+			<button id="submit-spec-btn">保存数据</button>
+			<span class="info"></span>
+		</div>
+	</body>
+	<script type="text/javascript" src="./js/specificationList.js"></script>
+</html>
