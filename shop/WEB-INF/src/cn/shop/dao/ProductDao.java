@@ -1,5 +1,11 @@
 package cn.shop.dao;
 
+import java.util.List;
+import java.util.Map;
+
+import org.apache.ibatis.session.SqlSession;
+import org.apache.ibatis.session.SqlSessionFactory;
+
 /**
  * 产品查询。
  * 
@@ -8,29 +14,64 @@ package cn.shop.dao;
  */
 public class ProductDao
 {
+    SqlSessionFactory sqlSessionFactory;
+
+    public void setSqlSessionFactory(SqlSessionFactory sqlSessionFactory)
+    {
+        this.sqlSessionFactory = sqlSessionFactory;
+    }
+
+    public SqlSessionFactory getSqlSessionFactory()
+    {
+        return this.sqlSessionFactory;
+    }
+
     /**
      * 获得产品列表
      * 
      * @return
      */
-    public Object getProduct()
+    public Object getProduct(Map<?, ?> param)
     {
-        return null;
+        SqlSession session = sqlSessionFactory.openSession();
+        List<?> list = session.selectList("productMapper.getProduct", param);
+        session.close();
+        return list;
     }
+
+    /**
+     * 获得产品列表
+     * 
+     * @return
+     */
+    public Object updateProduct(Map<?, ?> param)
+    {
+        SqlSession session = sqlSessionFactory.openSession();
+        session.update("productMapper.updateProduct", param);
+        session.close();
+        return true;
+    }
+
 
     /**
      * 新增产品
      */
-    public Object addProduct()
+    public boolean addProduct(Map<?, ?> param)
     {
-        return null;
+        SqlSession session = sqlSessionFactory.openSession();
+        List<?> list = session.selectList("productMapper.addProduct", param);
+        session.close();
+        return true;
     }
 
     /**
      * 删除产品
      */
-    public Object deleteProduct()
+    public boolean deleteProduct(Map<?, ?> param)
     {
-        return null;
+        SqlSession session = sqlSessionFactory.openSession();
+        session.delete("productMapper.deleteProduct", param);
+        session.close();
+        return true;
     }
 }

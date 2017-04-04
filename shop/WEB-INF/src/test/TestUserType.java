@@ -1,16 +1,16 @@
 package test;
 
+import cn.shop.base.ValidateCode;
+
 
 public class TestUserType
 {
 
     public static void main(String[] args)
     {
-        // for (Color color : Color.values())
+        // for (int i = 0; i < 15; i++)
         // {
-        // System.out.println(color.getIndex() + color.getName());
+        System.out.println(ValidateCode.createCode(4));
         // }
-        // TradePeriod t = TradePeriod.NOT_PAY ;
-        // System.out.println(t.);
     }
 }

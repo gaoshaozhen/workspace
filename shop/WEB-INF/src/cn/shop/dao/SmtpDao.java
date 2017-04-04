@@ -7,11 +7,11 @@ import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 
 /**
- * 订单处理。
+ * 邮件服务
  * 
  * @author shaozhen
  */
-public class OrderDao
+public class SmtpDao
 {
     SqlSessionFactory sqlSessionFactory;
 
@@ -26,37 +26,35 @@ public class OrderDao
     }
 
     /**
-     * 获得订单列表
+     * 获得邮件列表
      * 
      * @return
      */
-    public Object getOrder(Map<?, ?> dbParam)
+    public Object getSmtp(Map<String, Object> param)
     {
         SqlSession session = sqlSessionFactory.openSession();
-        List<?> list = session.selectList("orderMapper", dbParam);
+        List<Object> list;
+        list = session.selectList("smtpMapper.getSmtp", param);
         session.close();
         return list;
     }
 
     /**
-     * 新增订单
+     * 新增邮件
      */
-    public boolean addOrder(Map<String, ?> dbParam)
+    public void addSmtp(Map<String, Object> param)
     {
         SqlSession session = sqlSessionFactory.openSession();
-        session.insert("orderMapper.insertOrder", dbParam);
-        session.close();
-        return true;
+        session.insert("smtpMapper.insertSmtp", param);
     }
 
     /**
-     * 删除订单
+     * 删除邮件
      */
-    public boolean deleteOrder(Map<?, ?> dbParam)
+    public Object deleteSmtp(Map<String, Object> param)
     {
         SqlSession session = sqlSessionFactory.openSession();
-        session.insert("orderMapper.insertOrder", dbParam);
-        session.close();
-        return true;
+        session.insert("smtpMapper.insertSmtp", param);
+        return null;
     }
 }
