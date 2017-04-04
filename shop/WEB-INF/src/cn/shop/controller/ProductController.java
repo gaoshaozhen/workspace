@@ -43,7 +43,7 @@ public class ProductController
     /**
      * 新增产品
      */
-    @RequestMapping(value = "getProduct.action")
+    @RequestMapping(value = "addProduct.action")
     public Object addProduct(@RequestParam Map<String, String> param)
     {
         Map<String, Object> result = new HashMap<String, Object>();
@@ -66,7 +66,7 @@ public class ProductController
     /**
      * 删除产品
      */
-    @RequestMapping(value = "getProduct.action")
+    @RequestMapping(value = "deleteProduct.action")
     public Object deleteProduct(@RequestParam Map<String, String> param)
     {
         Map<String, Object> result = new HashMap<String, Object>();
