@@ -1,0 +1,8 @@
+cn.shop.base
+cn.shop.base.email
+cn.shop.controller
+cn.shop.dao
+cn.shop.interceptor
+cn.shop.model
+cn.shop.service
+test

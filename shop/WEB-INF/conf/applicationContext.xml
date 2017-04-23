@@ -1,8 +1,22 @@
-<?xml version="1.0" encoding="UTF-8"?>
- <!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN 2.0//EN"   
- "http://www.springframework.org/dtd/spring-beans-2.0.dtd">
-<beans>
+<?xml version="1.0" encoding="UTF-8"?> 
+ 
+<beans
+	xmlns="http://www.springframework.org/schema/beans" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+	http://www.springframework.org/schema/beans/spring-beans.xsd
+	http://www.springframework.org/schema/context
+	http://www.springframework.org/schema/context/spring-context.xsd">
+	
+	<context:property-placeholder location="/WEB-INF/conf/conf.properties"/>
+	<bean id="springContextUtil" class="cn.shop.base.util.SpringContextUtil"/>
+	
+	<bean id="configuration" class="cn.shop.base.Configuration">
+		<property name="path" value="WEB-INF/conf/conf.properties"></property>
+	</bean>
+	 
 	<bean id="initGoods" class="cn.shop.model.InitGoods"></bean>	
     <bean id="goodsList" class="cn.shop.model.GoodsList"></bean>
-    <bean id="orderList" class="cn.shop.model.OrderList"></bean>
+    <bean id="orderList" class="cn.shop.model.OrderList"></bean>    
 </beans>

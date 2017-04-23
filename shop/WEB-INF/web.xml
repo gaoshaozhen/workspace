@@ -58,6 +58,18 @@
 	    	<param-value>/WEB-INF/conf/spring-mvc.xml</param-value>
 	    </init-param>
 	    <load-on-startup>1</load-on-startup> 
+	</servlet>
+	
+	<!-- 定时任务 -->
+	<servlet>  
+		<servlet-name>orderTask</servlet-name>  
+		<servlet-class>cn.shop.base.task.OrderTask</servlet-class>
+		<init-param>
+			<!-- 执行间隔，单位s -->
+			<param-name>interval</param-name>
+			<param-value>10</param-value>
+		</init-param>  
+		<load-on-startup>1</load-on-startup>  
 	</servlet> 
 	
 	<servlet-mapping> 
@@ -66,8 +78,8 @@
 	</servlet-mapping>
 
 	<!-- 错误页面 -->
-	<!-- <error-page> 
+	 <error-page> 
 		<error-code>404</error-code>
 		 <location>/static/error/404.html</location>
-    </error-page>  -->
+    </error-page>  
 </web-app>

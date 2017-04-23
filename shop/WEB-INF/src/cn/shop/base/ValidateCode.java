@@ -41,7 +41,7 @@ public class ValidateCode
         BufferedImage buffImg; 
         int fontWidth = 0, fontHeight = 0, codeY = 0;
         int red = 0, green = 0, blue = 0;  
-          
+
         fontWidth = width / (codeCount + 2);// 每个字符的宽度
         fontHeight = height - 2;//字体的高度  
         codeY = height - 4;  

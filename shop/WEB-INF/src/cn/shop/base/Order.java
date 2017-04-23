@@ -9,6 +9,8 @@ import java.util.UUID;
  */
 public class Order
 {
+    TradePeriod tradePuriod;
+
     /**
      * 生成订单id
      * 

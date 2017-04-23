@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.context.ContextLoader;
 
 import cn.shop.dao.UserDao;
+import cn.shop.model.LoginInfo;
 
 /**
  * 登录处理
@@ -65,5 +66,63 @@ public class LoginController
         }
 
         return map;
+    }
+
+    /**
+     * 登录处理。
+     * 
+     * @param param
+     * @param session
+     * @return
+     */
+    @RequestMapping(value = "in.shtm")
+    public String signIn(@RequestParam Map<String, String> param,
+            HttpSession session)
+    {
+        LoginInfo loginInfo = new LoginInfo();
+        String username;
+        String password;
+
+        username = param.get("username");
+        password = param.get("password");
+
+        if (username == null || password == null) // 必要参数不能为空
+        {
+            return "redirect:/login.shtm";
+        }
+
+        session.setAttribute("loginInfo", loginInfo);
+        return "";
+    }
+
+    /**
+     * 登录处理。
+     * 
+     * @param param
+     * @param session
+     * @return
+     */
+    @RequestMapping(value = "login.shtm")
+    public String login(@RequestParam Map<String, String> param,
+            HttpSession session)
+    {
+
+        return "";
+    }
+
+
+    /**
+     * 登出处理。
+     * 
+     * @param param
+     * @param session
+     * @return
+     */
+    @RequestMapping(value = "out.shtm")
+    public String signOut(@RequestParam Map<String, String> param,
+            HttpSession session)
+    {
+        session.removeAttribute("loginInfo");
+        return "redirect:/login.shtm";
     }
 }

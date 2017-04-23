@@ -10,7 +10,19 @@ import java.util.regex.Pattern;
  */
 public enum TradePeriod
 {
-    NOT_PAY(1, "尚未付款"), PAID(2, "已经付款"), UNKNOWN(-1, "未知类型");
+    NOT_PAY(1, "尚未付款"),
+
+    PAID(2, "已经付款"),
+
+    CONFIRM(3, "确认收款"),
+
+    FAIL(4, "交易失败"),
+
+    SUCCESS(5, "交易成功"),
+
+    RETURNFEE(6, "退款"),
+
+    UNKNOWN(-1, "未知类型");
 
     private int code;
     private String name;
@@ -21,11 +33,21 @@ public enum TradePeriod
         this.name = name;
     }
 
+    /**
+     * 获得代码值。
+     * 
+     * @return
+     */
     public int getCode()
     {
         return this.code;
     }
 
+    /**
+     * 获取描述。
+     * 
+     * @return
+     */
     public String getName()
     {
         return this.name;
@@ -58,7 +80,7 @@ public enum TradePeriod
     public static TradePeriod get(String code)
     {
         Pattern pattern = Pattern.compile("^[-\\+]?[\\d]+$");
-        if (pattern.matcher(code).matches())
+        if (code != null && pattern.matcher(code).matches())
         {
             return get(Integer.parseInt(code));
         }

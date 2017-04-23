@@ -70,7 +70,7 @@ public enum UserType
     public static UserType get(String code)
     {
         Pattern pattern = Pattern.compile("^[-\\+]?[\\d]+$");
-        if (pattern.matcher(code).matches())
+        if (code != null && pattern.matcher(code).matches())
         {
             return get(Integer.parseInt(code));
         }
