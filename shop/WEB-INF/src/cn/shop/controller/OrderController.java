@@ -1,18 +1,25 @@
 package cn.shop.controller;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+
+import javax.servlet.http.HttpSession;
 
 import org.apache.log4j.Logger;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.context.ContextLoader;
 
 import cn.shop.base.Order;
+import cn.shop.base.OrderStatus;
+import cn.shop.base.util.SpringContextUtil;
 import cn.shop.dao.OrderDao;
+import cn.shop.model.Check;
 
 /**
  * 订单处理类。
@@ -20,27 +27,46 @@ import cn.shop.dao.OrderDao;
  * @author shaozhen
  */
 @Controller
-@RequestMapping(value = "/order/")
+@RequestMapping(value = "/mall/")
 public class OrderController
 {
     private static Logger logger = Logger.getLogger(OrderController.class);
 
     /**
-     * 获得订单列表
+     * 获得用户订单列表
      * 
      * @return
      */
-    @RequestMapping(value = "getOrder.action")
-    @ResponseBody
-    public Object getOrder(@RequestParam Map<String, String> param)
+    @RequestMapping(value = "getOrder.shtm")
+    public Object getOrderList(ModelMap model,
+            @RequestParam Map<String, String> param,
+            HttpSession session)
     {
         OrderDao dao;
-        ApplicationContext context;
+        List<Map<String, Object>> list;
+        OrderStatus orderStatus;
+        Map<String, Object> dbParam = new HashMap<String, Object>();
 
-        context = ContextLoader.getCurrentWebApplicationContext();
-        dao = (OrderDao) context.getBean("orderDao");
+        // 检查是否在线
+        if (!Check.memberInline(session))
+        {
+            return Check.getMemberLoginUrl();
+        }
+        orderStatus = OrderStatus.get(param.get("orderStatus"));
+        dao = (OrderDao) SpringContextUtil.getBean("orderDao");
+        if (orderStatus == OrderStatus.UNKNOWN)
+        {
+            list = dao.getOrderList(dbParam);
+        }
+        else
+        {
+            list = dao.getOrderListByStatus(dbParam);
+        }
 
-        return dao.getOrder(param);
+        model.addAttribute("orderList", list);
+        model.addAttribute("orderStatus", orderStatus);
+
+        return "mall/v2/order.jsp";
     }
 
     /**
@@ -51,10 +77,10 @@ public class OrderController
      */
     @RequestMapping(value = "addOrder.action")
     @ResponseBody
-    public Object addOrder(@RequestParam Map<String, String> param)
+    public Object addOrder(@RequestParam Map<String, Object> param)
     {
         Map<String, Object> result = new HashMap<String, Object>();
-        String pruduct_id = param.get("pruduct_id");
+        String pruduct_id = param.get("pruduct_id").toString();
         String orderId;
         OrderDao dao;
         ApplicationContext context;

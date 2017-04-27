@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sitemesh>
+	  <!--默认情况下，
+          sitemesh 只对 HTTP 响应头中 Content-Type 为 text/html 的类型进行拦截和装饰，
+          我们可以添加更多的 mime 类型-->
+    <mime-type>text/html</mime-type>
+    <mime-type>application/vnd.wap.xhtml+xml</mime-type>
+    <mime-type>application/xhtml+xml</mime-type>
+    
+    <!-- 指明满足“/*”的页面，将被“/WEB-INF/views/decorators/decorator.html”所装饰 -->
+    <mapping path="/mall/index.shtm" decorator="/view/mall/decorator/decorator.jsp" />
+    <mapping path="/mall/search.shtm" decorator="/view/mall/decorator/decorator.jsp" />
+    <mapping path="/mall/register.shtm" decorator="/view/mall/decorator/decorator.jsp" />
+    <mapping path="/mall/login.shtm" decorator="/view/mall/decorator/decorator.jsp" />
+    <mapping path="/mall/member_index.shtm" decorator="/view/mall/decorator/decorator.jsp" />
+    <mapping path="/mall/getOrder.shtm" decorator="/view/mall/decorator/decorator.jsp" />
+    <mapping path="/mall/address.shtm" decorator="/view/mall/decorator/decorator.jsp" />
+    <mapping path="/mall/addAddress.shtm" decorator="/view/mall/decorator/decorator.jsp" />
+    <mapping path="/mall/search_cat.shtm" decorator="/view/mall/decorator/decorator.jsp" />
+    
+</sitemesh>

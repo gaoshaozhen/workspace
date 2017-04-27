@@ -23,8 +23,8 @@ public class OrderTask extends HttpServlet
         @Override
         public void run()
         {
-            logger.info("定时任务开始执行");
-            logger.info("定时任务结束");
+            // logger.info("定时任务开始执行");
+            // logger.info("定时任务结束");
         }
 
     }

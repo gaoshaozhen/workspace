@@ -14,15 +14,15 @@ public enum UserType
 
     MANAGER(2, "普通管理员"),
 
-    SENIOR_MEMBER(3, "高级会员"),
+    SENIOR_MEMBER(3, "黄金会员"),
 
-    INTERMEDIATE_MEMBER(4, "中级会员"),
+    INTERMEDIATE_MEMBER(4, "白银会员"),
 
     REGULAR_MEMBER(5, "普通会员"),
 
     VISITOR(6, "普通游客"),
 
-    UNKNOWN(-1, "普通游客");
+    UNKNOWN(-1, "未知类型");
 
     int code;
     String name;

@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.util.Properties;
 
 public class Configuration
@@ -42,11 +43,22 @@ public class Configuration
 
     public String get(String key)
     {
+        String value;
+
         if (key == null)
         {
             return null;
         }
-        return this.properties.getProperty(key);
+        value = (String) this.properties.get(key);
+        try
+        {
+            value = new String(value.getBytes(), "utf-8");
+        }
+        catch (UnsupportedEncodingException e)
+        {
+            e.printStackTrace();
+        }
+        return value;
     }
 
     public String get(String key, String defaultValue)

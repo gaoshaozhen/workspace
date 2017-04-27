@@ -4,6 +4,8 @@ import java.util.regex.Pattern;
 
 import org.apache.log4j.Logger;
 
+import cn.shop.base.util.SmtpUtil;
+
 public class Notify
 {
     Logger logger = Logger.getLogger(this.getClass());
@@ -75,6 +77,7 @@ public class Notify
 
     public boolean sendEmail(String message, String[] toUser)
     {
+        new SmtpUtil().sendEmail(toUser, message);
         return true;
     }
 

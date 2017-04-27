@@ -14,41 +14,21 @@
 			<div class="menu-header">
 				<button class="easyui-linkbutton" iconCls="icon-add">添加</button>				
 				<button class="easyui-linkbutton" iconCls="icon-cancel">删除</button>				
+				<button class="easyui-linkbutton reload-payment" iconCls="icon-reload">刷新</button>				
 			</div>
-			<table id="tt" class="easyui-datagrid" 
+			<table id="payment-table" class="easyui-datagrid" 
 				rownumbers="true"
 				fitColumns="true"
 				striped="true"
-				style="width:400px;height:auto;">
+				style="width:100%;height:auto;">
 				<thead>
 					<tr>
 						<th data-options="field:'ck',checkbox:'true'"></th>
-						<th field="name1" align="center" width="50">支付方式名称</th>
-						<th field="name2" align="center" width="50">修改</th>	
+						<th field="name" align="center" width="50">支付方式名称</th>
+						<th field="biref" align="center" width="50">备注</th>	
+						
 					</tr>
-				</thead>
-				<tbody>
-					<tr>		
-						<td></td>				
-						<td>支付宝</td>
-						<td><span class="fa fa-edit"></span></td>
-					</tr>
-					<tr>
-						<td></td>
-						<td>财付通</td>
-						<td><span class="fa fa-edit"></span></td>
-					</tr>
-					<tr>
-						<td></td>
-						<td>货到付款</td>
-						<td><span class="fa fa-edit"></span></td>
-					</tr>
-					<tr>
-						<td></td>
-						<td>预存款支付</td>
-						<td><span class="fa fa-edit"></span></td>
-					</tr>
-				</tbody>
+				</thead>				
 			</table>
 			<table>
 				<tr>
@@ -117,4 +97,5 @@
 			</table>	
 		</div>
 	</body>
+	<script type="text/javascript" src="./js/payType.js"></script>
 </html>

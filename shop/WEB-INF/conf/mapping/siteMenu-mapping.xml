@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+ <!-- 管理菜单栏 es_site_menu_siteMenu -->
+<mapper namespace="siteMenuMapper">
+	<select id ="getOneSiteMenuById"  parameterType="java.util.Map" resultType="java.util.List">
+        select * from es_site_menu where menuid=#{menuid}        
+    </select>    
+        
+    <!-- 查询所有菜单栏-->
+    <select id="getAllSiteMenuList" resultType="java.util.Map">
+    	select * from es_site_menu order by sort
+    </select>
+    
+    <!-- 插入菜单栏信息--> 
+     <insert id="addSiteMenu" parameterType="java.util.Map" 
+        useGeneratedKeys="true" keyProperty="menuid"> 
+        insert into es_site_menu(menuid,
+        						 parentid,
+        						 name,
+        						 url,
+        						 target,
+        						 sort)
+        			values(#{menuid},
+        				   #{parentid},
+        				   #{name},
+        				   #{url},
+        				   #{target},
+        				   #{sort})
+    </insert>
+    <!-- 删除菜单栏-->
+    <delete id="deleteSiteMenuById" parameterType="java.util.Map">
+    	delete from es_site_menu where menuid = #{menuid}     	
+    </delete>
+    
+    <!--更新菜单栏信息  -->  
+    <update id="updateSiteMenu" parameterType="java.util.Map">
+    	update es_site_menu 
+    	<set>
+    		<if test="parentid != null">
+    			parentid = #{parentid}
+    		</if>
+    		<if test="name != null">
+    			name = #{name}
+    		</if>
+    		<if test="url != null">
+    			url = #{url}
+    		</if>
+    		<if test="target != null">
+    			target = #{target}
+    		</if>
+    		<if test="sort != null">
+    			sort = #{sort}
+    		</if>
+    	</set>
+    	where menuid = #{menuid} 
+    </update>
+          
+</mapper>

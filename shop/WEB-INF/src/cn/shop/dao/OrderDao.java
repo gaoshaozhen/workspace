@@ -30,18 +30,49 @@ public class OrderDao
      * 
      * @return
      */
-    public Object getOrder(Map<?, ?> dbParam)
+    public List<Map<String, Object>> getOrderList(Map<?, ?> dbParam)
     {
         SqlSession session = sqlSessionFactory.openSession();
-        List<?> list = session.selectList("orderMapper", dbParam);
+        List<Map<String, Object>> list = session.selectList(
+                "orderMapper.getOrderList",
+                dbParam);
         session.close();
         return list;
     }
 
     /**
+     * 按照订单状态获得订单列表。
+     * 
+     * @return
+     */
+    public List<Map<String, Object>> getOrderListByStatus(Map<?, ?> dbParam)
+    {
+        SqlSession session = sqlSessionFactory.openSession();
+        List<Map<String, Object>> list = session.selectList(
+                "orderMapper.getOrderListByStatus", dbParam);
+        session.close();
+        return list;
+    }
+
+    /**
+     * 获得单个订单详细信息。
+     * 
+     * @return
+     */
+    public Map<String, Object> getOneOrderById(Map<String, Object> dbParam)
+    {
+        SqlSession session = sqlSessionFactory.openSession();
+        Map<String, Object> map = session.selectOne(
+                "orderMapper.getOneOrderById", dbParam);
+
+        session.close();
+        return map;
+    }
+
+    /**
      * 新增订单
      */
-    public boolean addOrder(Map<String, ?> dbParam)
+    public boolean addOrder(Map<String, Object> dbParam)
     {
         SqlSession session = sqlSessionFactory.openSession();
         session.insert("orderMapper.insertOrder", dbParam);
@@ -55,7 +86,7 @@ public class OrderDao
     public boolean deleteOrder(Map<?, ?> dbParam)
     {
         SqlSession session = sqlSessionFactory.openSession();
-        session.insert("orderMapper.insertOrder", dbParam);
+        session.insert("orderMapper.deleteOrderById", dbParam);
         session.close();
         return true;
     }

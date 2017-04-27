@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+<mapper namespace="paymentMapper">
+	<select id ="getOnePaymentById"  parameterType="java.util.Map" resultType="java.util.Map">
+        select * from es_payment_cfg where id = #{id}        
+    </select>
+        
+	<!-- 查询类型 -->
+    <select id ="getPayment"  parameterType="java.util.Map" resultType="java.util.Map">
+        select * from es_payment_cfg        
+    </select>           
+    
+    <!-- 插入类型信息 -->
+     <insert id="insertPayment" parameterType="java.util.Map" 
+        useGeneratedKeys="true" keyProperty="id"> 
+        insert into es_payment_cfg(name,
+        						  config,
+        						  biref,
+        						  pay_fee,
+        						  type)
+             values(#{name},
+             		#{config},
+             		#{biref},
+             		#{pay_fee},
+             		#{type})  
+    </insert>
+    
+    <!-- 删除类型 -->
+    <delete id="deletePayment" parameterType="java.util.Map">
+    	delete from es_payment_cfg where id = #{id}     	
+    </delete>    
+</mapper>

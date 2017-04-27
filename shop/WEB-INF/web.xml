@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<web-app version="3.0" 
-	xmlns="http://java.sun.com/xml/ns/javaee" 
+<web-app version="3.0"
+	xmlns="http://Java.sun.com/xml/ns/j2ee" 
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee 
-	http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd">
+	xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee 
+	http://java.sun.com/xml/ns/j2ee/web-app_3_0.xsd">
   	<!-- 应用名字 -->
 	<context-param>
 		<param-name>webName</param-name>
@@ -76,10 +76,37 @@
 	  <servlet-name>spring</servlet-name> 
 	  <url-pattern>/</url-pattern>	   
 	</servlet-mapping>
+	<filter>
+      <filter-name>sitemesh</filter-name>
+      <filter-class>org.sitemesh.config.ConfigurableSiteMeshFilter</filter-class>
+    </filter>
+    <filter-mapping>
+ 	   <filter-name>sitemesh</filter-name>
+       <url-pattern>/*</url-pattern>
+    </filter-mapping>
 
 	<!-- 错误页面 -->
 	 <error-page> 
 		<error-code>404</error-code>
-		 <location>/static/error/404.html</location>
+		 <location>/view/error/404.html</location>
     </error-page>  
+    <jsp-config>
+	    <taglib>
+		    <taglib-uri>http://java.sun.com/jstl/fmt</taglib-uri>
+		    <taglib-location>/WEB-INF/tld/fmt.tld</taglib-location>
+		</taglib>
+			
+		<taglib>
+		    <taglib-uri>http://java.sun.com/jstl/core</taglib-uri>
+		    <taglib-location>/WEB-INF/tld/c.tld</taglib-location>
+		</taglib>	
+		<taglib>
+		    <taglib-uri>http://java.sun.com/jstl/x</taglib-uri>
+		    <taglib-location>/WEB-INF/tld/x.tld</taglib-location>
+		</taglib>	
+		<taglib>
+		    <taglib-uri>http://java.sun.com/jstl/fn</taglib-uri>
+		    <taglib-location>/WEB-INF/tld/fn.tld</taglib-location>
+		</taglib>
+	</jsp-config>
 </web-app>

@@ -1,7 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
- <!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN"   
- "http://www.springframework.org/dtd/spring-beans.dtd">
-<beans>
+
+<beans
+	xmlns="http://www.springframework.org/schema/beans" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+	http://www.springframework.org/schema/beans/spring-beans.xsd
+	http://www.springframework.org/schema/context
+	http://www.springframework.org/schema/context/spring-context.xsd">
+	<!-- 自动扫描 -->
+	<context:component-scan base-package="cn.shop.dao"/> 
 	<bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource" destroy-method="close">
         <property name="driverClass">
             <value>com.mysql.jdbc.Driver</value>
@@ -17,7 +25,7 @@
         </property>
         <!--  连接池保留最大连接数-->
         <property name="maxPoolSize"> 
-            <value>2</value> 
+            <value>10</value> 
         </property> 
         
         <!--  连接池保留最小连接数-->
@@ -42,11 +50,12 @@
                 
         <!-- 检查空闲连接的间隔  -->
         <property name="idleConnectionTestPeriod"> 
-             <value>120000</value> 
+             <value>12000</value> 
         </property> 
     </bean>
      <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">  
-        <property name="dataSource" ref="dataSource" />  
+        <property name="dataSource" ref="dataSource" /> 
+         <property name="configLocation" value="WEB-INF/conf/mybatis-config.xml"></property> 
         <property name="mapperLocations" value="WEB-INF/conf/mapping/*.xml"></property>   
     </bean>
     
@@ -59,4 +68,34 @@
     <bean id="specificationDao" class="cn.shop.dao.SpecificationDao">            
         <property name="sqlSessionFactory" ref="sqlSessionFactory"></property>  
     </bean>
+     <bean id="typeDao" class="cn.shop.dao.TypeDao">            
+        <property name="sqlSessionFactory" ref="sqlSessionFactory"></property>  
+    </bean>
+    <bean id="paymentDao" class="cn.shop.dao.PaymentDao">            
+        <property name="sqlSessionFactory" ref="sqlSessionFactory"></property>  
+    </bean>
+    <bean id="smtpDao" class="cn.shop.dao.SmtpDao">            
+        <property name="sqlSessionFactory" ref="sqlSessionFactory"></property>  
+    </bean>
+    <bean id="goodsCatDao" class="cn.shop.dao.GoodsCatDao">            
+        <property name="sqlSessionFactory" ref="sqlSessionFactory"></property>  
+    </bean>
+    <bean id="memberDao" class="cn.shop.dao.MemberDao">            
+        <property name="sqlSessionFactory" ref="sqlSessionFactory"></property>  
+    </bean>
+    <bean id="memberLvDao" class="cn.shop.dao.MemberLvDao">            
+        <property name="sqlSessionFactory" ref="sqlSessionFactory"></property>  
+    </bean>
+    <bean id="orderDao" class="cn.shop.dao.OrderDao">            
+        <property name="sqlSessionFactory" ref="sqlSessionFactory"></property>  
+    </bean>
+    <!-- 收货地址 -->
+    <bean id="addressDao" class="cn.shop.dao.AddressDao">            
+        <property name="sqlSessionFactory" ref="sqlSessionFactory"></property>  
+    </bean>
+    <!-- 顶部菜单 -->
+    <bean id="siteMenuDao" class="cn.shop.dao.SiteMenuDao">            
+        <property name="sqlSessionFactory" ref="sqlSessionFactory"></property>  
+    </bean>
+    
 </beans>

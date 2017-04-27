@@ -1,5 +1,6 @@
 package cn.shop.controller;
 
+import org.apache.log4j.Logger;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -9,12 +10,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
  * @author shaozhen
  */
 @Controller
-@RequestMapping(value = "/index/")
+@RequestMapping(value = "/view/")
 public class IndexController
 {
-    @RequestMapping(value = "**")
+    Logger logger = Logger.getLogger(this.getClass());
+
+    @RequestMapping(value = "index.shtm")
     public String index()
     {
+        logger.info("进入首页");
         return "index";
     }
 }

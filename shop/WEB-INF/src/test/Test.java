@@ -2,6 +2,8 @@ package test;
 
 import java.security.MessageDigest;
 
+import cn.shop.base.notify.Notify;
+
 public class Test
 {
     public static byte[] getMd5(byte[] b)
@@ -22,9 +24,12 @@ public class Test
 
     public static void main(String[] args)
     {
-        String str = "sdfs";
-        byte[] b = getMd5(str.getBytes());
-        System.out.print(byteArrayToHex(b));
+        String u = "sdfsdfsdfsdfs";
+        new Notify().sendEmail(u, new String[] { "2086427989@qq.com" });
+
+        // System.out
+        // .print(JsonUtil
+        // .getJSONArray("[{\"datatype\":\"\",\"hidden\":0,\"name\":\"包装\",\"nums\":[0,0,0],\"optionAr\":[\"袋装\",\"盒装\",\"罐装\"],\"optionMap\":[{\"num\":0,\"selected\":0,\"url\":\"\",\"name\":\"袋装\"},{\"num\":0,\"selected\":0,\"url\":\"\",\"name\":\"盒装\"},{\"num\":0,\"selected\":0,\"url\":\"\",\"name\":\"罐装\"}],\"options\":\"袋装,盒装,罐装\",\"required\":0,\"type\":3,\"unit\":\"\",\"valStr\":\"\",\"value\":\"\",\"valueList\":[]}]"));
     }
 
     public static String byteArrayToHex(byte[] byteArray)

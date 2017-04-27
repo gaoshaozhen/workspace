@@ -8,10 +8,12 @@ import org.apache.log4j.Logger;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.context.ContextLoader;
 
+import cn.shop.base.util.SpringContextUtil;
 import cn.shop.dao.SpecificationDao;
 
 /**
@@ -31,16 +33,18 @@ public class SpecificationController
      * 
      * @return
      */
-    @RequestMapping(value = "getSpec.action")
+    @RequestMapping(value = "getSpec.shtm", method = RequestMethod.POST)
     @ResponseBody
     public Object getSpecification(@RequestParam Map<String, Object> param)
     {
-        ApplicationContext context = ContextLoader
-                .getCurrentWebApplicationContext();
-        SpecificationDao dao = (SpecificationDao) context
+        Map<String, Object> map = new HashMap<String, Object>();
+        List<?> list;
+        SpecificationDao dao = (SpecificationDao) SpringContextUtil
                 .getBean("specificationDao");
-
-        return dao.getSpecification(param);
+        list = (List<?>) dao.getSpecification(param);
+        map.put("tatal", list.size());
+        map.put("data", list);
+        return map;
     }
 
     /**

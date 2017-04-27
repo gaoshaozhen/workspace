@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+ <!-- 管理收货地址 es_member_address_address -->
+<mapper namespace="addressMapper">
+	<select id ="getOneAddressById"  parameterType="java.util.Map" resultType="java.util.List">
+        select * from es_member_address where addr_id=#{addr_id}        
+    </select>
+        
+	<!-- 根据用户查询收货地址的收货地址列表 -->
+    <select id ="getAddressByMemberId"  parameterType="java.util.Map" resultType="java.util.Map">
+        select * from es_member_address where 
+        	member_id=#{member_id}
+    </select>
+        
+    <!-- 查询所有收货地址-->
+    <select id="getAllAddress" resultType="java.util.Map">
+    	select * from es_member_address
+    </select>
+    
+    <!-- 插入收货地址信息--> 
+     <insert id="addAddress" parameterType="java.util.Map" 
+        useGeneratedKeys="true" keyProperty="addr_id"> 
+        insert into es_member_address(member_id,name,country,province_id,city_id,region_id,addr,zip,mobile,def_addr)values(#{member_id},#{name},#{country},#{proince_id},#{city_id},#{region_id},#{addr},#{zip},#{mobile},#{def_addr})
+    </insert>
+    <!-- 删除收货地址-->
+    <delete id="deleteAddressById" parameterType="java.util.Map">
+    	delete from es_member_address where addr_id = #{addr_id}     	
+    </delete>
+    
+    <!--更新收货地址信息  
+    <update id="updateAddress" parameterType="java.util.Map">
+    	update es_member_address 
+    	<set>
+    		<if test="username != null">
+    			username = #{username}
+    		</if>
+    		<if test="password != null">
+    			password = #{password}
+    		</if>
+    		<if test="email != null">
+    			email = #{email}
+    		</if>
+    	</set>
+    	where addr_id = #{addr_id}
+    </update>
+     -->       
+</mapper>

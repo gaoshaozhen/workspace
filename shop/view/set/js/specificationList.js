@@ -1,17 +1,27 @@
 ;(function(){
 	var bindEvent = function(){
+
 		// 刷新表格数据
 		$(".reload-specification").click(function(){
+			// $("#specification-table").datagrid('loading'); //显示加载信息
 			$.ajax({
-				type:"get",
-				url:"/shop/spec/getSpec.action",
+				type:"post",
+				url:"/shop/spec/getSpec.shtm",
 				error:function(msg){
 					console.error("网络异常。。。");
 				},
 				success:function(msg){
+					var array = [];
+					for (var item in msg.data){
+						array.push({
+							"spec_id":msg.data[item].spec_id,
+							"spec_name":msg.data[item].spec_name,
+							"spec_type":msg.data[item].spec_type,
+							"spec_memo":msg.data[item].spec_memo
+						});
+					}
 					$("#specification-table").datagrid({						
 						columns:[[
-
 							{field:'ck',checkbox:true,width:80, align:'center'},
 						    {field:'spec_id',title:'规格ID',width:80, align:'center'},
 						    {field:'spec_name',title:'规格名',width:80, align:'center'},
@@ -23,9 +33,9 @@
 										return "图片";
 									}
 								}},
-						    {field:'spec_meno',title:'备注',width:80, align:'center'},						    
+						    {field:'spec_memo',title:'备注',width:80, align:'center'},						    
 						]],
-						data:msg
+						data:array
 					});		
 					// console.info(msg);
 				}

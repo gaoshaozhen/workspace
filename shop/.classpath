@@ -43,10 +43,13 @@
 	<classpathentry kind="lib" path="WEB-INF/lib/spring-webmvc-4.2.5.RELEASE.jar"/>
 	<classpathentry kind="lib" path="WEB-INF/lib/spring-webmvc-portlet-4.2.5.RELEASE.jar"/>
 	<classpathentry kind="lib" path="WEB-INF/lib/spring-websocket-4.2.5.RELEASE.jar"/>
+	<classpathentry kind="lib" path="WEB-INF/lib/javax.mail.jar"/>
 	<classpathentry kind="lib" path="WEB-INF/lib/jackson-annotations-2.9.0.pr2.jar"/>
 	<classpathentry kind="lib" path="WEB-INF/lib/jackson-core-2.9.0.pr2.jar"/>
 	<classpathentry kind="lib" path="WEB-INF/lib/jackson-databind-2.9.0.pr2.jar"/>
-	<classpathentry kind="lib" path="WEB-INF/lib/javax.mail.jar"/>
+	<classpathentry kind="lib" path="WEB-INF/lib/jackson-mapper-asl-1.9.13.jar"/>
+	<classpathentry kind="lib" path="WEB-INF/lib/jstl.jar"/>
+	<classpathentry kind="lib" path="WEB-INF/lib/standard.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
 	<classpathentry kind="output" path="WEB-INF/classes"/>
 </classpath>

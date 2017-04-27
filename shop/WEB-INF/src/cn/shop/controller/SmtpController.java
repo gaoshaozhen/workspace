@@ -10,10 +10,12 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.context.ContextLoader;
 
+import cn.shop.base.util.SpringContextUtil;
 import cn.shop.dao.SmtpDao;
 
 /**
@@ -114,6 +116,29 @@ public class SmtpController
         {
             logger.debug("删除邮件名为空");
         }
+        return map;
+    }
+
+    @RequestMapping(value = "getSmtpInfo.shtm")
+    @ResponseBody
+    public Object getSmtpInfo(@RequestParam Map<String, Object> param)
+    {
+        Map<String, Object> dbParam = new HashMap<String, Object>();
+        dbParam.put("id", 1);
+        Map<String, Object> result;
+        SmtpDao smtpDao = (SmtpDao) SpringContextUtil.getBean("smtpDao");
+        result = (Map<String, Object>) smtpDao.getSmtpInfo(dbParam);
+        return result;
+    }
+
+    @RequestMapping(value = "updateSmtp.shtm", method = RequestMethod.POST)
+    public Object updateSmtp(@RequestParam Map<String, Object> param)
+    {
+        Map<String, Object> map = new HashMap<String, Object>();
+        SmtpDao smtpDao = (SmtpDao) SpringContextUtil.getBean("smtpDao");
+        smtpDao.updateSmtp(param);
+        map.put("operator", 1);
+
         return map;
     }
 }

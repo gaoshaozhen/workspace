@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+<mapper namespace="memberMapper">
+	<select id ="getOneMemberById"  parameterType="java.util.Map" resultType="java.util.Map">
+        select * from es_member where member_id=#{member_id}        
+    </select>
+        
+	<!-- 查询单个会员 -->
+    <select id ="getMember"  parameterType="java.util.Map" resultType="java.util.Map">
+        select * from es_member where 
+        	uname = #{uname} and password = #{password}
+    </select>
+        
+    <!-- 查询所有会员 -->
+    <select id="getAllMember" resultType="java.util.Map">
+    	select * from es_member
+    </select>
+    
+    <!-- 插入会员信息--> 
+     <insert id="insertMember" parameterType="java.util.Map" 
+        useGeneratedKeys="true" keyProperty="member_id"> 
+        insert into es_member(uname,
+        					  password, 
+        					  email,
+        					  lv_id)  
+             values(#{uname}, 
+             		#{password}, 
+             		#{email}, 
+             		#{lv_id})  
+    </insert>
+    <!-- 删除会员 -->
+    <delete id="deleteMember" parameterType="java.util.Map">
+    	delete from es_member where member_id = #{member_id}     	
+    </delete>
+    
+    <!--更新会员信息  
+    <update id="updateMember" parameterType="java.util.Map">
+    	update es_member 
+    	<set>
+    		<if test="username != null">
+    			username = #{username}
+    		</if>
+    		<if test="password != null">
+    			password = #{password}
+    		</if>
+    		<if test="email != null">
+    			email = #{email}
+    		</if>
+    	</set>
+    	where member_id = #{member_id}
+    </update>
+     -->       
+</mapper>

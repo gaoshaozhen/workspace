@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+<mapper namespace="typeMapper">
+	<select id ="getOneTypeById"  parameterType="java.util.Map" resultType="java.util.Map">
+        select * from es_goods_type where id = #{id}        
+    </select>
+        
+	<!-- 查询类型 -->
+    <select id ="getType"  parameterType="java.util.Map" resultType="java.util.Map">
+        select * from es_goods_type where 1=1  
+        <if test="id != null">
+        	and id = #{id}
+        </if>
+        <if test="name != null">
+        	name=#{name}
+        </if>              	        
+    </select>
+        
+    <!-- 分页查询所有类型 -->
+    <select id="getAllType" parameterType="java.util.Map" resultType="java.util.Map">
+    	select * from 
+    			
+    			es_goods_type
+    		
+    		limit #{start},#{end}
+    </select>
+    
+    <!-- 查询记录数量-->
+    <select id="getCount" resultType="java.util.Map">
+    	select count(*) total from es_goods_type    		
+    </select>
+    
+    <!-- 插入类型信息 -->
+     <insert id="insertType" parameterType="java.util.Map" 
+        useGeneratedKeys="true" keyProperty="id"> 
+        insert into es_goods_type(name,
+        						  props,
+        						  params,
+        						  disabled,
+        						  is_physical,
+        						  have_prop,
+        						  have_parm,
+        						  join_brand,
+        						  have_field)  
+             values(#{name},
+             		#{props},
+             		#{params},
+             		#{disabled},
+             		#{is_physical},
+             		#{have_prop},
+             		#{have_parm},
+             		#{join_brand},
+             		#{have_field})  
+    </insert>
+    
+    <!-- 删除类型 -->
+    <delete id="deleteType" parameterType="java.util.Map">
+    	delete from es_goods_type where id = #{id}     	
+    </delete>
+    
+    <!--更新类型信息  -->
+    <update id="updateType" parameterType="java.util.Map">
+    	update es_goods_type 
+    	<set>
+    		<if test="name != null">
+    			name = #{name}
+    		</if>
+    		<if test="props != null">
+    			props = #{props}
+    		</if>
+    		<if test="params != null">
+    			params = #{params}
+    		</if>
+    		<if test="disabled != null">
+    			disabled = #{disabled}
+    		</if>
+    		<if test="is_physical != null">
+    			is_physical = #{is_physical}
+    		</if>
+    		<if test="have_prop != null">
+    			have_prop = #{have_prop}
+    		</if>
+    		<if test="have_parm != null">
+    			have_parm = #{have_parm}
+    		</if> 
+    		<if test="join_brand != null">
+    			join_brand = #{join_brand}
+    		</if>
+    		<if test="have_field != null">
+    			have_field = #{have_field}
+    		</if>    		  		    	
+    	</set>
+    	where id = #{id}
+    </update>           
+</mapper>

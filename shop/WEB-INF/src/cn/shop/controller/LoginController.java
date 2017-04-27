@@ -12,12 +12,17 @@ import org.apache.log4j.Logger;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.context.ContextLoader;
 
+import cn.shop.base.UserClassification;
+import cn.shop.base.util.SpringContextUtil;
+import cn.shop.dao.MemberDao;
 import cn.shop.dao.UserDao;
 import cn.shop.model.LoginInfo;
+import cn.shop.model.MemberInfo;
 
 /**
  * 登录处理
@@ -38,8 +43,7 @@ public class LoginController
     @RequestMapping(value = "login.action")
     @ResponseBody
     public Object getUser(HttpServletRequest request,
-            @RequestParam Map<String, Object> param,
-            HttpSession session)
+            @RequestParam Map<String, Object> param, HttpSession session)
     {
         Set<String> set = param.keySet();
         Map<String, Object> map = new HashMap<String, Object>();
@@ -75,24 +79,82 @@ public class LoginController
      * @param session
      * @return
      */
-    @RequestMapping(value = "in.shtm")
-    public String signIn(@RequestParam Map<String, String> param,
+    @RequestMapping(value = "in.shtm", method = RequestMethod.POST)
+    public String signIn(HttpServletRequest request,
+            @RequestParam Map<String, String> param,
             HttpSession session)
     {
-        LoginInfo loginInfo = new LoginInfo();
+        LoginInfo loginInfo;
+        MemberInfo memberInfo = null;
         String username;
         String password;
+        UserClassification userClassification;
+        UserDao userDao;
+        MemberDao memberDao;
+        List<?> list;
+        Map<String, Object> dbParam = new HashMap<String, Object>();
 
         username = param.get("username");
         password = param.get("password");
-
-        if (username == null || password == null) // 必要参数不能为空
+        userClassification = UserClassification.get(param
+                .get("userClassification"));
+        if (username == null || password == null
+                || userClassification == UserClassification.UNKNOWN) // 必要参数不能为空，重定向为登陆页
         {
-            return "redirect:/login.shtm";
+            logger.debug("缺少参数");
+            switch (userClassification)
+            {
+                case ADMIN:
+                    return "redirect:/view/login.html";
+                case MEMBER:
+                    return "redirect:/mall/login.shtm";
+                default:
+                    return "redirect:/view/login.html";
+            }
         }
+        session.setAttribute("userClassification", userClassification);
+        // 管理员登陆处理
+        if (userClassification == UserClassification.ADMIN)
+        {
+            dbParam.put("username", username);
+            dbParam.put("password", password);
 
-        session.setAttribute("loginInfo", loginInfo);
-        return "";
+            userDao = (UserDao) SpringContextUtil.getBean("userDao");
+            list = (List<?>) userDao.getUser(dbParam);
+            if (list == null || list.size() < 1)
+            {
+                return "redirect:/view/login.html";
+            }
+            else
+            {
+                loginInfo = new LoginInfo();
+                loginInfo.setParam((Map<String, Object>) list.get(0));
+                session.setAttribute("loginInfo", loginInfo);
+            }
+
+            return "redirect:/view/index.shtm"; // 登录成功
+        }
+        // 会员登录处理
+        else
+        {
+            dbParam.put("uname", username);
+            dbParam.put("password", password);
+
+            memberDao = (MemberDao) SpringContextUtil.getBean("memberDao");
+            list = (List<?>) memberDao.getMember(dbParam);
+            if (list == null || list.size() < 1)
+            {
+                return "redirect:/mall/login.shtm";
+            }
+            else
+            {
+                memberInfo = new MemberInfo();
+                memberInfo.setUserClassification(userClassification);
+                memberInfo.setParam((Map<String, Object>) list.get(0));
+                session.setAttribute("memberInfo", memberInfo);
+                return "redirect:/mall/member_index.shtm"; // 登录成功
+            }
+        }
     }
 
     /**
@@ -102,27 +164,41 @@ public class LoginController
      * @param session
      * @return
      */
-    @RequestMapping(value = "login.shtm")
+    @RequestMapping(value = "login.shtm123")
     public String login(@RequestParam Map<String, String> param,
             HttpSession session)
     {
+        logger.debug("进入登录页面");
 
-        return "";
+        return "login";
     }
 
-
     /**
-     * 登出处理。
+     * 登出处理,移除sessino中的身份标识。
      * 
      * @param param
      * @param session
      * @return
      */
     @RequestMapping(value = "out.shtm")
-    public String signOut(@RequestParam Map<String, String> param,
+    public String signOut(HttpServletRequest request,
+            @RequestParam Map<String, String> param,
             HttpSession session)
     {
-        session.removeAttribute("loginInfo");
-        return "redirect:/login.shtm";
+        UserClassification UserClassification = (UserClassification) session
+                .getAttribute("userClassification");
+
+        switch (UserClassification)
+        {
+            case ADMIN:
+                session = request.getSession(true);
+                return "redirect:/view/login.html";
+            case MEMBER:
+                session = request.getSession(true);
+                return "redirect:/mall/login.shtm";
+            default:
+                session = request.getSession(true);
+                return "redirect:/view/login.html";
+        }
     }
 }
