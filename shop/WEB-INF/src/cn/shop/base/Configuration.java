@@ -27,9 +27,13 @@ public class Configuration
 
     public void init()
     {
+        FileInputStream stream;
+        
         try
         {
-            properties.load(new FileInputStream(new File(path)));
+            stream = new FileInputStream(new File(path));
+            properties.load(stream);
+            stream.close();
         }
         catch (FileNotFoundException e)
         {

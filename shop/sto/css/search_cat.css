@@ -1,0 +1,25 @@
+.box-group .box-item {
+  width: 192px;
+  display: inline-block;
+  height: 251px;
+  overflow: hidden;
+  border-right: 1px dashed #cccccc;
+  border-bottom: 1px dashed #cccccc;
+}
+.box-group .box-item img {
+  width: 175px;
+  height: 175px;
+  margin: 5px 6px 0px;
+}
+.info {
+  text-align: center;
+  padding: 3px;
+}
+.info h6 {
+  margin-top: 3px;
+  margin-bottom: 3px;
+}
+.info .cost {
+  color: red;
+}
+/*# sourceMappingURL=search_cat.css.map */

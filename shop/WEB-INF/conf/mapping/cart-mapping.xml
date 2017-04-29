@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+<mapper namespace="smtpMapper">
+	<select id ="getSmtpById"  parameterType="java.util.Map" resultType="java.util.Map">
+        select * from es_smtp where id = #{id}        
+    </select>
+    <update id="updateSmtp" parameterType="java.util.Map">
+    	update es_smtp 
+    	<set>
+    		<if test="host != null">
+    			host=#{host}
+    		</if>
+    		<if test="username != null">
+    			username=#{username}
+    		</if>
+    		<if test="password != null">
+    			password=#{password}
+    		</if>
+    		<if test="last_send_time != null">
+    			last_send_time=#{last_send_time}
+    		</if>    	
+    		<if test="max_count != null">
+    			max_count=#{max_count}
+    		</if>
+    		<if test="mail_from != null">
+    			mail_from=#{mail_from}
+    		</if>
+    		where id = #{id}
+    	</set>
+    </update>
+    
+    <update id="updateSendCount" parameterType="java.util.Map">
+    	update es_smtp set send_count = send_count +1 where id = #{id} 
+    </update>
+</mapper>

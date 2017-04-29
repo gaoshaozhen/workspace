@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+<mapper namespace="productMapper">
+	<select id ="getProductByGoodsId"  parameterType="java.util.Map" resultType="java.util.Map">
+        select * from es_product where goods_id in        
+        <foreach collection="goodsIds" item="item" index="index" open="(" separator="," close=")">
+			#{item}
+		</foreach>                
+    </select>
+    
+    <select id ="getOneProductByGoodsId"  parameterType="java.util.Map" resultType="java.util.Map">
+        select * from es_product where goods_id = #{goods_id}        
+    </select>
+    
+<!--     <select id ="getProductByTypeId"  parameterType="java.util.Map" resultType="java.util.Map">
+
+        select * from es_product where type_id in         
+        <foreach collection="typeIds" item="item" index="index" open="(" separator="," close=")">
+			#{item}
+		</foreach>                
+    </select>    
+	查询所有类型
+    <select id ="getAllProduct"  parameterType="java.util.Map" resultType="java.util.Map">
+        select * from es_product
+    </select>  -->           
+</mapper>

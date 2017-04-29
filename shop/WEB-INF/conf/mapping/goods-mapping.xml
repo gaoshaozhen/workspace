@@ -8,7 +8,7 @@
 			#{item}
 		</foreach>                
     </select>
-    <select id ="getGoodsByTypeId"  parameterType="java.util.Map" resultType="java.util.Map">
+    <select id ="getGoodsByTypeIds"  parameterType="java.util.Map" resultType="java.util.Map">
         select * from es_goods where type_id in         
         <foreach collection="typeIds" item="item" index="index" open="(" separator="," close=")">
 			#{item}
@@ -17,5 +17,17 @@
 	<!-- 查询所有类型 -->
     <select id ="getAllGoods"  parameterType="java.util.Map" resultType="java.util.Map">
         select * from es_goods
-    </select>            
+        <if test="start != null">
+			<if test="num != null">
+				limit #{start},#{num}
+			</if>
+		</if>
+    </select>      
+    <select id ="getAllGoodsTotal" resultType="java.util.Map">
+    	select count(*) total from es_goods 
+    </select>
+    
+     <select id ="getOneGoodsByGoodsId" parameterType="java.util.Map" resultType="java.util.Map">
+    	select *  from es_goods where goods_id=#{goodsId} 
+    </select>
 </mapper>

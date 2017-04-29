@@ -60,4 +60,15 @@ public class Page
     {
         this.currentPage = currentPage;
     }
+    
+    public static int getStartNum(int pageSize, int pageNumber)
+    {
+        int start = pageSize * pageNumber - pageSize;
+        
+        if(start < 0)
+        {
+            start = 0;
+        }        
+        return start;
+    }
 }

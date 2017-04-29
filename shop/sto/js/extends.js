@@ -15,7 +15,6 @@
 	}
 	$(function(){
 		init();
-		console.info("初始换成功");
-		console.info($(".have-child")[0]);
+		// console.info("初始换成功");
 	});	
 })();

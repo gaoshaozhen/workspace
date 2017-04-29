@@ -3,6 +3,7 @@ package cn.shop.dao;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang.math.NumberUtils;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 
@@ -36,7 +37,16 @@ public class GoodsDao
 
     public int getAllTotal()
     {
-        return 0;
+        int total = 0;
+        SqlSession session = sqlSessionFactory.openSession();
+        Map<String, Object> result = session.selectOne("goodsMapper.getAllGoodsTotal");
+        
+        if(result != null)
+        {
+            total = NumberUtils.toInt(result.get("total").toString(),0);
+            session.close();
+        }
+        return total;
     }
 
     public int getGoodsTotalByTypeIds(Map<String, Object> dbParam)
@@ -75,7 +85,7 @@ public class GoodsDao
     }
 
     /**
-     * 搜索包含指定若干个parent_id的记录
+     * 搜索包含指定若干个parent_id的记录。
      * 
      * @param dbParam
      * @return
@@ -86,7 +96,37 @@ public class GoodsDao
         SqlSession session = sqlSessionFactory.openSession();
         List<Map<String, Object>> list = session.selectList(
                 "goodsMapper.getGoodsByTypeIds", dbParam);
+        
         session.close();
         return list;
+    }
+    
+    /**
+     * 按照goodsId查找。
+     * @param dbParam
+     * @return
+     */
+    public List<Map<String, Object>> getGoodsByGoodsId(
+            Map<String, Object> dbParam)
+    {
+        SqlSession session = sqlSessionFactory.openSession();
+        List<Map<String, Object>> list = session.selectList(
+                "goodsMapper.getGoodsByGoodsId", dbParam);
+
+        session.close();
+        return list;
+    }
+
+    /**
+     * 查找goods详细信息。
+     */
+    public Map<String, Object> getOneGoodsByGoodsId(Map<String, Object> param)
+    {
+        Map<String, Object> result;
+        SqlSession session = sqlSessionFactory.openSession();
+        result = session.selectOne("goodsMapper.getOneGoodsByGoodsId", param);
+
+        session.close();
+        return result;
     }
 }

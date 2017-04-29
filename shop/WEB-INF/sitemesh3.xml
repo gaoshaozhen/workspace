@@ -17,5 +17,6 @@
     <mapping path="/mall/address.shtm" decorator="/view/mall/decorator/decorator.jsp" />
     <mapping path="/mall/addAddress.shtm" decorator="/view/mall/decorator/decorator.jsp" />
     <mapping path="/mall/search_cat.shtm" decorator="/view/mall/decorator/decorator.jsp" />
-    
+    <mapping path="/mall/goods.shtm" decorator="/view/mall/decorator/decorator.jsp" />
+    <mapping path="/mall/cart.shtm" decorator="/view/mall/decorator/decorator.jsp" />
 </sitemesh>

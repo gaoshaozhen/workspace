@@ -1,6 +1,5 @@
 package cn.shop.controller;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
@@ -37,7 +36,7 @@ public class ProductController
 
         dao = (ProductDao) context.getBean("productDao");
 
-        return dao.getProduct(param);
+        return null;
     }
 
     /**
@@ -46,20 +45,20 @@ public class ProductController
     @RequestMapping(value = "addProduct.action")
     public Object addProduct(@RequestParam Map<String, String> param)
     {
-        Map<String, Object> result = new HashMap<String, Object>();
-        ApplicationContext context;
-        ProductDao dao;
-        context = ContextLoader.getCurrentWebApplicationContext();
-
-        dao = (ProductDao) context.getBean("productDao");
-        if (dao.addProduct(param))
-        {
-            result.put("operator", true);
-        }
-        else
-        {
-            result.put("operator", false);
-        }
+//        Map<String, Object> result = new HashMap<String, Object>();
+//        ApplicationContext context;
+//        ProductDao dao;
+//        context = ContextLoader.getCurrentWebApplicationContext();
+//
+//        dao = (ProductDao) context.getBean("productDao");
+//        if (dao.addProduct(param))
+//        {
+//            result.put("operator", true);
+//        }
+//        else
+//        {
+//            result.put("operator", false);
+//        }
         return null;
     }
 
@@ -69,20 +68,20 @@ public class ProductController
     @RequestMapping(value = "deleteProduct.action")
     public Object deleteProduct(@RequestParam Map<String, String> param)
     {
-        Map<String, Object> result = new HashMap<String, Object>();
-        ApplicationContext context;
-        ProductDao dao;
-        context = ContextLoader.getCurrentWebApplicationContext();
-
-        dao = (ProductDao) context.getBean("productDao");
-        if (dao.deleteProduct(param))
-        {
-            result.put("operator", true);
-        }
-        else
-        {
-            result.put("operator", false);
-        }
-        return result;
+//        Map<String, Object> result = new HashMap<String, Object>();
+//        ApplicationContext context;
+//        ProductDao dao;
+//        context = ContextLoader.getCurrentWebApplicationContext();
+//
+//        dao = (ProductDao) context.getBean("productDao");
+//        if (dao.deleteProduct(param))
+//        {
+//            result.put("operator", true);
+//        }
+//        else
+//        {
+//            result.put("operator", false);
+//        }
+        return null;
     }
 }

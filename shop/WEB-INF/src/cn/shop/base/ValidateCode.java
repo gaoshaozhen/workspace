@@ -20,10 +20,11 @@ public class ValidateCode
     public static String createCode(int num)
     {
         StringBuilder sb = new StringBuilder();
-
+        Random rand = new Random();
+        
         for (int i = 0; i < num; i++)
         {
-            sb.append((int) (Math.random() * 10));
+            sb.append(rand.nextInt(9));
         }
         return sb.toString();
     }

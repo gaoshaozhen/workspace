@@ -31,10 +31,12 @@ public class ProductDao
      * 
      * @return
      */
-    public Object getProduct(Map<?, ?> param)
+    public List<Map<String, Object>> getProduct(Map<String, Object> param)
     {
         SqlSession session = sqlSessionFactory.openSession();
-        List<?> list = session.selectList("productMapper.getProduct", param);
+        List<Map<String, Object>> list = session.selectList(
+                "productMapper.getProductByGoodsId", param);
+
         session.close();
         return list;
     }
@@ -44,34 +46,50 @@ public class ProductDao
      * 
      * @return
      */
-    public Object updateProduct(Map<?, ?> param)
+    public Map<String, Object> getOneProductByPruductId(
+            Map<String, Object> param)
     {
         SqlSession session = sqlSessionFactory.openSession();
-        session.update("productMapper.updateProduct", param);
-        session.close();
-        return true;
-    }
+        Map<String, Object> map = session.selectOne(
+                "productMapper.getProductByProductId", param);
 
-
-    /**
-     * 新增产品
-     */
-    public boolean addProduct(Map<?, ?> param)
-    {
-        SqlSession session = sqlSessionFactory.openSession();
-        List<?> list = session.selectList("productMapper.addProduct", param);
         session.close();
-        return true;
+        return map;
     }
 
     /**
-     * 删除产品
+     * 获得产品列表
+     * 
+     * @return
      */
-    public boolean deleteProduct(Map<?, ?> param)
-    {
-        SqlSession session = sqlSessionFactory.openSession();
-        session.delete("productMapper.deleteProduct", param);
-        session.close();
-        return true;
-    }
+    // public Object updateProduct(Map<String, Object> param)
+    // {
+    // SqlSession session = sqlSessionFactory.openSession();
+    // session.update("productMapper.updateProduct", param);
+    // session.close();
+    // return true;
+    // }
+    //
+    //
+    // /**
+    // * 新增产品
+    // */
+    // public boolean addProduct(Map<String, Object> param)
+    // {
+    // SqlSession session = sqlSessionFactory.openSession();
+    // List<?> list = session.selectList("productMapper.addProduct", param);
+    // session.close();
+    // return true;
+    // }
+    //
+    // /**
+    // * 删除产品
+    // */
+    // public boolean deleteProduct(Map<String, Object> param)
+    // {
+    // SqlSession session = sqlSessionFactory.openSession();
+    // session.delete("productMapper.deleteProduct", param);
+    // session.close();
+    // return true;
+    // }
 }

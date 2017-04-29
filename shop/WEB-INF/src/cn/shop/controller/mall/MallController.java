@@ -20,11 +20,15 @@ import org.springframework.web.bind.annotation.RequestParam;
 import cn.shop.base.Configuration;
 import cn.shop.base.UserClassification;
 import cn.shop.base.notify.Notify;
+import cn.shop.base.util.Default;
 import cn.shop.base.util.SpringContextUtil;
 import cn.shop.dao.GoodsCatDao;
 import cn.shop.dao.GoodsDao;
 import cn.shop.dao.MemberDao;
+import cn.shop.dao.ProductDao;
+import cn.shop.model.Check;
 import cn.shop.model.MemberInfo;
+import cn.shop.model.Page;
 
 /**
  * @author shaozhen
@@ -45,47 +49,56 @@ public class MallController
             @RequestParam Map<String, String> param,
             HttpSession session)
     {
-        // Map<Integer, Boolean> haveChild = new HashMap<Integer, Boolean>();
-        //
-        // List<Map<String, Object>> list;
-        // GoodsCatDao goodsCatDao = (GoodsCatDao) SpringContextUtil
-        // .getBean("goodsCatDao");
-        //
-        // list = (List<Map<String, Object>>) goodsCatDao.getGoodsCat();
-        // for (Map<String, Object> temp : list)
-        // {
-        // int id = (Integer) temp.get("cat_id");
-        //
-        // for (Map<String, Object> item : list)
-        // {
-        // if ((Integer) item.get("parent_id") == id)
-        // {
-        // haveChild.put(id, true);
-        // }
-        // }
-        // }
-        // for (Map<String, Object> temp : list)
-        // {
-        // int id = (Integer) temp.get("cat_id");
-        // Boolean b = haveChild.get(id);
-        //
-        // b = Default.get(b, false);
-        // temp.put("haveChild", b);
-        // }
-        // model.addAttribute("catList", list);
+         Map<Integer, Boolean> haveChild = new HashMap<Integer, Boolean>();
+        
+         List<Map<String, Object>> list;
+         GoodsCatDao goodsCatDao = (GoodsCatDao) SpringContextUtil
+         .getBean("goodsCatDao");
+        
+        list = goodsCatDao.geAlltGoodsCat();
+        for (Map<String, Object> temp : list)
+        {
+            int id = (Integer) temp.get("cat_id");
+
+            for (Map<String, Object> item : list)
+            {
+                if ((Integer) item.get("parent_id") == id)
+                {
+                    haveChild.put(id, true);
+                }
+            }
+        }
+        for (Map<String, Object> temp : list)
+        {
+            int id = (Integer) temp.get("cat_id");
+            Boolean b = haveChild.get(id);
+
+            b = Default.get(b, false);
+            temp.put("haveChild", b);
+        }
+        model.addAttribute("catList", list);
         return "mall/v2/index.jsp";
     }
 
-    @RequestMapping(value = "search_cat.shtm", method = { RequestMethod.POST,
-            RequestMethod.GET })
+    /**
+     * 搜索产品
+     * @param model
+     * @param param
+     * @param session
+     * @return
+     */
+    @RequestMapping(value = "search_cat.shtm", method = { RequestMethod.GET })
     public String search(ModelMap model,
             @RequestParam Map<String, String> param, HttpSession session)
     {
         int pageSize = NumberUtils.toInt(param.get("pageSize"), -1);
-        int pageNumber = NumberUtils.toInt(param.get("pageSize"), -1);
+        int pageNumber = NumberUtils.toInt(param.get("pageNumber"), -1);
         int catId = NumberUtils.toInt(param.get("catId"), -1);
-
+        int totalPage;
         List<Map<String, Object>> goodsList = null;
+        List<Map<String, Object>> productList = null;
+        List<Map<String, Object>> productFirstList = new ArrayList<Map<String, Object>>();
+        List<Integer> goodsIdList = new ArrayList<Integer>();
         int total = 0;
         Map<String, Object> dbParam = new HashMap<String, Object>();
         GoodsDao goodsDao = (GoodsDao) SpringContextUtil.getBean("goodsDao");
@@ -101,8 +114,8 @@ public class MallController
             pageNumber = 1;
         }
         
-        dbParam.put("pageSize", pageSize);
-        dbParam.put("pageNumber", pageNumber);
+        dbParam.put("start", Page.getStartNum(pageSize, pageNumber));
+        dbParam.put("num", pageSize);
         // 已经指定分类id
         if (catId > 0)
         {
@@ -110,9 +123,9 @@ public class MallController
             List<Integer> catIds = new ArrayList<Integer>();
             List<Map<String, Object>> result;
             Map<String, Object> daoParam = new HashMap<String, Object>();
-            int count = 0;
-            
-            daoParam.put("parent_id", catIds);
+            int count = 0;// 限制最大循环次数，防止陷入死循环
+            catIds.add(catId);
+            daoParam.put("parentIds", catIds);
             catIds.add(catId);
             do
             {
@@ -163,10 +176,47 @@ public class MallController
             total = goodsDao.getAllTotal();
             goodsList = goodsDao.getAllGoods(dbParam);
         }
+//        按照goods_id,搜索产品，
+        if(goodsList != null && goodsList.size() > 0)
+        {
+            for(Map<String, Object> temp : goodsList)
+            {
+                goodsIdList.add((Integer)temp.get("goods_id"));
+            }
+            if(!goodsIdList.isEmpty())
+            {
+                Map<String, Object> dbParam3 = new HashMap<String, Object>();
+                ProductDao productDao = (ProductDao)SpringContextUtil.getBean("productDao");
+                dbParam3.put("goodsIds", goodsIdList);
+                productList = productDao.getProduct(dbParam3);
+                
+                if(productList != null && !productList.isEmpty())
+                {
+                    for(Integer goodsId : goodsIdList)
+                    {
+                        for(Map<String, Object> temp : productList)
+                        {
+                          if(goodsId.equals(temp.get("goods_id")))
+                          {
+                              productFirstList.add(temp);
+                              break; // 取出首先发现的产品后不再搜索，
+                          }                          
+                        }
+                    }                    
+                }
+                
+            }
+        }
+        totalPage = Math.round(total/pageSize);
         model.addAttribute("goodsList", goodsList);
         model.addAttribute("pageNumber", pageNumber);
         model.addAttribute("total", total);
-        return "mall/v2/search.jsp";
+        model.addAttribute("productList", productList);
+        model.addAttribute("productFirstList", productFirstList);
+        model.addAttribute("pageSize", pageSize);
+        model.addAttribute("pageNumber", pageNumber);
+        model.addAttribute("totalPage", totalPage);
+        return "mall/v2/search_cat.jsp";
     }
 
     /**
@@ -270,4 +320,70 @@ public class MallController
         }
         return "mall/v2/member_index.jsp";
     }
+    
+    /**
+     * 商品详情页。
+     * 
+     * @param model
+     * @param param
+     * @param session
+     * @return
+     */
+    @RequestMapping(value = "goods.shtm")
+    public String goods(ModelMap model,
+            @RequestParam Map<String, String> param, HttpSession session)
+    {
+        int goodsId = NumberUtils.toInt(param.get("goodsId"), -1);
+        GoodsDao goodsDao;
+        ProductDao productDao;
+        Map<String, Object> goodsDetail;
+        Map<String, Object> dbParam = new HashMap<String, Object>();
+        List<Map<String, Object>> productList;
+        List <Integer> goodsIdList = new ArrayList<Integer>();
+        
+        if(goodsId < 0)
+        {
+            return "redirect:/mall/search.shtm";
+        }
+        goodsIdList.add(goodsId);
+        dbParam.put("goodsId", goodsId);
+        goodsDao = (GoodsDao)SpringContextUtil.getBean("goodsDao");
+        productDao = (ProductDao)SpringContextUtil.getBean("productDao");
+        goodsDetail = goodsDao.getOneGoodsByGoodsId(dbParam);
+        dbParam.put("goodsIds", goodsIdList);
+        productList = productDao.getProduct(dbParam);
+        if(productList == null || productList.isEmpty())
+        {
+            return "redirect:/mall/search.shtm";
+        }
+        model.addAttribute("goodsDetail", goodsDetail);
+        model.addAttribute("productList", productList);
+       return "mall/v2/goods.jsp";
+    }
+    
+    /**
+     * 购物车页面
+     * @param model
+     * @param param
+     * @param session
+     * @return
+     */
+    @RequestMapping(value = "cart.shtm", method={RequestMethod.POST,RequestMethod.GET})
+    public String cart(ModelMap model,
+            @RequestParam Map<String, String> param, HttpSession session)
+    {
+        Integer productId = NumberUtils.toInt(param.get("productId"), -1);
+        
+        if(!Check.memberInline(session))
+        {
+            return Check.getMemberLoginUrl();
+        }
+        if(productId < 0)
+        {
+            logger.info("缺少参数");
+            return "redirect:/mall/index.shtm";
+        }
+        logger.debug("session:" + session.getId());
+        return "mall/v2/cart.jsp";
+    }    
 }

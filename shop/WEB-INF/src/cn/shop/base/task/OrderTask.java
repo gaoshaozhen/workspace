@@ -13,9 +13,13 @@ import org.apache.log4j.Logger;
  * 
  * @author shaozhen
  */
-public class OrderTask extends HttpServlet
+public class OrderTask  extends HttpServlet  
 {
-    Logger logger = Logger.getLogger(this.getClass());
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 1L;
+    Logger logger = Logger.getLogger(OrderTask.class);
 
     class OrderManagerTask extends TimerTask
     {

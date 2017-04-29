@@ -33,6 +33,20 @@ public class GoodsCatDao
         session.close();
         return list;
     }
+    
+    /**
+     * 获得邮件列表
+     * 
+     * @return
+     */
+    public List<Map<String, Object>> geAlltGoodsCat()
+    {
+        SqlSession session = sqlSessionFactory.openSession();
+        List<Map<String, Object>> list = session.selectList(
+                "goodsCatMapper.getAllGoodsCat");
+        session.close();
+        return list;
+    }
 
     /**
      * 搜索包含指定若干个cat_id的记录
@@ -61,7 +75,7 @@ public class GoodsCatDao
     {
         SqlSession session = sqlSessionFactory.openSession();
         List<Map<String, Object>> list = session.selectList(
-                "goodsCatMapper.getGoodsParentIds", dbParam);
+                "goodsCatMapper.getGoodsCatByParentIds", dbParam);
         session.close();
         return list;
     }

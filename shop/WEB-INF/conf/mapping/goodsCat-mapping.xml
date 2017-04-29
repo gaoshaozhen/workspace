@@ -2,20 +2,30 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
   
 <mapper namespace="goodsCatMapper">
-	<select id ="getGoodsCatByCatId"  parameterType="java.util.Map" resultType="java.util.Map">
-        select * from es_goods_cat where cat_id in  #{cat_id}        
-        <foreach collection="catIds" item="item" index="index" open="(" separator="," close=")">
-			#{item}
-		</foreach>                
+	<select id="getGoodsCatByCatId" parameterType="java.util.Map" resultType="java.util.Map">
+		select * fromes_goods_cat where cat_id in 
+		<foreach collection="catIds" item="item" index="index" open="(" separator="," close=")">
+				#{item}
+		</foreach>
+		<if test="start!=null">
+			<if test="num!=null">
+				limit #{start},#{num}
+			</if>
+		</if>
     </select>
-    <select id ="getGoodsCatByParentId"  parameterType="java.util.Map" resultType="java.util.Map">
-        select * from es_goods_cat where parent_id in  #{cat_id}        
-        <foreach collection="parentIds" item="item" index="index" open="(" separator="," close=")">
+    <select id ="getGoodsCatByParentIds"  parameterType="java.util.Map" resultType="java.util.Map">
+        select * from es_goods_cat where parent_id in
+        <foreach collection="parentIds" item="item"   index="index" open="(" separator="," close=")">
 			#{item}
 		</foreach>                
     </select>    
 	<!-- 查询所有类型 -->
     <select id ="getAllGoodsCat"  parameterType="java.util.Map" resultType="java.util.Map">
         select * from es_goods_cat 
+        <if test="start != null">
+			<if test="num != null">
+				limit #{start},#{num}
+			</if>
+		</if>
     </select>            
 </mapper>

@@ -97,5 +97,11 @@
     <bean id="siteMenuDao" class="cn.shop.dao.SiteMenuDao">            
         <property name="sqlSessionFactory" ref="sqlSessionFactory"></property>  
     </bean>
-    
+    <!-- 商品 -->
+    <bean id="goodsDao" class="cn.shop.dao.GoodsDao">            
+        <property name="sqlSessionFactory" ref="sqlSessionFactory"></property>  
+    </bean>
+    <bean id="productDao" class="cn.shop.dao.ProductDao">            
+        <property name="sqlSessionFactory" ref="sqlSessionFactory"></property>  
+    </bean>  
 </beans>
