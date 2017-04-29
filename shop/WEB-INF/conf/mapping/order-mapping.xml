@@ -26,28 +26,36 @@
     </select>
     
     <!-- 插入订单信息 -->
-     <insert id="insertOrder" parameterType="java.util.Map" 
+     <insert id="addOrder" parameterType="java.util.Map" 
         useGeneratedKeys="true" keyProperty="order-id"> 
-        insert into es_order(member_id, 
+        insert into es_order(member_id,
+        					 sn, 
         					 status, 
         					 pay_status, 
         					 payment_id, 
-        					 paymoney,        					 
-        					 order_amount,
-        					 weight,
+        					 paymoney,        					         					         				
         					 goods_num,
         					 gainedpoint,
-        					 remark)
+        					 remark,
+        					 createTime,
+        					 shipAddr,
+        					 shipZip,
+        					 shipEmail,
+        					 shipMobile)
         		values(#{member_id},
+        			   #{sn}
         			   #{status},
         			   #{pay_status},
         			   #{payment_id},
-        			   #{paymoney},
-        			   #{order_amount},
-        			   #{weight},
+        			   #{paymoney},        			           			   
         			   #{goods_num},
         			   #{gainedpoint},
-        			   #{remark})
+        			   #{remark},
+        			   #{createTime},
+        			   #{shipAddr},
+        			   #{shipZip},
+        			   #{shipEmail}
+        			   #{shipMobile})
     </insert>
     
     <!-- 删除订单 -->

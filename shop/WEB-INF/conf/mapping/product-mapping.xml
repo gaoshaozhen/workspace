@@ -9,8 +9,8 @@
 		</foreach>                
     </select>
     
-    <select id ="getOneProductByGoodsId"  parameterType="java.util.Map" resultType="java.util.Map">
-        select * from es_product where goods_id = #{goods_id}        
+    <select id ="getOneProductByProductId"  parameterType="java.util.Map" resultType="java.util.Map">
+        select * from es_product where product_id = #{productId}        
     </select>
     
 <!--     <select id ="getProductByTypeId"  parameterType="java.util.Map" resultType="java.util.Map">

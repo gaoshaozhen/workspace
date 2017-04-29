@@ -15,7 +15,7 @@
             </c:if>
         </div>  
         <div class="col-md-6 text-right">
-            <a href="#">购物车</a>|
+            <a href="/shop/mall/cart.shtm">购物车</a>|
             <a href="#">订单查询</a>|
             <a href="#">帮助中心</a>
         </div>

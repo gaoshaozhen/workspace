@@ -18,13 +18,17 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import cn.shop.base.Configuration;
+import cn.shop.base.OrderStatus;
 import cn.shop.base.UserClassification;
 import cn.shop.base.notify.Notify;
 import cn.shop.base.util.Default;
 import cn.shop.base.util.SpringContextUtil;
+import cn.shop.dao.AddressDao;
+import cn.shop.dao.CartDao;
 import cn.shop.dao.GoodsCatDao;
 import cn.shop.dao.GoodsDao;
 import cn.shop.dao.MemberDao;
+import cn.shop.dao.OrderDao;
 import cn.shop.dao.ProductDao;
 import cn.shop.model.Check;
 import cn.shop.model.MemberInfo;
@@ -46,15 +50,14 @@ public class MallController
      */
     @RequestMapping(value = "index.shtm", method = RequestMethod.GET)
     public Object getType(ModelMap model,
-            @RequestParam Map<String, String> param,
-            HttpSession session)
+            @RequestParam Map<String, String> param, HttpSession session)
     {
-         Map<Integer, Boolean> haveChild = new HashMap<Integer, Boolean>();
-        
-         List<Map<String, Object>> list;
-         GoodsCatDao goodsCatDao = (GoodsCatDao) SpringContextUtil
-         .getBean("goodsCatDao");
-        
+        Map<Integer, Boolean> haveChild = new HashMap<Integer, Boolean>();
+
+        List<Map<String, Object>> list;
+        GoodsCatDao goodsCatDao = (GoodsCatDao) SpringContextUtil
+                .getBean("goodsCatDao");
+
         list = goodsCatDao.geAlltGoodsCat();
         for (Map<String, Object> temp : list)
         {
@@ -81,7 +84,8 @@ public class MallController
     }
 
     /**
-     * 搜索产品
+     * 搜索产品. 1、按照指定catId搜索下级catId 2、按照搜索出的catId搜索typeId 3、按照typeId搜索goodsId
+     * 
      * @param model
      * @param param
      * @param session
@@ -113,7 +117,7 @@ public class MallController
         {
             pageNumber = 1;
         }
-        
+
         dbParam.put("start", Page.getStartNum(pageSize, pageNumber));
         dbParam.put("num", pageSize);
         // 已经指定分类id
@@ -131,17 +135,17 @@ public class MallController
             {
                 result = goodsCatDao.getGoodsCatByParentIds(daoParam);
                 catIds.clear();
-                if(result.size() > 0)
+                if (result.size() > 0)
                 {
-                    for(Map<String, Object>temp : result)
+                    for (Map<String, Object> temp : result)
                     {
-                        Integer catIdTemp = (Integer)temp.get("cat_id");  
-                        if(!catIds.contains(catIdTemp))// 发现新的下级分类
+                        Integer catIdTemp = (Integer) temp.get("cat_id");
+                        if (!catIds.contains(catIdTemp))// 发现新的下级分类
                         {
-                            Integer typeId = (Integer)temp.get("type_id");
-                            
+                            Integer typeId = (Integer) temp.get("type_id");
+
                             catIds.add(catIdTemp);
-                            if(typeId != null && !typeIds.contains(typeId))//将搜索出的新type_id加入列表
+                            if (typeId != null && !typeIds.contains(typeId))// 将搜索出的新type_id加入列表
                             {
                                 typeIds.add(typeId);
                             }
@@ -152,15 +156,15 @@ public class MallController
                 {
                     break;
                 }
-                if(count++ > 1000)
+                if (count++ > 1000)
                 {
                     logger.info("循环次数超出1000次，出现死循环，请程序员检查代码");
                 }
-            }while(false);
+            } while (false);
             if (typeIds.size() > 0)
             {
                 dbParam.put("typeIds", typeIds);
-                total = goodsDao.getGoodsTotalByTypeIds(dbParam);
+                total = goodsDao.getTotalGoodsByTypeIds(dbParam);
                 goodsList = goodsDao.getGoodsByTypeIds(dbParam);
             }
             // 指定分类下没有搜索出任何商品类型
@@ -176,38 +180,39 @@ public class MallController
             total = goodsDao.getAllTotal();
             goodsList = goodsDao.getAllGoods(dbParam);
         }
-//        按照goods_id,搜索产品，
-        if(goodsList != null && goodsList.size() > 0)
+        // 按照goods_id,搜索产品，
+        if (goodsList != null && goodsList.size() > 0)
         {
-            for(Map<String, Object> temp : goodsList)
+            for (Map<String, Object> temp : goodsList)
             {
-                goodsIdList.add((Integer)temp.get("goods_id"));
+                goodsIdList.add((Integer) temp.get("goods_id"));
             }
-            if(!goodsIdList.isEmpty())
+            if (!goodsIdList.isEmpty())
             {
                 Map<String, Object> dbParam3 = new HashMap<String, Object>();
-                ProductDao productDao = (ProductDao)SpringContextUtil.getBean("productDao");
+                ProductDao productDao = (ProductDao) SpringContextUtil
+                        .getBean("productDao");
                 dbParam3.put("goodsIds", goodsIdList);
                 productList = productDao.getProduct(dbParam3);
-                
-                if(productList != null && !productList.isEmpty())
+
+                if (productList != null && !productList.isEmpty())
                 {
-                    for(Integer goodsId : goodsIdList)
+                    for (Integer goodsId : goodsIdList)
                     {
-                        for(Map<String, Object> temp : productList)
+                        for (Map<String, Object> temp : productList)
                         {
-                          if(goodsId.equals(temp.get("goods_id")))
-                          {
-                              productFirstList.add(temp);
-                              break; // 取出首先发现的产品后不再搜索，
-                          }                          
+                            if (goodsId.equals(temp.get("goods_id")))
+                            {
+                                productFirstList.add(temp);
+                                break; // 取出首先发现的产品后不再搜索，
+                            }
                         }
-                    }                    
+                    }
                 }
-                
+
             }
         }
-        totalPage = Math.round(total/pageSize);
+        totalPage = Math.round(total / pageSize);
         model.addAttribute("goodsList", goodsList);
         model.addAttribute("pageNumber", pageNumber);
         model.addAttribute("total", total);
@@ -216,6 +221,7 @@ public class MallController
         model.addAttribute("pageSize", pageSize);
         model.addAttribute("pageNumber", pageNumber);
         model.addAttribute("totalPage", totalPage);
+        model.addAttribute("catId", catId);
         return "mall/v2/search_cat.jsp";
     }
 
@@ -313,14 +319,13 @@ public class MallController
     {
         MemberInfo memberInfo = (MemberInfo) session.getAttribute("memberInfo");
 
-        if (memberInfo == null
-                || session.isNew())
+        if (memberInfo == null || session.isNew())
         {
             return "redirect:/mall/login.shtm";
         }
         return "mall/v2/member_index.jsp";
     }
-    
+
     /**
      * 商品详情页。
      * 
@@ -339,51 +344,251 @@ public class MallController
         Map<String, Object> goodsDetail;
         Map<String, Object> dbParam = new HashMap<String, Object>();
         List<Map<String, Object>> productList;
-        List <Integer> goodsIdList = new ArrayList<Integer>();
-        
-        if(goodsId < 0)
+        List<Integer> goodsIdList = new ArrayList<Integer>();
+
+        if (goodsId < 0)
         {
             return "redirect:/mall/search.shtm";
         }
         goodsIdList.add(goodsId);
         dbParam.put("goodsId", goodsId);
-        goodsDao = (GoodsDao)SpringContextUtil.getBean("goodsDao");
-        productDao = (ProductDao)SpringContextUtil.getBean("productDao");
+        goodsDao = (GoodsDao) SpringContextUtil.getBean("goodsDao");
+        productDao = (ProductDao) SpringContextUtil.getBean("productDao");
         goodsDetail = goodsDao.getOneGoodsByGoodsId(dbParam);
         dbParam.put("goodsIds", goodsIdList);
         productList = productDao.getProduct(dbParam);
-        if(productList == null || productList.isEmpty())
+        if (productList == null || productList.isEmpty())
         {
             return "redirect:/mall/search.shtm";
         }
         model.addAttribute("goodsDetail", goodsDetail);
         model.addAttribute("productList", productList);
-       return "mall/v2/goods.jsp";
+        return "mall/v2/goods.jsp";
     }
-    
+
     /**
      * 购物车页面
+     * 
      * @param model
      * @param param
      * @param session
      * @return
      */
-    @RequestMapping(value = "cart.shtm", method={RequestMethod.POST,RequestMethod.GET})
-    public String cart(ModelMap model,
-            @RequestParam Map<String, String> param, HttpSession session)
+    @RequestMapping(value = "cart.shtm", method = { RequestMethod.POST,
+            RequestMethod.GET })
+    public String cart(ModelMap model, @RequestParam Map<String, String> param,
+            HttpSession session)
     {
-        Integer productId = NumberUtils.toInt(param.get("productId"), -1);
-        
-        if(!Check.memberInline(session))
+        CartDao cartDao;
+        Map<String, Object> dbParam;
+        if (!Check.memberInline(session))
         {
             return Check.getMemberLoginUrl();
         }
-        if(productId < 0)
+        logger.debug("session:" + session.getId());
+        dbParam = new HashMap<String, Object>();
+        dbParam.put("sessionId", session.getId());
+        cartDao = (CartDao) SpringContextUtil.getBean("cartDao");
+
+        model.addAttribute("cartList", cartDao.getCartBySessionId(dbParam));
+        return "mall/v2/cart.jsp";
+    }
+
+    /**
+     * 添加购物车页面
+     * 
+     * @param model
+     * @param param
+     * @param session
+     * @return
+     */
+    @RequestMapping(value = "addCart.shtm", method = { RequestMethod.POST,
+            RequestMethod.GET })
+    public String addCart(ModelMap model,
+            @RequestParam Map<String, String> param, HttpSession session)
+    {
+        Integer productId = NumberUtils.toInt(param.get("productId"), -1);
+        int num = NumberUtils.toInt(param.get("productId"), -1);
+        Map<String, Object> cartDbParam = new HashMap<String, Object>();
+        Map<String, Object> productDbParam = new HashMap<String, Object>();
+        ProductDao productDao;
+        CartDao cartDao;
+        Map<String, Object> productDetail;
+
+        if (!Check.memberInline(session))
+        {
+            return Check.getMemberLoginUrl();
+        }
+
+        if (productId < 0 || num < 0)
         {
             logger.info("缺少参数");
             return "redirect:/mall/index.shtm";
         }
+        productDao = (ProductDao) SpringContextUtil.getBean("productDao");
+        productDbParam.put("productId", productId);
+        productDetail = productDao.getOneProductByPruductId(productDbParam);
+        cartDbParam.put("goodsId", productDetail.get("goods_id"));
+        cartDbParam.put("num", num);
+        cartDbParam.put("productId", productId);
+        cartDbParam.put("weight", productDetail.get("weight"));
+        cartDbParam.put("sessionId", session.getId());
+        cartDbParam.put("name", productDetail.get("name"));
+        cartDbParam.put("price", productDetail.get("price"));
+        cartDao = (CartDao) SpringContextUtil.getBean("cartDao");
+        cartDao.addCart(cartDbParam);
         logger.debug("session:" + session.getId());
-        return "mall/v2/cart.jsp";
-    }    
+        return "redirect:/mall/cart.shtm";
+    }
+
+    /**
+     * 删除购物车商品
+     * 
+     * @param model
+     * @param param
+     * @param session
+     * @return
+     */
+    @RequestMapping(value = "deleteCart.shtm", method = { RequestMethod.POST,
+            RequestMethod.GET })
+    public String deleteCart(ModelMap model,
+            @RequestParam Map<String, String> param, HttpSession session)
+    {
+        int cartId = NumberUtils.toInt(param.get("cartId"), -1);
+        CartDao cartDao;
+        Map<String, Object> dbParam;
+
+        if (!Check.memberInline(session))
+        {
+            return Check.getMemberLoginUrl();
+        }
+        logger.debug("session:" + session.getId());
+        dbParam = new HashMap<String, Object>();
+        dbParam.put("cartId", cartId);
+        cartDao = (CartDao) SpringContextUtil.getBean("cartDao");
+        cartDao.deleteCartByCartId(dbParam);
+        return "redirect:/mall/cart.shtm";
+    }
+
+    /**
+     * 填写收货人信息
+     * 
+     * @param model
+     * @param param
+     * @param session
+     * @return
+     */
+    @RequestMapping(value = "checkout.shtm", method = { RequestMethod.POST,
+            RequestMethod.GET })
+    public String checkOut(ModelMap model,
+            @RequestParam Map<String, String> param, HttpSession session)
+    {
+        AddressDao addressDao;
+        Map<String, Object> dbParam;
+        Map<String, Object> defAddress;
+        String cartIds = param.get("cartIds");
+
+        if (!Check.memberInline(session))
+        {
+            return Check.getMemberLoginUrl();
+        }
+        // if(cartIds == null || cartIds.trim().equals(""))
+        // {
+        // return "redirect:/mall/cart.shtm";
+        // }
+        logger.debug("session:" + session.getId());
+        dbParam = new HashMap<String, Object>();
+        dbParam.put("memberId", Check.getMemberInfo(session).getMemberId());
+        addressDao = (AddressDao) SpringContextUtil.getBean("addressDao");
+        defAddress = addressDao.getDefaultAddressBymemberId(dbParam);
+        model.addAttribute("defaultAddress", defAddress);
+        model.addAttribute("cartIds", cartIds);
+        return "mall/v2/checkout.jsp";
+    }
+
+    /**
+     * 填写收货人信息
+     * 
+     * @param model
+     * @param param
+     * @param session
+     * @return
+     */
+    @RequestMapping(value = "addOrder.shtm", method = { RequestMethod.POST,
+            RequestMethod.GET })
+    public String addOrder(ModelMap model,
+            @RequestParam Map<String, String> param, HttpSession session)
+    {
+        String[] cartIds;
+        String zip;
+        String email;
+        String mobile; 
+        String addr;
+        OrderDao orderDao;
+        CartDao cartDao;
+        ProductDao productDao;
+        List<Integer> list = new ArrayList<Integer>();
+        Map<String, Object> dbParam;
+        List<Map<String, Object>> cartList;
+        int payMentId;
+        int memberId;
+        
+        
+        if (!Check.memberInline(session))
+        {
+            return Check.getMemberLoginUrl();
+        }
+        memberId = Check.getMemberInfo(session).getMemberId();
+        payMentId = NumberUtils.toInt(param.get("payMentId"), -1);
+        mobile = param.get("mobile");
+        zip = param.get("zip");
+        addr = param.get("zddr");
+        email = param.get("email");
+        dbParam = new HashMap<String, Object>();
+        cartIds = param.get("cartIds").split(",");
+        for(int i = 0, size = cartIds.length; i < size; i++)
+        {
+            int temp = NumberUtils.toInt(cartIds[i], -1);
+            if(temp > 0)
+            {
+                list.add(temp);
+            }            
+        }
+        dbParam.put("cartIds", list);
+        cartDao = (CartDao)SpringContextUtil.getBean("cartDao");
+        orderDao = (OrderDao)SpringContextUtil.getBean("orderDao");
+        productDao = (ProductDao)SpringContextUtil.getBean("productDao");
+        cartList = cartDao.getCartByCartId(dbParam);
+        for(Map<String, Object> map : cartList)
+        {
+            Map<String, Object> orderDbParam = new HashMap<String, Object>();
+            Map<String, Object> productDbParam = new HashMap<String, Object>();
+            Map<String, Object> orderItemsDbParam = new HashMap<String, Object>();
+            productDbParam.put("productId", map.get("product_id"));
+            Map<String, Object> product = productDao.getOneProductByPruductId(productDbParam);
+            int num = NumberUtils.toInt(map.get("num").toString(), 0);
+            int price = NumberUtils.toInt(map.get("price").toString(), 0);
+            
+            orderDbParam.put("memberId", memberId);
+            orderDbParam.put("sn", product.get("sn"));
+            orderDbParam.put("status", OrderStatus.WAIT);
+            orderDbParam.put("payStatus", 0);
+            orderDbParam.put("paymentId", payMentId);            
+            orderDbParam.put("paymentMoney", num * price);
+            orderDbParam.put("createTime", System.currentTimeMillis());
+            orderDbParam.put("goodsNum", num);
+            orderDbParam.put("gainedPoint", map.get("point"));
+            orderDbParam.put("shipAddr", addr);
+            orderDbParam.put("shipZip", zip);
+            orderDbParam.put("shipEmail", email);
+            orderDbParam.put("shipMobile", mobile);
+            orderDao.addOrder(dbParam);
+            
+            orderItemsDbParam.put("memberId", memberId);
+            orderItemsDbParam.put("productId", map.get("product_id"));
+            orderItemsDbParam.put("goodsId", map.get("product_id"));
+            
+        }
+        return "mall/v2/addOrder.jsp";
+    }
 }

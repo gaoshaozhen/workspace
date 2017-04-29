@@ -12,8 +12,19 @@
         select * from es_goods where type_id in         
         <foreach collection="typeIds" item="item" index="index" open="(" separator="," close=")">
 			#{item}
-		</foreach>                
-    </select>    
+		</foreach> 
+		 <if test="start != null">
+			<if test="num != null">
+				limit #{start},#{num}
+			</if>
+		</if>             
+    </select>  
+    <select id ="getTotalGoodsByTypeIds"  parameterType="java.util.Map" resultType="java.util.Map">
+        select count(*) total from es_goods where type_id in         
+        <foreach collection="typeIds" item="item" index="index" open="(" separator="," close=")">
+			#{item}
+		</foreach> 		             
+    </select>
 	<!-- 查询所有类型 -->
     <select id ="getAllGoods"  parameterType="java.util.Map" resultType="java.util.Map">
         select * from es_goods

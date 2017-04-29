@@ -30,11 +30,11 @@
 						</li>
 					</c:forEach>
 				</ul>		
-				<c:if test="${totalPage > 0}">
+				<c:if test="${totalPage > 1}">
 					<div class="text-center">
 						<ul class="pagination">
 							<c:forEach var="i" varStatus="" begin="1" end="${totalPage}">
-								<li <c:if test="${pageNumber == i}">class="active"</c:if>><a  href="/shop/mall/search_cat.shtm?pageSize=${pageSize}&pageNumber=${i}">${i}</a></li>	
+								<li <c:if test="${pageNumber == i}">class="active"</c:if>><a  href="/shop/mall/search_cat.shtm?pageSize=${pageSize}&pageNumber=${i}&catId=${catId}">${i}</a></li>	
 							</c:forEach>					    
 						</ul>
 					</div>						

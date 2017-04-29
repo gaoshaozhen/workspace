@@ -75,7 +75,7 @@ public class OrderDao
     public boolean addOrder(Map<String, Object> dbParam)
     {
         SqlSession session = sqlSessionFactory.openSession();
-        session.insert("orderMapper.insertOrder", dbParam);
+        session.insert("orderMapper.addOrder", dbParam);
         session.close();
         return true;
     }

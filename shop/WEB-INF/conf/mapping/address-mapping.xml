@@ -9,14 +9,17 @@
 	<!-- 根据用户查询收货地址的收货地址列表 -->
     <select id ="getAddressByMemberId"  parameterType="java.util.Map" resultType="java.util.Map">
         select * from es_member_address where 
-        	member_id=#{member_id}
+        	member_id=#{memberId}
     </select>
         
     <!-- 查询所有收货地址-->
     <select id="getAllAddress" resultType="java.util.Map">
     	select * from es_member_address
     </select>
-    
+    <!-- 查询默认收货地址-->
+    <select id="getDefaultAddressByMemberId" resultType="java.util.Map">
+    	select * from es_member_address where member_id=#{memberId} and  def_addr = 1
+    </select>
     <!-- 插入收货地址信息--> 
      <insert id="addAddress" parameterType="java.util.Map" 
         useGeneratedKeys="true" keyProperty="addr_id"> 
@@ -43,5 +46,6 @@
     	</set>
     	where addr_id = #{addr_id}
     </update>
-     -->       
+     -->
+            
 </mapper>

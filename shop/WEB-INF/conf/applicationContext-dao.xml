@@ -103,5 +103,8 @@
     </bean>
     <bean id="productDao" class="cn.shop.dao.ProductDao">            
         <property name="sqlSessionFactory" ref="sqlSessionFactory"></property>  
+    </bean>
+    <bean id="cartDao" class="cn.shop.dao.CartDao">            
+        <property name="sqlSessionFactory" ref="sqlSessionFactory"></property>  
     </bean>  
 </beans>

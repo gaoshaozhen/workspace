@@ -51,7 +51,7 @@ public class ProductDao
     {
         SqlSession session = sqlSessionFactory.openSession();
         Map<String, Object> map = session.selectOne(
-                "productMapper.getProductByProductId", param);
+                "productMapper.getOneProductByProductId", param);
 
         session.close();
         return map;

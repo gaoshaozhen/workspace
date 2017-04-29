@@ -46,7 +46,7 @@
 								</li>
 							</ul>
 						</div>	   
-						<form action="/shop/mall/cart.shtm" id="goodsform" method="post">		
+						<form action="/shop/mall/addCart.shtm" id="goodsform" method="post">									
 							<div class="choose">
 								<div class="rer_quantity">
 									<label>订购数量：</label>
@@ -57,11 +57,15 @@
 									</div>								
 								</div>
 								<div class="btn_box">	
-									<input type="hidden" name="productid" value="262">
-									<input type="hidden" name="itemtype" value="4">
-									<input type="hidden" name="action" value="add">		 		
-									<div class="btn">					
-										<input type="submit" class="buynow_btn" value="立即购买">	
+									<input type="hidden" name="productId" value="${productList.get(0).product_id}">
+									<input type="hidden" name="itemtype" value="4">											 	
+									<div class="btn">	
+										<c:if test="${goodsDetail.store > 0}">
+											<input type="submit" class="buynow_btn" value="立即购买">		
+										</c:if>
+										<c:if test="${goodsDetail.store <= 0}">
+											<label style="color: red">暂时缺货</label>
+										</c:if>
 									</div>	
 									<div class="btn">
 										<input type="button" class="addtocart_btn" value="加入购物车" id="addbutton" style="display:none">	
@@ -82,8 +86,7 @@
 								<a class="jiathis_button_tsohu"></a>
 								<a class="jiathis_button_t163"></a>
 								<a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank">更多</a>
-							</div>
-							
+							</div>							
 							<a href="javascript:;" class="favorite" goodsid="262">加入收藏</a>
 						</div>
 						<!--分享结束-->

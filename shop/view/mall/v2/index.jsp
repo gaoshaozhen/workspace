@@ -18,18 +18,18 @@
 							<c:if test="${cat.parent_id < 1}">
 								<!-- 一级分类 -->
 								<li class='list-item <c:if test="${cat.haveChild == true}">have-child</c:if>'>
-									<a href="#">${cat.name}</a>
+									<a href="/shop/mall/search_cat.shtm?catId=${cat.cat_id}">${cat.name}</a>
 									<!-- 二级分类 -->
 									<div class="child" style="display:none">
 										<ul>
 											<c:forEach var="cat2" items="${catList}">
 												<c:if test="${cat2.parent_id == cat.cat_id}">
 													<li>
-														<a href="">${cat2.name}</a>:
+														<a href="/shop/mall/search_cat.shtm?catId=${cat2.cat_id}">${cat2.name}</a>:
 														<!-- 三级分类 -->
 														<c:forEach var="cat3" items="${catList}">
 															<c:if test="${cat3.parent_id == cat2.cat_id}">
-																|<a href="">${cat3.name}</a>
+																|<a href="/shop/mall/search_cat.shtm?catId=${cat3.cat_id}">${cat3.name}</a>
 															</c:if>
 														</c:forEach>
 														<!-- 三级分类 -->

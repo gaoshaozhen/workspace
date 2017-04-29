@@ -51,6 +51,7 @@ public class GoodsDao
 
     public int getGoodsTotalByTypeIds(Map<String, Object> dbParam)
     {
+        
         return 0;
     }
 
@@ -99,6 +100,24 @@ public class GoodsDao
         
         session.close();
         return list;
+    }
+    
+    /**
+     * 搜索包含指定若干个parent_id的记录。
+     * 
+     * @param dbParam
+     * @return
+     */
+    public int getTotalGoodsByTypeIds(
+            Map<String, Object> dbParam)
+    {
+        int total=0;
+        SqlSession session = sqlSessionFactory.openSession();
+        Map<String, Object> map = session.selectOne(
+                "goodsMapper.getTotalGoodsByTypeIds", dbParam);        
+        session.close();
+        total = NumberUtils.toInt(map.get("total").toString(), 0);
+        return total;
     }
     
     /**
