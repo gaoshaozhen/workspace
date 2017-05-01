@@ -29,6 +29,7 @@ import cn.shop.dao.GoodsCatDao;
 import cn.shop.dao.GoodsDao;
 import cn.shop.dao.MemberDao;
 import cn.shop.dao.OrderDao;
+import cn.shop.dao.OrderItemsDao;
 import cn.shop.dao.ProductDao;
 import cn.shop.model.Check;
 import cn.shop.model.MemberInfo;
@@ -408,7 +409,7 @@ public class MallController
             @RequestParam Map<String, String> param, HttpSession session)
     {
         Integer productId = NumberUtils.toInt(param.get("productId"), -1);
-        int num = NumberUtils.toInt(param.get("productId"), -1);
+        int num = NumberUtils.toInt(param.get("num"), -1);
         Map<String, Object> cartDbParam = new HashMap<String, Object>();
         Map<String, Object> productDbParam = new HashMap<String, Object>();
         ProductDao productDao;
@@ -519,6 +520,7 @@ public class MallController
     public String addOrder(ModelMap model,
             @RequestParam Map<String, String> param, HttpSession session)
     {
+        MemberInfo memberInfo;
         String[] cartIds;
         String zip;
         String email;
@@ -527,17 +529,19 @@ public class MallController
         OrderDao orderDao;
         CartDao cartDao;
         ProductDao productDao;
+        OrderItemsDao orderItemsDao;
         List<Integer> list = new ArrayList<Integer>();
         Map<String, Object> dbParam;
         List<Map<String, Object>> cartList;
         int payMentId;
         int memberId;
-        
+        String cartIdsStr;
         
         if (!Check.memberInline(session))
         {
             return Check.getMemberLoginUrl();
         }
+        memberInfo = Check.getMemberInfo(session);
         memberId = Check.getMemberInfo(session).getMemberId();
         payMentId = NumberUtils.toInt(param.get("payMentId"), -1);
         mobile = param.get("mobile");
@@ -545,7 +549,8 @@ public class MallController
         addr = param.get("zddr");
         email = param.get("email");
         dbParam = new HashMap<String, Object>();
-        cartIds = param.get("cartIds").split(",");
+        cartIdsStr = param.get("cartIds");
+        cartIds = Default.get(cartIdsStr, "").split(",");
         for(int i = 0, size = cartIds.length; i < size; i++)
         {
             int temp = NumberUtils.toInt(cartIds[i], -1);
@@ -558,6 +563,7 @@ public class MallController
         cartDao = (CartDao)SpringContextUtil.getBean("cartDao");
         orderDao = (OrderDao)SpringContextUtil.getBean("orderDao");
         productDao = (ProductDao)SpringContextUtil.getBean("productDao");
+        orderItemsDao = (OrderItemsDao)SpringContextUtil.getBean("orderItemsDao");
         cartList = cartDao.getCartByCartId(dbParam);
         for(Map<String, Object> map : cartList)
         {
@@ -567,14 +573,14 @@ public class MallController
             productDbParam.put("productId", map.get("product_id"));
             Map<String, Object> product = productDao.getOneProductByPruductId(productDbParam);
             int num = NumberUtils.toInt(map.get("num").toString(), 0);
-            int price = NumberUtils.toInt(map.get("price").toString(), 0);
+            double price = NumberUtils.toDouble(map.get("price").toString(), 0.0);
             
             orderDbParam.put("memberId", memberId);
             orderDbParam.put("sn", product.get("sn"));
-            orderDbParam.put("status", OrderStatus.WAIT);
+            orderDbParam.put("status", OrderStatus.WAIT.getCode());
             orderDbParam.put("payStatus", 0);
             orderDbParam.put("paymentId", payMentId);            
-            orderDbParam.put("paymentMoney", num * price);
+            orderDbParam.put("paymoney", num * price);
             orderDbParam.put("createTime", System.currentTimeMillis());
             orderDbParam.put("goodsNum", num);
             orderDbParam.put("gainedPoint", map.get("point"));
@@ -582,11 +588,14 @@ public class MallController
             orderDbParam.put("shipZip", zip);
             orderDbParam.put("shipEmail", email);
             orderDbParam.put("shipMobile", mobile);
-            orderDao.addOrder(dbParam);
+            orderDbParam.put("shipName", memberInfo.getUsername());
+            orderDbParam.put("goods", product.get("name"));
+            orderDao.addOrder(orderDbParam);
             
             orderItemsDbParam.put("memberId", memberId);
             orderItemsDbParam.put("productId", map.get("product_id"));
             orderItemsDbParam.put("goodsId", map.get("product_id"));
+//            orderItemsDao.addOrderItems(orderItemsDbParam);
             
         }
         return "mall/v2/addOrder.jsp";

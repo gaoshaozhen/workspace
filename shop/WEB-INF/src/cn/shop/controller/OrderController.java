@@ -1,11 +1,14 @@
 package cn.shop.controller;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpSession;
 
+import org.apache.commons.lang.math.NumberUtils;
 import org.apache.log4j.Logger;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Controller;
@@ -17,8 +20,10 @@ import org.springframework.web.context.ContextLoader;
 
 import cn.shop.base.Order;
 import cn.shop.base.OrderStatus;
+import cn.shop.base.util.Default;
 import cn.shop.base.util.SpringContextUtil;
 import cn.shop.dao.OrderDao;
+import cn.shop.dao.OrderItemsDao;
 import cn.shop.model.Check;
 
 /**
@@ -43,6 +48,7 @@ public class OrderController
             HttpSession session)
     {
         OrderDao dao;
+        OrderItemsDao orderItemsDao;
         List<Map<String, Object>> list;
         OrderStatus orderStatus;
         Map<String, Object> dbParam = new HashMap<String, Object>();
@@ -60,9 +66,27 @@ public class OrderController
         }
         else
         {
+            dbParam.put("status", orderStatus.getCode());
             list = dao.getOrderListByStatus(dbParam);
         }
+        for(Map<String, Object> map : list)
+        {
+            String createTimeStr = Default.toString(map.get("create_time"), null);
+            Long createTime = NumberUtils.toLong(createTimeStr, -1);
+            if(createTime < 0)
+            {
+                map.put("createDate", null);
+            }
+            else
+            {
+                Date date = new Date(createTime);
+                SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
+                map.put("createDateStr", format.format(date));
+                map.put("createDate", date);
+            }
+            map.put("orderStatusDesc", OrderStatus.get(Default.toString(map.get("status"), null)).getDesc());
+        }
         model.addAttribute("orderList", list);
         model.addAttribute("orderStatus", orderStatus);
 

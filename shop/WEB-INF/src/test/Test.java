@@ -22,11 +22,14 @@ public class Test
 
     public static void main(String[] args)
     {
-        Integer a=null;
-        Integer b=12;
-        
-
-         System.out.println(a == b);
+//        Integer a=null;
+//        Integer b=12;
+        long e = 1493617002515L;
+        Long h = Long.parseLong("1493620899796");
+        long k = System.currentTimeMillis();
+//        Date t = new Date(k);
+         System.out.println(k);
+         
         // .print(JsonUtil
         // .getJSONArray("[{\"datatype\":\"\",\"hidden\":0,\"name\":\"包装\",\"nums\":[0,0,0],\"optionAr\":[\"袋装\",\"盒装\",\"罐装\"],\"optionMap\":[{\"num\":0,\"selected\":0,\"url\":\"\",\"name\":\"袋装\"},{\"num\":0,\"selected\":0,\"url\":\"\",\"name\":\"盒装\"},{\"num\":0,\"selected\":0,\"url\":\"\",\"name\":\"罐装\"}],\"options\":\"袋装,盒装,罐装\",\"required\":0,\"type\":3,\"unit\":\"\",\"valStr\":\"\",\"value\":\"\",\"valueList\":[]}]"));
     }

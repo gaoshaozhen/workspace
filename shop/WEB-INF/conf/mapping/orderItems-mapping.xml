@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 操作表 ：es_order -->  
+<mapper namespace="orderItemsMapper">
+	<!-- 查询单个订单 -->
+	<select id ="getOrderItemByOrderId"  parameterType="java.util.Map" resultType="java.util.Map">
+        select * from es_order_items where order_id = #{order_id}        
+    </select>              
+</mapper>

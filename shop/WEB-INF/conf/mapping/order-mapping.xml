@@ -37,13 +37,14 @@
         					 goods_num,
         					 gainedpoint,
         					 remark,
-        					 createTime,
-        					 shipAddr,
-        					 shipZip,
-        					 shipEmail,
-        					 shipMobile)
-        		values(#{member_id},
-        			   #{sn}
+        					 create_time,
+        					 ship_addr,
+        					 ship_zip,
+        					 ship_email,
+        					 ship_mobile,
+        					 ship_name)
+        		values(#{memberId},
+        			   #{sn},
         			   #{status},
         			   #{pay_status},
         			   #{payment_id},
@@ -54,8 +55,9 @@
         			   #{createTime},
         			   #{shipAddr},
         			   #{shipZip},
-        			   #{shipEmail}
-        			   #{shipMobile})
+        			   #{shipEmail},
+        			   #{shipMobile},
+        			   #{shipName})
     </insert>
     
     <!-- 删除订单 -->

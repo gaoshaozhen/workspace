@@ -1,6 +1,8 @@
 <%@ page contentType="text/html; charset=utf-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jstl/fn" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jstl/fmt" %>
+
 <!DOCTYPE html>
 <html>
 	<head>
@@ -31,9 +33,28 @@
 						</ul>
 						<c:choose>
 							<c:when test="${fn:length(orderList) > 0}">
-								<c:forEach items="${orderList}" var="order" varStatus="i">
-										${order}			
-								</c:forEach>
+								<ul>
+									<c:forEach items="${orderList}" var="order" varStatus="i">
+										<li>
+											<table class="table">							
+												<thead>
+													<th>下单时间</th>
+													<th>商品名称</th>
+													<th>价格</th>
+													<th>订单状态</th>
+												</thead>
+												<tbody>
+													<tr>
+														<td><fmt:formatDate type="both" dateStyle="medium" value="${order.createDate}" /></td>
+														<td>${order.goods}</td>
+														<td>${order.paymoney}</td>
+														<td>${order.orderStatusDesc}</td>
+													</tr>
+												</tbody>
+											</table>
+										</li>				
+									</c:forEach>
+								</ul>
 							</c:when>
 							<c:otherwise>
 								您尚无订单

@@ -20,4 +20,5 @@
     <mapping path="/mall/goods.shtm" decorator="/view/mall/decorator/decorator.jsp" />
     <mapping path="/mall/cart.shtm" decorator="/view/mall/decorator/decorator.jsp" />
     <mapping path="/mall/checkout.shtm" decorator="/view/mall/decorator/decorator.jsp" />
+    <mapping path="/mall/addOrder.shtm" decorator="/view/mall/decorator/decorator.jsp" />
 </sitemesh>

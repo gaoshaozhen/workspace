@@ -35,4 +35,15 @@ public class OrderItemsDao
         session.close();
         return list;
     }
+    
+    public Map<String, Object> getOrderItemByOrderId(Map<String, Object> param)
+    {
+        SqlSession session = sqlSessionFactory.openSession();
+        Map<String, Object> map;
+
+        map = session
+                .selectOne("orderItemsMapper.getOrderItemByOrderId", param);
+        session.close();
+        return map;
+    }
 }
