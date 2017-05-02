@@ -25,7 +25,10 @@
     		
     		limit #{start},#{end}
     </select>
-    
+	<select id="getTypeByTypeId" parameterType="java.util.Map" resultType="java.util.Map">
+		select * from 
+    			es_goods_type where type_id=#{typeId}
+	</select>    
     <!-- 查询记录数量-->
     <select id="getCount" resultType="java.util.Map">
     	select count(*) total from es_goods_type    		

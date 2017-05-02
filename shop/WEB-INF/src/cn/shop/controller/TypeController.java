@@ -82,6 +82,43 @@ public class TypeController
     }
 
     /**
+     * 获得类型列表
+     * 
+     * @return
+     */
+    @SuppressWarnings("unchecked")
+    @ResponseBody
+    @RequestMapping(value = "getTypeByTypeId.shtm", method = RequestMethod.GET)
+    public Object getTypeByTypeId(@RequestParam Map<String, String> param,
+            HttpSession session)
+    {
+        int typeId = NumberUtils.toInt(param.get("typeId"), -1);
+        TypeDao typeDao;
+        Map<String, Object> map;
+        Map<String, Object> dbParam = new HashMap<String, Object>();
+        dbParam.put("typeId", typeId);
+        typeDao = (TypeDao) SpringContextUtil.getBean("typeDao");
+        map = typeDao.getTypeByTypeId(dbParam);
+        if(map != null)
+        {
+            String paramsStr = (String) map.get("params");
+            String propsStr = (String) map.get("props");
+            
+            if (paramsStr != null)
+            {
+                map.put("params", JsonUtil.getJSONArray(paramsStr));
+            }
+            if (propsStr != null)
+            {
+                map.put("props", JsonUtil.getJSONArray(propsStr));
+            }
+        }
+        
+        return map;
+    }
+
+    
+    /**
      * 新增类型
      */
     public Object addType()

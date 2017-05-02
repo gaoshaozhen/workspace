@@ -37,7 +37,21 @@ public class TypeDao
         session.close();
         return list;
     }
+    
+    /**
+     * 获得类型列表
+     * 
+     * @return
+     */
+    public Map<String, Object> getTypeByTypeId(Map<String, Object> param)
+    {
+        SqlSession session = sqlSessionFactory.openSession();
+        Map<String, Object> map= session.selectOne("typeMapper.getTypeByTypeId", param);
+        session.close();
+        return map;
+    }
 
+    
     public Object getCount(Map<String, Object> param)
     {
         SqlSession session = sqlSessionFactory.openSession();

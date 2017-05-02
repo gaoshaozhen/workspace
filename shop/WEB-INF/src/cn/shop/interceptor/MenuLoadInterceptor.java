@@ -40,6 +40,12 @@ public class MenuLoadInterceptor extends HandlerInterceptorAdapter
         List<Map<String, Object>> list = dao.getAllSiteMenuList();
         Vector<Integer> vector = new Vector<Integer>();
         
+        if(modelAndView == null)
+        {
+            logger.info("未发现视图对象");
+            return;
+        }
+        
         for (Map<String, Object> map : list)
         {
             if ((Integer) map.get("parentid") > 0)

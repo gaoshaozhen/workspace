@@ -5,9 +5,13 @@
 		<link rel="stylesheet" type="text/css" href="../lib/jquery-easyui-1.5.1/themes/default/easyui.css">
 		<link rel="stylesheet" type="text/css" href="../lib/jquery-easyui-1.5.1/themes/icon.css">
 		<link rel="stylesheet" type="text/css" href="../lib/jquery-easyui-1.5.1/demo/demo.css">
-		<link rel="stylesheet" type="text/css" href="../css/index.css">
+		<link rel="stylesheet" type="text/css" href="/shop/sto/css/global.css">
+		<link rel="stylesheet" type="text/css" href="./css/addGoods.css">
+
 		<script type="text/javascript" src="../lib/jquery-easyui-1.5.1/jquery.min.js"></script>
 		<script type="text/javascript" src="../lib/jquery-easyui-1.5.1/jquery.easyui.min.js"></script>
+		<script type="text/javascript" src="/shop/store/nicEdit/nicEdit.js"></script>
+		<script type="text/javascript" src="./js/addGoods.js"></script>
 	</head>
 	<body>
 		<style type="text/css">
@@ -19,121 +23,149 @@
 			}
 		</style>
 		<div class="wrapper">
-			<h3>选择分类</h3>			
-			<div class="easyui-layout" style="width: 600px;height: 200px">
-				<div data-options="region:'west',split:true" style="width:180px;height:100%">
-					<ul>
-						<li>食品、饮料、酒水</li>	
-						<li>珠宝钟表、饰品箱包</li>
-						<li>美容化妆、个人护理</li>
-					</ul>
+			<div id="cat-panel">
+				<h3>选择分类
+					<label id="cat-info">
+						<span id="first-cat" class="cat-label"></span>
+						<span id="second-cat" class="cat-label"></span>
+						<span id="third-cat" class="cat-label"></span>
+					</label>
+				</h3>			
+				<div class="easyui-layout" style="width: 600px;height: 200px">
+					<!-- 一级分类 -->
+					<div data-options="region:'west',split:true" style="width:180px;height:100%">
+						<ul id="firstList"></ul>
+					</div>
+					<!-- 二级分类 -->
+					<div data-options="region:'center'" style="height:100%">
+						<ul id="secondList"></ul>
+					</div>
+					<!-- 三级分类 -->
+					<div data-options="region:'east',split:true" style="width:180px;height:100%">
+						<ul id="thirdList"></ul>
+					</div>
 				</div>
-				<div data-options="region:'center'" style="height:100%">
-					<ul>
-						<li>休闲零食</li>
-						<li>饮料</li>
-						<li>酒水</li>
-					</ul>
-				</div>
-				<div data-options="region:'east',split:true" style="width:180px;height:100%">
-					<ul>
-						<li>碳酸饮料</li>
-						<li>茶饮料</li>
-						<li>果汁</li>
-						<li>水</li>
-					</ul>
-				</div>
+				<button id="next-btn">下一步</button>
 			</div>
-			<button>下一步</button>
-			<div id="tt" class="easyui-tabs" style="width:750px;height:250px;">
-			    <div title="基本信息" style="padding:20px;">
-					<table>
-						<tr>
-							<td>商品分类</td>
-							<td>饰品、饮料、酒水、果汁</td>
-						</tr>
-						<tr>
-							<td>商品名称</td>
-							<td><input type="" name=""></td>
-						</tr>
-						<tr>
-							<td>商品编号</td>
-							<td><input type="" name=""></td>
-						</tr>
-						<tr>
-							<td>是否上架销售</td>
-							<td>
-								<label><input type="radio" name="yes"/>是</label>
-								<label><input type="radio" name="yes"/>否</label>	
-							</td>
-						</tr>
-						<tr>
-							<td>市场价格</td>
-							<td>获得积分</td>
-						</tr>
-						<tr>
-							<td>详细描述</td>
-							<td><textarea></textarea></td>
-						</tr>
-					</table>
-			    </div>
-			    <div title="相册"  style="padding:20px;">
-					<input type="file" name="file1">
-					<input type="file" name="file2">
-					<input type="file" name="file3">
-					<input type="file" name="file4">
-			    </div>
-			    <div title="规格"  style="padding:20px;">
-					tab3
-			    </div>
-			    <div title="属性"  style="padding:2px;">
-					<button class="easyui-linkbutton" iconCls="icon-add">添加属性</button>
-					<table>
-						<thead>
-							<th>属性名</th>
-							<th>类型</th>
-							<th>选择项</th>
-							<th>单位</th>
-							<th>必填</th>
-							<th>校验</th>
-							<th></th>
-						</thead>
-						<tbody>
+			<div id="param-panel" style="display: none;">
+				<button id="previous-btn">上一步</button>
+				<div id="tt" class="easyui-tabs" style="width:750px;height:350px;">
+				    <div title="基本信息" style="padding:20px;">
+						<table style="width: 100%">
 							<tr>
-								<td><input type="" value="速度"></td>
-								<td>
-									<select>
-										<option>输入项</option>
-									</select>
-								</td>
-								<td><input type="" name=""></td>
-								<td><input type="" name=""></td>
-								<td>
-									<select>
-										<option>是</option>
-										<option>否</option>
-									</select>
-								</td>
-								<td>
-									<select>
-										<option>无</option>
-										<option>有</option>
-									</select>
-								</td>
-								<td><button class="easyui-linkbutton" iconCls="icon-cancel"></button></td>
+								<th>商品分类</th>
+								<td><input id="cat-info-selected" type="text" /></td>
 							</tr>
-						</tbody>
-					</table>
-			    </div>
-			    <div title="参数"  style="padding:20px;">
-					tab3
-			    </div>
-			    <div title="SEO"  style="padding:20px;">
-					tab3
-			    </div>
-			    <div title="标签"  style="padding:20px;">
-					tab3
-			    </div>
+							<tr>
+								<th>商品名称</th>
+								<td><input type="" name=""></td>
+							</tr>
+							<tr>
+								<th>商品编号</th>
+								<td><input type="" name=""></td>
+							</tr>
+							<tr>
+								<th>是否上架销售</th>
+								<td>
+									<label><input type="radio" name="yes" checked="true" />是</label>
+									<label><input type="radio" name="yes"/>否</label>	
+								</td>
+							</tr>
+							<tr>
+								<th>市场价格</th>
+								<td><input type="" name="" value="0.00"></td>
+							</tr>
+							<tr>
+								<th>获得积分</th>
+								<td><input type="" name="" value="0"></td>
+							</tr>
+							<tr>
+								<th>详细描述</th>
+								<td>
+									<div id="detail" style="width: 400px; height: 120px;">
+									</div>
+								</td>
+							</tr>
+						</table>
+				    </div>
+				    <div title="相册"  style="padding:20px;">
+						<input type="file" name="file1">
+						<input type="file" name="file2">
+						<input type="file" name="file3">
+						<input type="file" name="file4">
+				    </div>
+				    <div title="规格"  style="padding:20px;">
+						<table>
+							<tbody>
+								<tr>
+									<th>销售价</th>
+									<td><input type="text" name="price">/</td>
+									<td><button>编辑会员价格</button></td>
+								</tr>
+								<tr>
+									<th>成本价</th>
+									<td><input type="number" name=""></td>									
+								</tr>
+								<tr>
+									<th>重量</th>
+									<td><input type="number" name=""></td>
+								</tr>
+								<tr>
+									<th>规格</th>
+									<td><button>开启规格</button></td>
+								</tr>
+							</tbody>
+						</table>
+				    </div>
+				    <div title="属性"  style="padding:2px;">
+						<button class="easyui-linkbutton" iconCls="icon-add">添加属性</button>
+						<table>
+							<thead>
+								<th>属性名</th>
+								<th>类型</th>
+								<th>选择项</th>
+								<th>单位</th>
+								<th>必填</th>
+								<th>校验</th>
+								<th></th>
+							</thead>
+							<tbody>
+								<tr>
+									<td><input type="" value="速度"></td>
+									<td>
+										<select>
+											<option>输入项</option>
+										</select>
+									</td>
+									<td><input type="" name=""></td>
+									<td><input type="" name=""></td>
+									<td>
+										<select>
+											<option>是</option>
+											<option>否</option>
+										</select>
+									</td>
+									<td>
+										<select>
+											<option>无</option>
+											<option>有</option>
+										</select>
+									</td>
+									<td><button class="easyui-linkbutton" iconCls="icon-cancel"></button></td>
+								</tr>
+							</tbody>
+						</table>
+				    </div>
+				    <div title="参数"  style="padding:20px;">
+						<table id=""></table>
+				    </div>
+				    <div title="SEO"  style="padding:20px;">
+						tab3
+				    </div>
+				    <div title="标签"  style="padding:20px;">
+						tab3
+				    </div>
+				</div>
 			</div>
 		</div>
 	</body>
