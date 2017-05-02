@@ -7,6 +7,8 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.Properties;
 
+import cn.shop.base.util.ClassLoaderUtil;
+
 public class Configuration
 {
     private String path;
