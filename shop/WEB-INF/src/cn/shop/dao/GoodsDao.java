@@ -39,11 +39,12 @@ public class GoodsDao
     {
         int total = 0;
         SqlSession session = sqlSessionFactory.openSession();
-        Map<String, Object> result = session.selectOne("goodsMapper.getAllGoodsTotal");
-        
-        if(result != null)
+        Map<String, Object> result = session
+                .selectOne("goodsMapper.getAllGoodsTotal");
+
+        if (result != null)
         {
-            total = NumberUtils.toInt(result.get("total").toString(),0);
+            total = NumberUtils.toInt(result.get("total").toString(), 0);
             session.close();
         }
         return total;
@@ -51,7 +52,7 @@ public class GoodsDao
 
     public int getGoodsTotalByTypeIds(Map<String, Object> dbParam)
     {
-        
+
         return 0;
     }
 
@@ -97,31 +98,31 @@ public class GoodsDao
         SqlSession session = sqlSessionFactory.openSession();
         List<Map<String, Object>> list = session.selectList(
                 "goodsMapper.getGoodsByTypeIds", dbParam);
-        
+
         session.close();
         return list;
     }
-    
+
     /**
      * 搜索包含指定若干个parent_id的记录。
      * 
      * @param dbParam
      * @return
      */
-    public int getTotalGoodsByTypeIds(
-            Map<String, Object> dbParam)
+    public int getTotalGoodsByTypeIds(Map<String, Object> dbParam)
     {
-        int total=0;
+        int total = 0;
         SqlSession session = sqlSessionFactory.openSession();
         Map<String, Object> map = session.selectOne(
-                "goodsMapper.getTotalGoodsByTypeIds", dbParam);        
+                "goodsMapper.getTotalGoodsByTypeIds", dbParam);
         session.close();
         total = NumberUtils.toInt(map.get("total").toString(), 0);
         return total;
     }
-    
+
     /**
      * 按照goodsId查找。
+     * 
      * @param dbParam
      * @return
      */
@@ -147,5 +148,13 @@ public class GoodsDao
 
         session.close();
         return result;
+    }
+
+    public void addGoods(Map<String, Object> param)
+    {
+        SqlSession session = sqlSessionFactory.openSession();
+
+        session.selectOne("goodsMapper.addGoods", param);
+        session.close();
     }
 }

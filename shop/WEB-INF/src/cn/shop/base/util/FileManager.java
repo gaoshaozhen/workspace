@@ -14,7 +14,7 @@ import cn.shop.base.Configuration;
  */
 public class FileManager
 {
-    public Object createTempFile()
+    public File createTempFile()
     {
         Configuration conf = (Configuration)SpringContextUtil.getBean("configuration");
         String dir = ClassLoaderUtil.getRootPath() + conf.get("fileDir");

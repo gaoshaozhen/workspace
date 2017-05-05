@@ -51,48 +51,54 @@
 				<button id="previous-btn">上一步</button>
 				<div id="tt" class="easyui-tabs" style="width:750px;height:350px;">
 				    <div title="基本信息" style="padding:20px;">
-						<table style="width: 100%">
-							<tr>
-								<th>商品分类</th>
-								<td><input id="cat-info-selected" type="text" /></td>
-							</tr>
-							<tr>
-								<th>商品名称</th>
-								<td><input type="" name=""></td>
-							</tr>
-							<tr>
-								<th>商品编号</th>
-								<td><input type="" name=""></td>
-							</tr>
-							<tr>
-								<th>是否上架销售</th>
-								<td>
-									<label><input type="radio" name="yes" checked="true" />是</label>
-									<label><input type="radio" name="yes"/>否</label>	
-								</td>
-							</tr>
-							<tr>
-								<th>市场价格</th>
-								<td><input type="" name="" value="0.00"></td>
-							</tr>
-							<tr>
-								<th>获得积分</th>
-								<td><input type="" name="" value="0"></td>
-							</tr>
-							<tr>
-								<th>详细描述</th>
-								<td>
-									<div id="detail" style="width: 400px; height: 120px;">
-									</div>
-								</td>
-							</tr>
-						</table>
+				    	<form id="base-info">
+				    		<input type="text" name="catId" hidden="true"/>
+				    		<input type="text" name="typeId" hidden="true"/>
+							<table style="width: 100%">								
+								<tr>
+									<th>商品分类</th>
+									<td><input id="cat-info-selected" type="text" /></td>
+								</tr>
+								<tr>
+									<th>商品名称</th>
+									<td><input id="goods-name" type="text" name="name"></td>
+								</tr>
+								<tr>
+									<th>是否上架销售</th>
+									<td>
+										<label>
+											<input type="radio" id="marketEnable" name="marketEnable" checked="true" value="1"/>是
+										</label>
+										<labe1>
+											<input type="radio" name="marketEnable" value="0" />否
+										</label>	
+									</td>
+								</tr>
+								<tr>
+									<th>市场价格</th>
+									<td><input id="mktPrice" type="number" name="mktPrice" value="0.00"></td>
+								</tr>
+								<tr>
+									<th>获得积分</th>
+									<td><input type="number" id="point" name="point" value="0"></td>
+								</tr>
+								<tr>
+									<th>详细描述</th>
+									<td>
+										<div id="brief-edit">
+										<div id="intro" style="width: 400px; height: 120px;">
+										</div>
+										</div>
+									</td>
+								</tr>
+							</table>
+						</form>
 				    </div>
 				    <div title="相册"  style="padding:20px;">
-						<input type="file" name="file1">
-						<input type="file" name="file2">
-						<input type="file" name="file3">
-						<input type="file" name="file4">
+						<input type="file" id="picture1" name="file1">
+						<input type="file" id="picture2" name="file2">
+						<input type="file" id="picture3" name="file3">
+						<input type="file" id="picture4" name="file4">
 				    </div>
 				    <div title="规格"  style="padding:20px;">
 						<table>
@@ -117,56 +123,22 @@
 							</tbody>
 						</table>
 				    </div>
-				    <div title="属性"  style="padding:2px;">
-						<button class="easyui-linkbutton" iconCls="icon-add">添加属性</button>
-						<table>
-							<thead>
-								<th>属性名</th>
-								<th>类型</th>
-								<th>选择项</th>
-								<th>单位</th>
-								<th>必填</th>
-								<th>校验</th>
-								<th></th>
-							</thead>
-							<tbody>
-								<tr>
-									<td><input type="" value="速度"></td>
-									<td>
-										<select>
-											<option>输入项</option>
-										</select>
-									</td>
-									<td><input type="" name=""></td>
-									<td><input type="" name=""></td>
-									<td>
-										<select>
-											<option>是</option>
-											<option>否</option>
-										</select>
-									</td>
-									<td>
-										<select>
-											<option>无</option>
-											<option>有</option>
-										</select>
-									</td>
-									<td><button class="easyui-linkbutton" iconCls="icon-cancel"></button></td>
-								</tr>
-							</tbody>
-						</table>
+				    <div title="属性"  style="padding:2px;">						
+						<table id="prop-edit"></table>
 				    </div>
 				    <div title="参数"  style="padding:20px;">
-						<table id=""></table>
+						<div id="param-edit"></div>
 				    </div>
 				    <div title="SEO"  style="padding:20px;">
-						tab3
+						<textarea id="seo"></textarea>
 				    </div>
 				    <div title="标签"  style="padding:20px;">
-						tab3
+						<ul id="edit-tag"></ul>
 				    </div>
 				</div>
+				<button id="submit-form">提交信息</button>
 			</div>
+			<form action="/shop/mall/addGoods.shtm" method="post" id="goods-form"></form>
 		</div>
 	</body>
 </html>

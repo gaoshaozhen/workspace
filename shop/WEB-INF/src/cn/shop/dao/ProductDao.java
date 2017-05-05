@@ -71,16 +71,16 @@ public class ProductDao
     // }
     //
     //
-    // /**
-    // * 新增产品
-    // */
-    // public boolean addProduct(Map<String, Object> param)
-    // {
-    // SqlSession session = sqlSessionFactory.openSession();
-    // List<?> list = session.selectList("productMapper.addProduct", param);
-    // session.close();
-    // return true;
-    // }
+     /**
+     * 新增产品
+     */
+    public boolean addProduct(Map<String, Object> param)
+    {
+//        SqlSession session = sqlSessionFactory.openSession();
+//        session.insert("productMapper.addProduct", param);
+//        session.close();
+        return true;
+    }
     //
     // /**
     // * 删除产品
