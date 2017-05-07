@@ -30,15 +30,24 @@ function updateDataGrid(param){
 			{
 				var params = msg.data[item].params;
 				var props = msg.data[item].props;
-				if (typeof params != "undefined" && params != null ) {
-					msg.data[item].params = params.toString();
+				if (typeof params != "undefined" && params != null && msg.data[item].have_parm > 0) {
+					console.debug("add");
+					var paramStr = "<ul>";
+					for(var i in msg.data[item].params){
+						for(var j in msg.data[item].params[i].paramList){
+							paramStr += "<li>"+msg.data[item].params[i].paramList[j].name+"</li>";
+						}
+					}
+					paramStr += "</ul>";
+					msg.data[item].paramList = paramStr;
 				}
-				if (typeof props != "undefined" && props != null ) {
+				if (typeof props != "undefined" && props != null  && msg.data[item].have_prop > 0) {
 					// console.info(typeof props);
 					msg.data[item].props = props.toString();	
 				}
 				array.push(msg.data[item]);
 			}
+			console.info(array);
 			$("#type-table").datagrid({
 				loadMsg:"加载中",			
 				data:array

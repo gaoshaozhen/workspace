@@ -23,5 +23,27 @@
 	查询所有类型
     <select id ="getAllProduct"  parameterType="java.util.Map" resultType="java.util.Map">
         select * from es_product
-    </select>  -->           
+    </select>  -->  
+    
+    <insert id="addProduct" parameterType="java.util.Map">
+    	insert into es_product(product_id,
+                               goods_id,
+                               name,
+                               sn,
+                               store,
+                               price,
+                               specs,
+                               cost,
+                               weight)
+                       values(#{productId},
+                               #{goodsId},
+                               #{name},
+                               #{sn},
+                               #{store},
+                               #{price},
+                               #{specs},
+                               #{cost},
+                               #{weight})
+    	
+    </insert>         
 </mapper>

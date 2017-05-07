@@ -76,9 +76,9 @@ public class ProductDao
      */
     public boolean addProduct(Map<String, Object> param)
     {
-//        SqlSession session = sqlSessionFactory.openSession();
-//        session.insert("productMapper.addProduct", param);
-//        session.close();
+        SqlSession session = sqlSessionFactory.openSession();
+        session.insert("productMapper.addProduct", param);
+        session.close();
         return true;
     }
     //

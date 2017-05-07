@@ -52,6 +52,19 @@ public class TypeDao
     }
 
     
+    /**
+     * 获得品牌列表
+     * 
+     * @return
+     */
+    public List<Map<String, Object>> getBrandListByTypeId(Map<String, Object> param)
+    {
+        SqlSession session = sqlSessionFactory.openSession();
+        List<Map<String, Object>> list= session.selectList("typeMapper.getBrandListByTypeId", param);
+        session.close();
+        return list;
+    }
+    
     public Object getCount(Map<String, Object> param)
     {
         SqlSession session = sqlSessionFactory.openSession();

@@ -51,20 +51,46 @@ function submitForm(){
 	formData.append("picture4", $("#picture4")[0].files[0]);
 
 	// 基本信息
-	formData.append("GoodsId", selectCatId);
+	formData.append("catId", selectCatId);
 	formData.append("typeId", selectedTypeId);
 	formData.append("name", $("#goods-name").val());
-	formData.append("marketEnable", $("#marketEnable").val());
+	formData.append("marketEnable", getRadio($("#marketEnable input")));
 	formData.append("mktPrice",  $("#mktPrice").val());
 	formData.append("point", $("#point").val());
 	formData.append("intro", getEditContent());
-
+	// 参数
+	console.debug(typeDetail);
+	if (typeDetail.have_parm > 0) {
+		for(var i = 0, len = typeDetail.params.length; i < len; i++){
+			for(var j = 0, listLen = typeDetail.params[i].paramList.length; j < listLen; j++){
+				var domName = "#param-edit .group-" + i + " .item-" + j;
+				typeDetail.params[i].paramList[j].value = $(domName).val();
+			}
+		}
+		console.debug(typeDetail.params);
+		formData.append("params", JSON.stringify(typeDetail.params));
+	}
+	// 属性
+	if (typeDetail.have_prop > 0) {
+		for(var i =0, len = typeDetail.props.length; i< len;i++){
+			var domName="#prop-edit .item-" + i;
+			typeDetail.props[i].value=$(domName).val();
+		}
+		console.debug(typeDetail.props);
+		formData.append("props", JSON.stringify(typeDetail.props));
+	}else{
+		console.debug("不包含属性");
+	}
+	// 品牌
+	if (typeDetail.join_brand > 0) {
+		formData.append("props", $("#prop-edit .brand").val());
+	}
 	// SEO
-	formData.append("seo", $("#seo"));	
-
+	formData.append("seo", $("#seo").val());	
+	// 标签
+	formData.append("tag", getRadio($("#edit-tag input")));	
 	// formData.append("name", name);
-	// formData.append("name", name);
-	console.info(formData);	
+	// formData.append("name", name);	
 	$.ajax({
 		url: "/shop/mall/addGoods.shtm",
 		type: 'POST',
@@ -235,7 +261,7 @@ function bindEvent(){
 function initTab(){
 	function init(data){
 		console.info(data);
-		var dom ="<li><label><input name='tag' type='radio'>无</label></li>";;
+		var dom ="<li><label><input name='tag' type='radio' checked='true' value='-1'>无</label></li>";;
 		for(var item in data.result){
 			dom += "<li><label><input name='tag' type='radio' value=\""+ data.result[item].tag_id +"\">"+ data.result[item].tag_name+"</label></li>";
 		}
@@ -295,24 +321,36 @@ function initGoodsInfo(typeId){
 				// 选项
 				propDom += "<td>";
 				if (props[it].type == 3) {
-					propDom += "<select>";	
+					propDom += "<select class='item-" + it + "'>";
 					for(var rt in props[it].optionAr){
-						propDom += "<option>" + props[it].optionAr[rt] + "</option>";
+						propDom += "<option value='" + props[it].optionAr[rt] + "'>" + props[it].optionAr[rt] + "</option>";
 					}
 					propDom += "</select>";
 				}else if (props[it].type == 1) {
-					propDom += "<input type='text'/>";
+					propDom += "<input type='text' class='item-" + it + "'/>";
 				}
 				propDom += "</td>";
 				propDom += "</tr>";
 			}
-			
-			$("#prop-edit").append($(propDom));
+			$("#prop-edit").html($(propDom));
 			console.debug("初始化属性" + propDom);
 
 		}else{
 			console.debug("该商品不包括属性")
 		}
+		if (data.join_brand > 0) {
+			var $brandDom = "<tr><th>品牌</th><td><select class='brand'>";
+			for (var item in data.brand_list) {
+				$brandDom += "<option value='" 
+						+ data.brand_list[item].brand_id + "''>" 
+						+ 　data.brand_list[item].name + "</option>";
+			}
+			$brandDom += "</select></td></tr>";
+			$("#brand-edit").html($brandDom);
+		}else{
+			console.debug("该商品不包含品牌")
+		}
+
 	}
 	$.ajax({
 		url:"/shop/type/getTypeByTypeId.shtm",

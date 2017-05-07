@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import cn.shop.base.util.Default;
 import cn.shop.base.util.JsonUtil;
 import cn.shop.base.util.SpringContextUtil;
 import cn.shop.dao.TypeDao;
@@ -75,7 +76,7 @@ public class TypeController
             {
                 temp.put("props", JsonUtil.getJSONArray(propsStr));
             }
-        }
+        }        
         map.put("data", list);
         map.put("page", pageNumber);
         return map;
@@ -96,9 +97,11 @@ public class TypeController
         TypeDao typeDao;
         Map<String, Object> map;
         Map<String, Object> dbParam = new HashMap<String, Object>();
+        List<Map<String, Object>>brandList;
         dbParam.put("typeId", typeId);
         typeDao = (TypeDao) SpringContextUtil.getBean("typeDao");
         map = typeDao.getTypeByTypeId(dbParam);
+         
         if(map != null)
         {
             String paramsStr = (String) map.get("params");
@@ -112,8 +115,12 @@ public class TypeController
             {
                 map.put("props", JsonUtil.getJSONArray(propsStr));
             }
-        }
-        
+            if(Default.get((Integer)map.get("join_brand"), -1) > 0)
+            {
+                brandList = typeDao.getBrandListByTypeId(dbParam);
+                map.put("brand_list", brandList);
+            }
+        }        
         return map;
     }
 

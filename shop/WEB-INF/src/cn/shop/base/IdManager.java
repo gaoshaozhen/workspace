@@ -1,7 +1,6 @@
 package cn.shop.base;
 
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.Random;
 
@@ -25,30 +24,30 @@ public class IdManager
     
     public static int createGoodsId()
     {
-        int id = 0;
-        Date date = new Date();
-        Calendar cal = Calendar.getInstance();
+        int id = 10000000;
+//        Date date = new Date();
+//        Calendar cal = Calendar.getInstance();
 
-        cal.setTime(date);
-        id = cal.get(Calendar.YEAR);
-        id *= 10000;
+//        cal.setTime(date);
+//        id = cal.get(Calendar.YEAR);
+//        id *= 10000;
         Random random = new Random();
-        id += random.nextInt(9999);
+        id += random.nextInt(9999999);
 
         return id;
     }
     
     public static int createProductId()
     {
-        int id = 0;
-        Date date = new Date();
-        Calendar cal = Calendar.getInstance();
-
-        cal.setTime(date);
-        id = cal.get(Calendar.YEAR);
-        id *= 10000;
+        int id = 10000000;
+//        Date date = new Date();
+//        Calendar cal = Calendar.getInstance();
+//
+//        cal.setTime(date);
+//        id = cal.get(Calendar.YEAR);
+//        id *= 10000;
         Random random = new Random();
-        id += random.nextInt(9999);
+        id += random.nextInt(9999999);
 
         return id;
     }

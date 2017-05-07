@@ -34,6 +34,11 @@
     	select count(*) total from es_goods_type    		
     </select>
     
+    <!-- 依据类型查看相应品牌信息 -->
+    <select id="getBrandListByTypeId" parameterType="java.util.Map"  resultType="java.util.Map">
+    	select * from es_brand,es_type_brand where type_id = #{typeId} and es_brand.brand_id = es_type_brand.brand_id
+    	
+    </select>
     <!-- 插入类型信息 -->
      <insert id="insertType" parameterType="java.util.Map" 
         useGeneratedKeys="true" keyProperty="id"> 

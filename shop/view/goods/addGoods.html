@@ -12,6 +12,7 @@
 		<script type="text/javascript" src="../lib/jquery-easyui-1.5.1/jquery.easyui.min.js"></script>
 		<script type="text/javascript" src="/shop/store/nicEdit/nicEdit.js"></script>
 		<script type="text/javascript" src="./js/addGoods.js"></script>
+		<script type="text/javascript" src="/shop/sto/js/tools.js"></script>
 	</head>
 	<body>
 		<style type="text/css">
@@ -65,9 +66,9 @@
 								</tr>
 								<tr>
 									<th>是否上架销售</th>
-									<td>
+									<td id="marketEnable">
 										<label>
-											<input type="radio" id="marketEnable" name="marketEnable" checked="true" value="1"/>是
+											<input type="radio"  name="marketEnable" checked="true" value="1"/>是
 										</label>
 										<labe1>
 											<input type="radio" name="marketEnable" value="0" />否
@@ -105,8 +106,8 @@
 							<tbody>
 								<tr>
 									<th>销售价</th>
-									<td><input type="text" name="price">/</td>
-									<td><button>编辑会员价格</button></td>
+									<td><input type="text" name="price"></td>
+									<td style="display: none;"><button>编辑会员价格</button></td>
 								</tr>
 								<tr>
 									<th>成本价</th>
@@ -123,7 +124,8 @@
 							</tbody>
 						</table>
 				    </div>
-				    <div title="属性"  style="padding:2px;">						
+				    <div title="属性"  style="padding:2px;">
+				    	<table id="brand-edit"></table>					
 						<table id="prop-edit"></table>
 				    </div>
 				    <div title="参数"  style="padding:20px;">
