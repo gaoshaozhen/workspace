@@ -67,7 +67,7 @@
 		<init-param>
 			<!-- 执行间隔，单位s -->
 			<param-name>interval</param-name>
-			<param-value>10</param-value>
+			<param-value>600</param-value>
 		</init-param>  
 		<load-on-startup>1</load-on-startup>  
 	</servlet> 

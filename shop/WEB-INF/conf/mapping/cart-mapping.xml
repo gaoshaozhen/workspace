@@ -14,6 +14,7 @@
     		${item}
     	</foreach>
     </select>
+    
     <insert id="addCart"  parameterType="java.util.Map">
     	insert into es_cart(goods_id,
     						product_id,
@@ -36,5 +37,5 @@
     </insert>  
     <delete id="deleteCartByCartId" parameterType="java.util.Map">
     	delete from es_cart where cart_id = #{cartId}
-    </delete> 
+    </delete>   
 </mapper>

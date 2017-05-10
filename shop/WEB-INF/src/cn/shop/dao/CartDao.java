@@ -71,4 +71,6 @@ public class CartDao
         session.insert("cartMapper.deleteCartByCartId", param);
         session.close();
     }
+    
+    
 }

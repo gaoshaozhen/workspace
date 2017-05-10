@@ -90,4 +90,31 @@ public class OrderDao
         session.close();
         return true;
     }
+    
+    /**
+     * 获取超时订单
+     */
+    public List<Map<String, Object>> getTomeoutOrder(Map<String, Object> param)
+    {
+        List<Map<String, Object>> list;
+        SqlSession session = sqlSessionFactory.openSession();
+        list = session.selectList("orderMapper.getTimeoutOrder", param);
+        session.close();
+        
+        return list;
+    }
+    
+    public void updateOrdersStatus(Map<String, Object> param)
+    {
+        SqlSession session = sqlSessionFactory.openSession();
+        session.update("orderMapper.updateOrdersById", param);
+        session.close();
+    }
+    
+    public void updateOrderStatus(Map<String, Object> param)
+    {
+        SqlSession session = sqlSessionFactory.openSession();
+        session.update("orderMapper.updateOrderById", param);
+        session.close();
+    }
 }

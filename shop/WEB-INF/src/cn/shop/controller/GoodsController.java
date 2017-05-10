@@ -167,7 +167,7 @@ public class GoodsController
         
         goodsDao.addGoods(goodsParam);
         productDao.addProduct(productParam);
-        result.put("code", 1);
+        result.put("code", 1 );
         return result;
     }
 }
