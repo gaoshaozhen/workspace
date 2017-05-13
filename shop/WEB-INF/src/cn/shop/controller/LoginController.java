@@ -1,11 +1,14 @@
 package cn.shop.controller;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.apache.log4j.Logger;
@@ -17,12 +20,14 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.context.ContextLoader;
 
+import cn.shop.base.Configuration;
 import cn.shop.base.UserClassification;
 import cn.shop.base.util.SpringContextUtil;
 import cn.shop.dao.MemberDao;
 import cn.shop.dao.UserDao;
 import cn.shop.model.LoginInfo;
 import cn.shop.model.MemberInfo;
+import cn.shop.security.TokenManager;
 
 /**
  * 登录处理
@@ -81,8 +86,8 @@ public class LoginController
      */
     @RequestMapping(value = "in.shtm", method = RequestMethod.POST)
     public String signIn(HttpServletRequest request,
-            @RequestParam Map<String, String> param,
-            HttpSession session)
+            HttpServletResponse response,
+            @RequestParam Map<String, String> param, HttpSession session)
     {
         LoginInfo loginInfo;
         MemberInfo memberInfo = null;
@@ -93,7 +98,7 @@ public class LoginController
         MemberDao memberDao;
         List<?> list;
         Map<String, Object> dbParam = new HashMap<String, Object>();
-
+        Cookie cookie;
         username = param.get("username");
         password = param.get("password");
         userClassification = UserClassification.get(param
@@ -131,8 +136,18 @@ public class LoginController
                 loginInfo.setParam((Map<String, Object>) list.get(0));
                 session.setAttribute("loginInfo", loginInfo);
             }
-
-            return "redirect:/view/index.shtm"; // 登录成功
+            TokenManager tokenManager = new TokenManager();
+            Configuration configuration = (Configuration) SpringContextUtil
+                    .getBean("configuration");
+            Map<String, Object> claims = new HashMap<String, Object>();
+            String token = tokenManager.createJWTString("user", new Date(),
+                    configuration.get("key"),
+                    String.valueOf(loginInfo.getUserId()), claims);
+            cookie = new Cookie("token", token);
+            cookie.setPath("/shop/");
+            cookie.setMaxAge(3600000);
+            response.addCookie(cookie);
+            return "redirect:/view/index.html"; // 登录成功
         }
         // 会员登录处理
         else
@@ -152,6 +167,17 @@ public class LoginController
                 memberInfo.setUserClassification(userClassification);
                 memberInfo.setParam((Map<String, Object>) list.get(0));
                 session.setAttribute("memberInfo", memberInfo);
+                TokenManager tokenManager = new TokenManager();
+                Configuration configuration = (Configuration) SpringContextUtil
+                        .getBean("configuration");
+                Map<String, Object> claims = new HashMap<String, Object>();
+                String token = tokenManager.createJWTString("user", new Date(),
+                        configuration.get("key"),
+                        String.valueOf(memberInfo.getMemberId()), claims);
+                cookie = new Cookie("token", token);
+                cookie.setPath("/shop/");
+                cookie.setMaxAge(3600000);
+                response.addCookie(cookie);
                 return "redirect:/mall/member_index.shtm"; // 登录成功
             }
         }
@@ -182,8 +208,7 @@ public class LoginController
      */
     @RequestMapping(value = "out.shtm")
     public String signOut(HttpServletRequest request,
-            @RequestParam Map<String, String> param,
-            HttpSession session)
+            @RequestParam Map<String, String> param, HttpSession session)
     {
         UserClassification UserClassification = (UserClassification) session
                 .getAttribute("userClassification");

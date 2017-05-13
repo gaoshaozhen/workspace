@@ -2,11 +2,43 @@
 <html>
 	<head>
 		<title>仓库管理</title>
+		<link rel="stylesheet" type="text/css" href="../lib/jquery-easyui-1.5.1/themes/default/easyui.css">
+		<link rel="stylesheet" type="text/css" href="../lib/jquery-easyui-1.5.1/themes/icon.css">		
+		<script type="text/javascript" src="../lib/jquery-easyui-1.5.1/jquery.min.js"></script>
+		<script type="text/javascript" src="../lib/jquery-easyui-1.5.1/jquery.easyui.min.js"></script>
+		<script src="./js/repository.js"></script>		
 	</head>
 	<body>
-		<div class="wrapper">
-			<button>添加</button>
-			<button>删除</button>
+		<div class="wrapper">			
+			<input type="text" id="search-name"><button id="search">搜索</button>
+			<article>
+				<table id="product-table" class="easyui-datagrid" 
+					rownumbers="true"
+					fitColumns="true"
+					pagination="true"
+					style="width:100%;height:auto;">			 		
+				</table>				
+			</article>
+			<div id="win" 
+				class="easyui-window"
+				title="库存" 
+				closed="true"
+				style="width: 500px;height: 300px">
+				<input type="text" id="product-id">
+				<table>
+					<thead>
+						<th>进货量</th>
+						<th>出货量</th>
+					</thead>
+					<tbody>
+						<tr>
+							<td><input id="in-store" type="number" ></td>
+							<td><input id="out-store" type="number" ></td>
+						</tr>						
+					</tbody>
+				</table>
+				<button id="save-btn">保存</button>
+			</div>
 		</div>
 	</body>
 </html>

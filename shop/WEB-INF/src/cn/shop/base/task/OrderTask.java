@@ -10,6 +10,7 @@ import java.util.TimerTask;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 
+import org.apache.commons.lang.math.NumberUtils;
 import org.apache.log4j.Logger;
 
 import cn.shop.base.OrderStatus;
@@ -21,7 +22,7 @@ import cn.shop.dao.OrderDao;
  * 
  * @author shaozhen
  */
-public class OrderTask  extends HttpServlet  
+public class OrderTask extends HttpServlet
 {
     /**
      * 
@@ -29,6 +30,11 @@ public class OrderTask  extends HttpServlet
     private static final long serialVersionUID = 1L;
     Logger logger = Logger.getLogger(OrderTask.class);
 
+    /**
+     * 任务执行类。
+     * @author shaozhen
+     *
+     */
     class OrderManagerTask extends TimerTask
     {
 
@@ -37,23 +43,26 @@ public class OrderTask  extends HttpServlet
          */
         private void checkOrderList()
         {
+            OrderDao orderDao;
+            List<Map<String, Object>> list;
             List<Integer> orderIdList = new ArrayList<Integer>();
             Map<String, Object> map = new HashMap<String, Object>();
             Map<String, Object> dbParam = new HashMap<String, Object>();
+
             map.put("time", System.currentTimeMillis() - 1000 * 60 * 45);
             map.put("orderStatus", OrderStatus.WAIT.getCode());
-            OrderDao orderDao = (OrderDao)SpringContextUtil.getBean("orderDao");
-            List<Map<String, Object>> list = orderDao.getTomeoutOrder(map);
-            for(Map<String, Object> temp : list)
+            orderDao = (OrderDao) SpringContextUtil.getBean("orderDao");
+            list = orderDao.getTomeoutOrder(map);
+            for (Map<String, Object> temp : list)
             {
-                orderIdList.add((Integer)temp.get("order_id"));
+                orderIdList.add((Integer) temp.get("order_id"));
             }
-            if(!orderIdList.isEmpty())
+            if (!orderIdList.isEmpty())
             {
                 logger.info("发现超时订单" + orderIdList.size() + "条");
                 dbParam.put("status", OrderStatus.CANCEL.getCode());
-                
-                for(Integer orderId : orderIdList)
+
+                for (Integer orderId : orderIdList)
                 {
                     dbParam.put("orderId", orderId);
                     orderDao.updateOrderStatus(dbParam);
@@ -63,9 +72,9 @@ public class OrderTask  extends HttpServlet
             {
                 logger.info("未发现超时订单");
             }
-            
+
         }
-        
+
         @Override
         public void run()
         {
@@ -75,6 +84,7 @@ public class OrderTask  extends HttpServlet
         }
 
     }
+
     public OrderTask()
     {
         super();
@@ -83,9 +93,16 @@ public class OrderTask  extends HttpServlet
     @Override
     public void init() throws ServletException
     {
+        
+        int start = NumberUtils.toInt(this.getInitParameter("start"), -1);
         int interval = Integer.parseInt(this.getInitParameter("interval"));
         Timer timer = new Timer();
         logger.info("任务执行间隔为" + interval + "s");
+        if(start < 1)
+        {
+            logger.info("订单超时检查已关闭");
+            return;
+        }
         try
         {
             timer.schedule(new OrderManagerTask(), 0, interval * 1000);

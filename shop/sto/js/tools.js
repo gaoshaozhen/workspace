@@ -6,3 +6,6 @@ function getRadio($array){
 	}
 	return null;
 }
+function trim(str){
+	return str.replace(/(^\s*)|(\s$)/g,"");
+}

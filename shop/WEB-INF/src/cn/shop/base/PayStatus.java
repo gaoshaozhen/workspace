@@ -2,28 +2,18 @@ package cn.shop.base;
 
 import java.util.regex.Pattern;
 
-public enum OrderStatus
+public enum PayStatus
 {
-    WAIT(0, "等待付款"),
+    WAIT(0, "等待确认"),
 
-    WAITINGCONFIRM(1, "已付款等待确认"),
-
-    PAYED(2, "已确认付款"),
-
-    DISTRIBUTING(3, "配货中"),
-
-    DELIVERED(4, "已发货"),
-
-    CANCEL(5, "已取消"),
-
-    SUCCESS(6, "成功"),
-
+    CONFIRM(1, "已确认"),
+    
     UNKNOWN(-1, "未知");
 
     int code;
     String desc;
 
-    OrderStatus(int code, String desc)
+    PayStatus(int code, String desc)
     {
         this.code = code;
         this.desc = desc;
@@ -45,9 +35,9 @@ public enum OrderStatus
      * @param code
      * @return TradePeriod
      */
-    public static OrderStatus get(int code)
-    {
-        for (OrderStatus t : OrderStatus.values())
+    public static PayStatus get(int code)
+    {        
+        for (PayStatus t : PayStatus.values())
         {
             if (t.getCode() == code)
             {
@@ -63,7 +53,7 @@ public enum OrderStatus
      * @param code
      * @return TradePeriod
      */
-    public static OrderStatus get(String code)
+    public static PayStatus get(String code)
     {
         Pattern pattern = Pattern.compile("^[-\\+]?[\\d]+$");
         if (code != null && pattern.matcher(code).matches())

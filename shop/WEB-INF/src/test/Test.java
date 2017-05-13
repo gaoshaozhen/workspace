@@ -2,6 +2,8 @@ package test;
 
 import java.security.MessageDigest;
 
+import org.apache.commons.lang.StringUtils;
+
 public class Test
 {
     public static byte[] getMd5(byte[] b)
@@ -22,17 +24,10 @@ public class Test
 
     public static void main(String[] args)
     {
-//        http://localhost:8080/javashop/member_order.html?status=0
-//        HttpClientUtil.sendHttpPostJson("http://localhost:8080/shop/paytest/pay.shtm", "{\"we\":\"test\"}");
-//        Vector vector = new Vector();
-//        vector.add("sdf");
-//        vector.add("sdvfsdv");
-//        vector.clear();
+           String u = null;
+           String t = "   ";
+           System.out.println("#" + StringUtils.trimToNull(t) + "#");
         
-        String javaVersion = System
-                .getProperty("java.version");
-        System.out.println(new JdkVersion1().getJavaVersion());
-        System.out.println(new JdkVersion1().getMajorJavaVersion());
     }
 
     public static String byteArrayToHex(byte[] byteArray)

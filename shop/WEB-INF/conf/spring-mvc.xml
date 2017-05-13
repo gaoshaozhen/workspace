@@ -44,10 +44,19 @@
             </list>  
         </property>  
     </bean>   
+    
 	<mvc:interceptors>  
 		 <mvc:interceptor>  
 		     <mvc:mapping path="/mall/**"/>
 		     <bean class = "cn.shop.interceptor.MenuLoadInterceptor"></bean>  
 		</mvc:interceptor>  
-	</mvc:interceptors>    
+	</mvc:interceptors>
+	
+	<mvc:interceptors>
+            <mvc:interceptor>
+            <mvc:mapping path="/mall/**"  />
+            <bean  class="cn.shop.interceptor.AuthCheckInteceptor"/>        
+        </mvc:interceptor>
+    </mvc:interceptors>
+        
 </beans>

@@ -4,7 +4,7 @@
 <mapper namespace="orderMapper">
 	<!-- 查询单个订单 -->
 	<select id ="getOneOrderById"  parameterType="java.util.Map" resultType="java.util.Map">
-        select * from es_order where order_id=#{order_id}        
+        select * from es_order where order_id=#{orderId}        
     </select>
         
 	<!-- 按照id查询订单 -->
@@ -15,9 +15,93 @@
 	  		</foreach>       	        
     </select>
         
+    <!-- 查询所有个人订单 -->
+    <select id="getAllOrderByParamAndMemberId" resultType="java.util.Map">
+    	select * from es_order where memberId = #{memberId} 
+    	<if test="status != null">
+    		and status = #{status}
+    	</if>
+    	<if test="start != null">
+    		<if test="num != null">
+    			limit #{start},#{num}
+    		</if>
+    	</if>
+    </select>
+    
     <!-- 查询所有订单 -->
-    <select id="getOrderList" resultType="java.util.Map">
-    	select * from es_order
+                
+    <select id="getAllOrderByParam" resultType="java.util.Map">
+    	select es_member.uname,a.* from 
+    		(select * from es_order  
+	    	<choose>
+	    		<when test="status != null">
+	    			where  status = #{status}
+	    			<if test="startTime != null">
+		    			and create_time &lt; #{startTime}
+		    		</if>
+		    		<if test="endTime != null">
+		    			and create_time &gt; #{endTime}
+		    		</if>	
+	    		</when>
+	    		<otherwise>
+	    			<if test="startTime != null">
+	    				<if test="endTime == null">
+	    					where create_time &gt; #{startTime}
+	    				</if>
+	    			</if>
+	    			<if test="startTime == null">
+	    				<if test="endTime != null">
+	    					where create_time &lt; #{endTime}
+	    				</if>
+	    			</if>
+	    			<if test="startTime != null">
+	    				<if test="endTime != null">
+	    					where create_time &gt; #{startTime}
+	    						and create_time &lt; #{endTime}
+	    				</if>
+	    			</if>
+	    		</otherwise>
+	    	</choose>
+	    	<if test="start != null">
+	    		<if test="num != null">
+	    			limit #{start},#{num}
+	    		</if>
+	    	</if>
+	    	) a, es_member where a.member_id = es_member.member_id
+    </select>
+    
+    <!-- 查询所有订单数量 -->
+    <select id="getTotalOfAllOrderByParam" resultType="java.util.Map">
+    	select count(*) total from es_order
+    	<choose>
+    		<when test="status != null">
+    			where  status = #{status}
+    			<if test="startTime != null">
+	    			and create_time &lt; #{startTime}
+	    		</if>
+	    		<if test="endTime != null">
+	    			and create_time &gt; #{endTime}
+	    		</if>	
+    		</when>
+    		<otherwise>
+    			<if test="startTime != null">
+    				<if test="endTime == null">
+    					where create_time &gt; #{startTime}
+    				</if>
+    			</if>
+    			<if test="startTime == null">
+    				<if test="endTime != null">
+    					where create_time &lt; #{endTime}
+    				</if>
+    			</if>
+    			<if test="startTime != null">
+    				<if test="endTime != null">
+    					where create_time &gt; #{startTime}
+    						and create_time &lt; #{endTime}
+    				</if>
+    			</if>
+    		</otherwise>
+    	</choose>  
     </select>
     
     <!-- 按照状态查询所有订单 -->
@@ -50,10 +134,10 @@
         		values(#{memberId},
         			   #{sn},
         			   #{status},
-        			   #{pay_status},
-        			   #{payment_id},
+        			   #{payStatus},
+        			   #{paymentId},
         			   #{paymoney},        			           			   
-        			   #{goods_num},
+        			   #{goodsNum},
         			   #{gainedpoint},
         			   #{remark},
         			   #{createTime},
@@ -101,4 +185,25 @@
             #{item}
         </foreach>
     </update>
+	<!-- 更新订单付款确认状态 -->
+	<update id="updatePayStatusByOrderId" parameterType="java.util.Map">
+		update es_order set pay_status = #{payStatus}
+			 where order_id = #{orderId}
+	</update>
+	<insert id="addOrderLog" parameterType="java.util.Map"
+		useGeneratedKeys="true" keyProperty="log-id">
+		insert into es_order_log (order_id,
+								 op_id,
+								 op_name,
+								 message,
+								 op_time)
+						values(#{orderId},
+							   #{opId},
+							   #{opName},
+							   #{message},
+							   #{opTime})
+	</insert>
+	<select id="getOrderLog" parameterType="java.util.Map" resultType="java.util.Map">
+		select * from es_order_log where order_id=#{orderId}
+	</select>
 </mapper>

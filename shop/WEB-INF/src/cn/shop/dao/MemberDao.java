@@ -48,7 +48,20 @@ public class MemberDao
         session.close();
         return list;
     }
-
+    
+    /**
+     * 获得会员
+     * 
+     * @return
+     */
+    public Map<String, Object> getOneMemberById(Map<String, Object> param)
+    {
+        SqlSession session = sqlSessionFactory.openSession();
+        Map<String, Object> map= session.selectOne("memberMapper.getOneMemberById", param);
+        session.close();
+        return map;
+    }
+    
     /**
      * 新增会员
      */

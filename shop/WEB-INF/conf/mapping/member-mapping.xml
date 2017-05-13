@@ -3,7 +3,7 @@
   
 <mapper namespace="memberMapper">
 	<select id ="getOneMemberById"  parameterType="java.util.Map" resultType="java.util.Map">
-        select * from es_member where member_id=#{member_id}        
+        select * from es_member where member_id=#{memberId}        
     </select>
         
 	<!-- 查询单个会员 -->

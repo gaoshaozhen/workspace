@@ -1,0 +1,11 @@
+.operation-group .operation-btn {
+  opacity: 0.5;
+}
+.operation-group .active {
+  opacity: 1;
+}
+.inline-box {
+  width: 22%;
+  display: inline-table;
+}
+/*# sourceMappingURL=orderList.css.map */

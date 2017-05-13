@@ -30,16 +30,36 @@ public class OrderDao
      * 
      * @return
      */
-    public List<Map<String, Object>> getOrderList(Map<?, ?> dbParam)
+    public List<Map<String, Object>> getAllOrderByParamAndMemberId(Map<?, ?> dbParam)
     {
         SqlSession session = sqlSessionFactory.openSession();
         List<Map<String, Object>> list = session.selectList(
-                "orderMapper.getOrderList",
+                "orderMapper.getAllOrderByParamAndMemberId",
                 dbParam);
         session.close();
         return list;
     }
-
+    
+    public List<Map<String, Object>> getAllOrderByParam(Map<String, Object> dbParam)
+    {
+        SqlSession session = sqlSessionFactory.openSession();
+        List<Map<String, Object>> list = session.selectList(
+                "orderMapper.getAllOrderByParam",
+                dbParam);
+        session.close();
+        return list;
+    }
+    public Long getTotalOfAllOrderByParam(Map<String, Object> dbParam)
+    {
+        Long total = 0L;
+        SqlSession session = sqlSessionFactory.openSession();
+        Map<String, Object> map = session.selectOne(
+                "orderMapper.getTotalOfAllOrderByParam",
+                dbParam);
+        session.close();
+        total = (Long)map.get("total");
+        return total;
+    }
     /**
      * 按照订单状态获得订单列表。
      * 
@@ -116,5 +136,36 @@ public class OrderDao
         SqlSession session = sqlSessionFactory.openSession();
         session.update("orderMapper.updateOrderById", param);
         session.close();
+    }
+    
+    public void updatePayStatusByOrderId(Map<String, Object> param)
+    {
+        SqlSession session = sqlSessionFactory.openSession();
+        session.update("orderMapper.updatePayStatusByOrderId", param);
+        session.close();
+    }
+    
+    /**
+     * 添加订单日志。
+     * @param param
+     */
+    public void addOrderLog(Map<String, Object>param)
+    {
+        SqlSession session = sqlSessionFactory.openSession();
+        session.update("orderMapper.addOrderLog", param);
+        session.close();
+    }
+        
+    /**
+     * 获取订单日志。
+     * @param param
+     * @return
+     */
+    public List<Map<String, Object>>getOrderLog(Map<String, Object>param)
+    {
+        SqlSession session = sqlSessionFactory.openSession();
+        List<Map<String, Object>> list = 
+                session.selectList("orderMapper.getOrderLog", param);
+        return list;
     }
 }

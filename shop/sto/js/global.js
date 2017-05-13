@@ -1,0 +1,34 @@
+var orderStatus = {
+	WAIT:{
+		code:0,
+		desc:"等待付款",
+	},
+	WAITINGCONFIRM:{
+		code:1,
+		desc:"已付款等待确认",
+	},
+	PAYED:{
+		code:2,
+		desc:"已确认付款",
+	},
+	DISTRIBUTING:{
+		code:3,
+		desc:"配货中",
+	},
+	DELIVERED:{
+		code:4,
+		desc:"已发货",
+	},
+	CANCEL:{
+		code:5,
+		desc:"已取消",
+	},
+	SUCCESS:{
+		code:6,
+		desc:"成功",
+	},
+	UNKNOWN:{
+		code:-1,
+		desc:"未知",
+	},
+};

@@ -68,7 +68,12 @@
 			<!-- 执行间隔，单位s -->
 			<param-name>interval</param-name>
 			<param-value>600</param-value>
-		</init-param>  
+		</init-param>
+		<init-param>
+			<!-- 是否启动 --> 
+			<param-name>start</param-name>
+			<param-value>0</param-value>
+		</init-param>
 		<load-on-startup>1</load-on-startup>  
 	</servlet> 
 	

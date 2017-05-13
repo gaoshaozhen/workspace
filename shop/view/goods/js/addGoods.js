@@ -2,8 +2,7 @@ var selectCatId;
 var selectedTypeId;
 var typeDetail;
 
-
-
+// 将序列化获得数组转化为json对象
 function arrayToJson(array){
 	var json = {};
 
@@ -27,22 +26,8 @@ var goodsDetail={
 	"params":[],
 	"props":[],
 	"point":0,	
-
 };
-function submitForm(){
-	// var $name = $('<input type="text" name="name"/>');
-	// var $catId = $('<input type="number" name="catId"/>');
-	// var $brandId = $('<input type="text" name="brandId"/>');
-	// var $typeId = $('<input type="number" name="typeId"/>');
-	// var $marketEnable = $('<input type="number" name="marketEnable"/>');
-	// var $brief = $('<input type="number" name="brief"/>');
-	// var $intro = $('<input type="number" name="intro"/>');
-	// var $price = $('<input type="number" name="price"/>');
-
-	// var baseInfo = $("#base-info").serializeArray();	
-	// console.debug(arrayToJson(baseInfo));
-	
-	// $('#goods-form').submit();
+function submitForm(){	
 	var formData = new FormData();
 	// 相册
 	formData.append("picture1", $("#picture1")[0].files[0]);	
@@ -58,6 +43,13 @@ function submitForm(){
 	formData.append("mktPrice",  $("#mktPrice").val());
 	formData.append("point", $("#point").val());
 	formData.append("intro", getEditContent());
+	// 规格
+	formData.append("price",$("#price").val());
+	formData.append("cost",$("#cost").val());
+	formData.append("weight", $("weight").val());
+	if (typeDetail.have_spec != undefined && typeDetail.have_spec > 0) {
+		
+	}
 	// 参数
 	console.debug(typeDetail);
 	if (typeDetail.have_parm > 0) {

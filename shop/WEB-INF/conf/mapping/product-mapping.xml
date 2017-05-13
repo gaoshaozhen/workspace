@@ -8,23 +8,58 @@
 			#{item}
 		</foreach>                
     </select>
-    
+    <select id ="getProductsByProductId"  parameterType="java.util.Map" resultType="java.util.Map">
+        select * from es_product where product_id in        
+        <foreach collection="productIds" item="item" index="index" open="(" separator="," close=")">
+			#{product_id}
+		</foreach>
+    </select>
+    <!-- 依据产品编号精确查询商品信息 -->
     <select id ="getOneProductByProductId"  parameterType="java.util.Map" resultType="java.util.Map">
         select * from es_product where product_id = #{productId}        
     </select>
-    
-<!--     <select id ="getProductByTypeId"  parameterType="java.util.Map" resultType="java.util.Map">
+    <!-- 依据货号精确查询商品信息 -->
+    <select id="getOneProductDetailBySn" parameterType="java.util.Map" resultType="java.util.Map">
+    	select * from es_product where sn = #{sn}
+    </select>
+    <!-- 依据货号模糊查询 -->
+    <select id="getOneProductDetailLikeSn" parameterType="java.util.Map" resultType="java.util.Map">
+    	select * from es_product where sn like #{sn}
+    </select>
+    <!-- 依据商品名模糊查询 -->
+    <select id="getOneProductDetailLikeName" parameterType="java.util.Map" resultType="java.util.Map">
+    	select * from es_product where name like #{name}
+    </select>
+     <select id ="getAllProduct"  parameterType="java.util.Map" resultType="java.util.Map">
+        select g.*,es_goods_cat.name cat_name from
+         (
+         	select p.*,es_goods.cat_id cat_id, es_goods.market_enable market_enable  from 
+	        	(
+	        		select * from es_product
+	        			<where>
+	        				<if test="name != null">
+	        					name like #{name}
+	        				</if>
+	        			</where> 
+				        <if test="start != null">
+				       		<if test="num != null">
+				       			limit #{start},#{num}
+				       		</if>
+				        </if>
+	         	) 
+	         	p,es_goods where p.sn=es_goods.sn
+	      ) 
+         	g,es_goods_cat where g.cat_id=es_goods_cat.cat_id                       
+    </select>
+    <select id ="getAllProductTotal"  parameterType="java.util.Map" resultType="java.util.Map">
+        select count(*)total from es_product   
+                        <where>
+	        				<if test="name != null">
+	        					name like #{name}
+	        				</if>
+	        			</where>                     
+    </select>
 
-        select * from es_product where type_id in         
-        <foreach collection="typeIds" item="item" index="index" open="(" separator="," close=")">
-			#{item}
-		</foreach>                
-    </select>    
-	查询所有类型
-    <select id ="getAllProduct"  parameterType="java.util.Map" resultType="java.util.Map">
-        select * from es_product
-    </select>  -->  
-    
     <insert id="addProduct" parameterType="java.util.Map">
     	insert into es_product(product_id,
                                goods_id,
@@ -45,5 +80,8 @@
                                #{cost},
                                #{weight})
     	
-    </insert>         
+    </insert>
+    <update id="updateStore" parameterType="java.util.Map">
+    	update es_product set store = #{store} where product_id=#{productId}
+    </update>  
 </mapper>
