@@ -5,10 +5,20 @@ function openWin(productDetail){
 
 function updateStore(){
 	var param = {
-		productId:$("#product-id").val(),
-		inStore:$("#in-store").val(),
-		outStore:$("#out-store").val()
+		productId:$("#product-id").val().replace(/\s/g, ""),
+		inStore:$("#in-store").val().replace(/\s/g, ""),
+		outStore:$("#out-store").val().replace(/\s/g,""),
 	};
+	var re = /^[0-9]+$/;
+	var ref = /[^]/;
+	if (param.inStore.length < 1 && param.outStore.length < 1) {
+		alert("请输入有效数字");
+		return;
+	}else{
+		if (re.test(param.outStore)) {
+			param.outStore  = "-" + param.outStore;		
+		}	
+	}	
 	$.ajax({
 		url:"/shop/product/updateStore.shtm",
 		type:"get",
@@ -42,7 +52,7 @@ function initDataGrid(param){
 				{field:"sn",align:"center",title:"商品编号"},
 				{field:"name",align:"center",title:"商品名称"},
 				{field:"cat_name",align:"center",title:"分类"},
-				{field:"product_id",align:"center",title:"分类",hidden:false},
+				{field:"product_id",align:"center",title:"产品id",hidden:true},
 				{field:"market_enable",align:"center",title:"上架",
 					formatter: function(value,row,index){						
 						var dom;

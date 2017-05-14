@@ -21,11 +21,14 @@
     </select>    
 	<!-- 查询所有类型 -->
     <select id ="getAllGoodsCat"  parameterType="java.util.Map" resultType="java.util.Map">
-        select * from es_goods_cat 
-        <if test="start != null">
-			<if test="num != null">
-				limit #{start},#{num}
+        select cat.*, es_goods_type.name type_name from 
+        (
+	        select * from es_goods_cat 
+	        <if test="start != null">
+				<if test="num != null">
+					limit #{start},#{num}
+				</if>
 			</if>
-		</if>
+		)cat, es_goods_type where cat.type_id = es_goods_type.type_id
     </select>            
 </mapper>

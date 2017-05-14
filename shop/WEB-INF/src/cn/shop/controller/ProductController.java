@@ -61,12 +61,15 @@ public class ProductController
     }
 
     @RequestMapping(value = "updateStore.shtm")
-    public Object updateStore(@RequestParam Map<String, Object> param)
+    @ResponseBody
+    public Object updateStore(@RequestParam(value="productId") Integer productId,
+            @RequestParam(value="inStore", defaultValue="0") Integer inStore,
+            @RequestParam(value="outStore", defaultValue="0") Integer outStore)
     {
         Map<String, Object> result = new HashMap<String, Object>();
         Map<String, Object> dbParam = new HashMap<String, Object>();
-        Integer productId = (Integer) param.get("productId");
-        Integer store = (Integer) param.get("store");
+        
+        Integer store = inStore + outStore;
         ProductDao productDao;
 
         if (productId == null || store == null)

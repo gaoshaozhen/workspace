@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Controller;
@@ -14,7 +15,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.context.ContextLoader;
 
+import cn.shop.annotation.AuthCheck;
+import cn.shop.base.util.SpringContextUtil;
+import cn.shop.dao.MemberDao;
 import cn.shop.dao.UserDao;
+import cn.shop.model.Page;
 
 /**
  * 用户处理
@@ -115,5 +120,35 @@ public class UserController
             logger.debug("删除用户名为空");
         }
         return map;
+    }
+    
+    @AuthCheck(login=true, json=true, loginTarge = "")
+    @RequestMapping(value = "getMember.shtm")
+    @ResponseBody
+    public Object getmember(
+            @RequestParam(value = "pageSize", defaultValue = "10") Integer pageSize,
+            @RequestParam(value = "pageNumber", defaultValue = "1") Integer pageNumber,
+            @RequestParam(value = "name", required=false) String name)
+    {
+        Map<String, Object> result = new HashMap<String, Object>();
+        Map<String, Object> dbParam = new HashMap<String, Object>();
+        int start = Page.getStartNum(pageSize, pageNumber);
+        MemberDao memberDao = (MemberDao)SpringContextUtil.getBean("memberDao");
+        int num = pageSize;
+        name = StringUtils.trimToNull(name);
+        dbParam.put("start", start);
+        dbParam.put("num", num);
+        if(name != null)
+        {
+            dbParam.put("name", "%" + name + "%");
+        }
+        
+        List<Map<String, Object>> list = memberDao.getAllMember(dbParam);        
+        long total = memberDao.getAllMemberTotal(dbParam);
+        result.put("data", list);
+        result.put("total", total);
+        result.put("pageNumber", pageNumber);
+        result.put("code",1);
+        return result;
     }
 }

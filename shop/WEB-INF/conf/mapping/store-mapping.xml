@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="storeMapper">
+	<select id ="getAllStore"  parameterType="java.util.Map" resultType="java.util.Map">
+        select * from es_warn_num        
+    </select>
+        
+	
+    <select id ="getStore"  parameterType="java.util.Map" resultType="java.util.Map">
+        select * from es_warn_num where 
+        <if test="catId != null">
+        	cat_id = #{catId}
+        </if>
+        <if test="productId != null">
+        	<if test="catId != null">and</if>	
+        	product_id = #{productId}
+        </if>        
+    </select>
+    
+     <insert id="addStore" parameterType="java.util.Map" 
+        useGeneratedKeys="true" keyProperty="addr_id"> 
+        insert into es_warn_num(goods_id,
+        				        product_id,
+        				        cat_id,
+        				        warn_num)
+					    values(#{goodsId},
+        				        #{productId},
+        				        #{catId},
+        				        #{warnNum})		        
+    </insert>
+    
+    
+      
+    <update id="updateAddress" parameterType="java.util.Map">
+    	update es_warn_num set store=#{store} where
+    		<if test="cat_id != null">
+    			cat_id = #{catId}
+    		</if> 
+    		<if test="productId != null">
+    			<if test="cat_id != null">and</if>
+    			product_id=#{productId}
+    		</if>
+    </update>    
+</mapper>

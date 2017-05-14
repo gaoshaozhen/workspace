@@ -26,15 +26,29 @@ public class MemberDao
      * 
      * @return
      */
-    public Object getAllMember(Map<String, Object> param)
+    public List<Map<String, Object>> getAllMember(Map<String, Object> param)
     {
         SqlSession session = sqlSessionFactory.openSession();
-        List<Object> list;
+        List<Map<String, Object>> list;
         list = session.selectList("memberMapper.getAllMember", param);
         session.close();
         return list;
     }
-
+    /**
+     * 获得会员列表
+     * 
+     * @return
+     */
+    public long getAllMemberTotal(Map<String, Object> param)
+    {
+        long total = 0;
+        SqlSession session = sqlSessionFactory.openSession();
+        Map<String, Object> list;
+        list = session.selectOne("memberMapper.getAllMemberTotal", param);
+        session.close();
+        total = (Long)list.get("total");
+        return total;
+    }
     /**
      * 获得会员
      * 

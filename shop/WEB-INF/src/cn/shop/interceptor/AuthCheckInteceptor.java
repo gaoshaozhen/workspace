@@ -11,7 +11,7 @@ import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
-import cn.shop.annotation.AuthCheckAnnotation;
+import cn.shop.annotation.AuthCheck;
 import cn.shop.base.Configuration;
 import cn.shop.base.util.SpringContextUtil;
 import cn.shop.security.TokenManager;
@@ -53,20 +53,25 @@ public class AuthCheckInteceptor extends HandlerInterceptorAdapter
                     isValid = TokenManager.isValid(token,
                             configuration.get("key"));
                 }
+                break;
             }
         }
-        return true;
+        return isValid;
     }
 
     @Override
     public boolean preHandle(HttpServletRequest request,
             HttpServletResponse response, Object handler) throws Exception
     {
-
+        if(handler instanceof HandlerMethod == false)
+        {
+            return true;
+        }
         HandlerMethod methodHandler = (HandlerMethod) handler;
-        AuthCheckAnnotation auth = methodHandler
-                .getMethodAnnotation(AuthCheckAnnotation.class);
-        if (auth != null && !auth.login())
+        
+        AuthCheck auth = methodHandler
+                .getMethodAnnotation(AuthCheck.class);
+        if (auth != null && auth.login())
         {
             if (auth.json())
             {

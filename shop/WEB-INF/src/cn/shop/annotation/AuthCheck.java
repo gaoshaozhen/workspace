@@ -11,7 +11,7 @@ import java.lang.annotation.Target;
 @Target(ElementType.METHOD)
 @Inherited
 @Retention(RetentionPolicy.RUNTIME)
-public @interface AuthCheckAnnotation
+public @interface AuthCheck
 {
     /**
      * 是否检查处于登录状态。
@@ -39,5 +39,5 @@ public @interface AuthCheckAnnotation
      * 
      * @return
      */
-    int code() default -2;
+    int code() default 0;
 }

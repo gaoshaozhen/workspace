@@ -54,9 +54,8 @@
 	
 	<mvc:interceptors>
             <mvc:interceptor>
-            <mvc:mapping path="/mall/**"  />
+            <mvc:mapping path="/**/*.shtm"  />
             <bean  class="cn.shop.interceptor.AuthCheckInteceptor"/>        
         </mvc:interceptor>
-    </mvc:interceptors>
-        
+    </mvc:interceptors>        
 </beans>

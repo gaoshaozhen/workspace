@@ -14,9 +14,25 @@
         
     <!-- 查询所有会员 -->
     <select id="getAllMember" resultType="java.util.Map">
-    	select * from es_member
+    	select * from es_member 
+    	<where>
+    		<if test="name != null">
+    			uname like #{name}
+    		</if>
+    	</where>
+    	<if test="start != null">
+   			<if test="num != null">limit #{start},#{num}</if>
+   		</if>
     </select>
-    
+    <!-- 查询所有会员 数量-->
+    <select id="getAllMemberTotal" resultType="java.util.Map">
+    	select count(*) total from es_member 
+    	<where>
+    		<if test="name != null">
+    			uname like #{name}
+    		</if>
+    	</where>    	
+    </select>
     <!-- 插入会员信息--> 
      <insert id="insertMember" parameterType="java.util.Map" 
         useGeneratedKeys="true" keyProperty="member_id"> 

@@ -4,82 +4,67 @@
 		<title>添加分类</title>
 		<link rel="stylesheet" type="text/css" href="../lib/jquery-easyui-1.5.1/themes/default/easyui.css">
 		<link rel="stylesheet" type="text/css" href="../lib/jquery-easyui-1.5.1/themes/icon.css">
-		<link rel="stylesheet" type="text/css" href="../lib/jquery-easyui-1.5.1/demo/demo.css">
+		<link rel="stylesheet" type="text/css" href="./css/goodscat.css">
 		<script type="text/javascript" src="../lib/jquery-easyui-1.5.1/jquery.min.js"></script>
 		<script type="text/javascript" src="../lib/jquery-easyui-1.5.1/jquery.easyui.min.js"></script>
+		<script src="./js/goodscat.js"></script>
 	</head>
 	<body>
 		<div class="wrapper">
-			<button class="easyui-linkbutton" iconCls="icon-add">添加分类</button>
-			<table class="easyui-datagrid"
+			<nav class="operation-group">
+				<button id="add-cat-btn" class="easyui-linkbutton" 
+					iconCls="icon-add">添加分类</button>
+				<button id="redresh-grid" class="easyui-linkbutton" 
+					iconCls="icon-reload">刷新</button>		
+			</nav>
+			<table id="goods-cat-table" 
+				class="easyui-datagrid"
 				rownumbers="true"
 				fitColumns="true"
 				nowrap="false"
-				style="width:400px;height:auto;">
-				<thead>
-					<th field="ID" align="center" width="50">ID</th>
-					<th field="name" align="center" width="50">名称</th>
-					<th field="type" align="center" width="50">类型</th>
-					<th field="sort" align="center" width="50">排序</th>
-				</thead>		
-				<tbody>
-					<tr>
-						<td>1</td>
-						<td>食品、饮料、酒水</td>
-						<td>坚果</td>
-						<td><input type="" name=""></td>
-					</tr>
-					<tr>
-						<td>2</td>
-						<td>休闲零食</td>
-						<td>坚果</td>
-						<td><input type="" name=""></td>
-					</tr>
-				</tbody>
+				style="width:600px;height:300px;">				
 			</table>
-			<table>
-				<tr>
-					<td>分类名称</td>
-					<td><input type="" value="坚果"></td>
-				</tr>
-				<tr>
-					<td>分类图片</td>
-					<td><input type="file" name=""></td>
-				</tr>
-				<tr>
-					<td>上级分类</td>
-					<td>
-						<select>
-							<option>休闲零食</option>
-						</select>
-					</td>
-				</tr>
-				<tr>
-					<td>商品类型</td>
-					<td>
-						<select>
-							<option>选择商品类型</option>
-						</select>
-						此项必填
-					</td>
-				</tr>
-				<tr>
-					<td>排序</td>
-					<td><input type="" name=""></td>
-				</tr>
-				<tr>
-					<td>列表显示</td>
-					<td><input type="" name="dess"/></td>
-				</tr>
-				<tr>
-					<td></td>
-					<td></td>
-					<td>
-						<button>确定</button>
-						<button>重置</button>
-					</td>
-				</tr>
-			</table>
+			<section>
+				<div id="add-cat-window" class="easyui-window" 
+					closed="true"
+					style="width: 500px;height: 300px">
+					<table>
+						<tr>
+							<td>分类名称</td>
+							<td><input id="cat-name" type="" value="名称"></td>
+						</tr>
+						<tr>
+							<td>分类图片</td>
+							<td><input id="cat-file" type="file" name=""></td>
+						</tr>
+						<tr>
+							<td>上级分类</td>
+							<td><select id="parent-cat"></select></td>
+						</tr>
+						<tr>
+							<td>商品类型</td>
+							<td><select id="type"></select>此项必填</td>
+						</tr>
+						<tr>
+							<td></td><td><button id="submit-cat">确定</button></td>
+						</tr>
+					</table>		
+				</div>
+				<div id="operation-window" class="easyui-dialog" 
+					closed="true"
+					title="操作" 
+					buttons="#dlg-buttons"
+					style="width: 300px;height: 150px;padding: 10px">
+
+					<input type="text" id="goods-cat-id" hidden="true">
+					库存报警<input type="number" id="store-warn">
+
+					<div id="dlg-buttons">
+						<a href="#" class="easyui-linkbutton" 
+							iconCls="icon-ok"
+							>保存</a>		
+					</div>
+			</section>			
 		</div>
 	</body>
 </html>
