@@ -3,7 +3,7 @@
 <!DOCTYPE html>
 <html>
 	<head>
-		<title>注册</title>
+		<title>注册-${siteInfo.title}</title>
 		<link rel="stylesheet" type="text/css" href="/shop/sto/css/global.css">
 		<link rel="stylesheet" type="text/css" href="/shop/sto/css/register.css">
 		<script type="text/javascript" src="/shop/sto/js/register.js"></script>

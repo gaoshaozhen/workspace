@@ -5,7 +5,7 @@
 <!DOCTYPE html>
 <html>
 	<head>
-		<title>首页</title>
+		<title>列表-${siteInfo.title}</title>
 		<link rel="stylesheet" type="text/css" href="/shop/sto/css/mallIndex.css">
 		<link rel="stylesheet" type="text/css" href="/shop/sto/css/search_cat.css">
 		<script type="text/javascript" src="/shop/sto/js/extends.js"></script>

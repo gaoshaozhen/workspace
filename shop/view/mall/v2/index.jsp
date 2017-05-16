@@ -4,7 +4,7 @@
 <!DOCTYPE html>
 <html>
 	<head>
-		<title>首页</title>
+		<title>首页-${siteInfo.title}</title>
 		<link rel="stylesheet" type="text/css" href="/shop/sto/css/mallIndex.css">
 		<script type="text/javascript" src="/shop/sto/js/extends.js"></script>
 	</head>

@@ -5,7 +5,7 @@
 <!DOCTYPE html>
 <html>
 	<head>
-		<title>首页</title>
+		<title>购物车-${siteInfo.title}</title>
 	</head>
 	<body>
 		<div class="pack">			

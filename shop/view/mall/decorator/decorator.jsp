@@ -1,13 +1,15 @@
 <%@ page contentType="text/html; charset=utf-8" %>
-<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html>
 <head>
 	<title>
 		<sitemesh:write property='title' />		
-	</title>
+	</title>	
 	<meta charset="utf-8">
-	
+
+	<meta name="keywords" content="${siteInfo.keywords}" />
+
 	<link rel="stylesheet" type="text/css" href="/shop/store/bootstrap/css/bootstrap.min.css">		
 	<link rel="stylesheet" type="text/css" href="/shop/store/font-awesome-4.7.0/css/font-awesome.min.css">
 	<script type="text/javascript" src="/shop/store/bootstrap/js/jquery.min.js"></script>

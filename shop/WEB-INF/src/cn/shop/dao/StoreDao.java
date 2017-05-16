@@ -25,12 +25,12 @@ public class StoreDao
      * 
      * @return
      */
-    public List<Map<String, Object>> getAllStore()
+    public List<Map<String, Object>> getAllWarn()
     {
         SqlSession session = sqlSessionFactory.openSession();
         List<Map<String, Object>> list;
 
-        list = session.selectList("storeMapper.getAllStore");
+        list = session.selectList("storeMapper.getAllWarn");
         session.close();
         return list;
     }
@@ -45,24 +45,24 @@ public class StoreDao
         SqlSession session = sqlSessionFactory.openSession();
         List<Map<String, Object>> list;
 
-        list = session.selectList("storeMapper.getStore", param);
+        list = session.selectList("storeMapper.getWarn", param);
         session.close();
         return list;
     }
 
-    public void addStore(Map<String, Object> param)
+    public void addWarn(Map<String, Object> param)
     {
         SqlSession session = sqlSessionFactory.openSession();
 
-        session.insert("storeMapper.addStore", param);
+        session.insert("storeMapper.addWarn", param);
         session.close();
     }
 
-    public void updateStore(Map<String, Object> param)
+    public void updateWarn(Map<String, Object> param)
     {
         SqlSession session = sqlSessionFactory.openSession();
 
-        session.insert("storeMapper.updateStore", param);
+        session.insert("storeMapper.updateWarn", param);
         session.close();
     }
 }

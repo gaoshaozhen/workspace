@@ -5,7 +5,9 @@
 <!DOCTYPE html>
 <html>
 	<head>
-		<title>首页</title>
+		<meta name="keywords" content="${goodsDetail.meta_keywords}" />
+		<meta name="description" content="${goodsDetail.meta_description}" />
+		<title>${goodsDetail.name}-${siteInfo.title}</title>
 		<link rel="stylesheet" type="text/css" href="/shop/sto/css/mallIndex.css">
 		<link rel="stylesheet" type="text/css" href="/shop/sto/css/search_cat.css">
 		<link rel="stylesheet" type="text/css" href="/shop/sto/css/goods.css">
@@ -21,7 +23,7 @@
 						<!-- 商品基本信息 -->
 						<div class="summary">
 							<ul>
-								<h5><b>${productList.get(0).name}</b></h5>
+								<h5><b>${goodsDetail.name}</b></h5>
 								<li class="sn"><span>商品货号： ${productList.get(0).sn}</span></li>
 								<li class="price">
 									<span>销售价：</span><b id="product-price">${productList.get(0).price}</b> 

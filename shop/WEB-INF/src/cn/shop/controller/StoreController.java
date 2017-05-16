@@ -25,7 +25,7 @@ public class StoreController
     {
         Map<String, Object> result = new HashMap<String, Object>();
         StoreDao storeDao = (StoreDao) SpringContextUtil.getBean("storeDao");
-        List<Map<String, Object>> list = storeDao.getAllStore();
+        List<Map<String, Object>> list = storeDao.getAllWarn();
         result.put("data", list);
         return result;
     }
@@ -36,6 +36,7 @@ public class StoreController
     public Object updateStore(
             @RequestParam(value = "store", defaultValue = "0") Integer warnNum,
             @RequestParam(value = "catId", required=false) BigInteger catId,
+            @RequestParam(value = "disabled", required=false) Integer disabled,
             @RequestParam(value = "productId", required=false) BigInteger productId)
     {
         Map<String, Object> result = new HashMap<String, Object>();
@@ -56,14 +57,19 @@ public class StoreController
         {
             dbParam.put("catId", catId);
         }
+        if(disabled != null)
+        {
+            dbParam.put("disabled", disabled);
+        }
         list = storeDao.getStore(dbParam);
         if (list.isEmpty())
         {
-            storeDao.addStore(dbParam);
+            dbParam.put("disabled", 1);
+            storeDao.addWarn(dbParam);
         }
         else
         {
-            storeDao.updateStore(dbParam);
+            storeDao.updateWarn(dbParam);
         }
         return result;
     }

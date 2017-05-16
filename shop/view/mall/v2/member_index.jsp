@@ -3,7 +3,7 @@
 <!DOCTYPE html>
 <html>
 	<head>
-		<title>会员中心</title>
+		<title>会员中心-${siteInfo.title}</title>
 		<link rel="stylesheet" type="text/css" href="/shop/store/font-awesome-4.7.0/css/font-awesome.min.css">
 		<link rel="stylesheet" type="text/css" href="/shop/sto/css/member_index.css">
 	</head>

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+<mapper namespace="siteMapper">
+	<select id ="getSite"  parameterType="java.util.Map" resultType="java.util.Map">
+        select * from eop_site where id=1        
+    </select>
+        	        
+    <update id="updateSiteName" parameterType="java.util.Map">
+    	update eop_site set sitename = #{siteName} where id=1
+    </update>
+    <update id="updateLogoFile" parameterType="java.util.Map">
+    	update eop_site set logofile = #{logoFile} where id=1
+    </update>   
+    <update id="updateIcoFile" parameterType="java.util.Map">
+    	update eop_site set icofile = #{icoFile} where id=1
+    </update> 
+    <update id="updateKeywords" parameterType="java.util.Map">
+    	update eop_site set keywords = #{keywords} where id=1
+    </update>
+    <update id="updateTitle" parameterType="java.util.Map">
+    	update eop_site set title = #{title} where id=1
+    </update>
+</mapper>

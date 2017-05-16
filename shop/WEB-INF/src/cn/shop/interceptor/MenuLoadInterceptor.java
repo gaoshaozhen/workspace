@@ -1,8 +1,8 @@
 package cn.shop.interceptor;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Vector;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -12,6 +12,7 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
 import cn.shop.base.util.SpringContextUtil;
+import cn.shop.dao.SiteDao;
 import cn.shop.dao.SiteMenuDao;
 
 public class MenuLoadInterceptor extends HandlerInterceptorAdapter
@@ -35,22 +36,27 @@ public class MenuLoadInterceptor extends HandlerInterceptorAdapter
             HttpServletResponse response, Object handler,
             ModelAndView modelAndView) throws Exception
     {
-        SiteMenuDao dao = (SiteMenuDao) SpringContextUtil
-                .getBean("siteMenuDao");
-        List<Map<String, Object>> list = dao.getAllSiteMenuList();
-        Vector<Integer> vector = new Vector<Integer>();
+        SiteMenuDao dao;
+        List<Map<String, Object>> list;
+        List<Integer> idList;
+        SiteDao siteDao;
+        Map<String, Object> siteInfo;
         
         if(modelAndView == null)
         {
             logger.info("未发现视图对象");
             return;
         }
-        
+        idList = new ArrayList<Integer>();
+        dao = (SiteMenuDao) SpringContextUtil
+                .getBean("siteMenuDao");
+        siteDao = (SiteDao)SpringContextUtil.getBean("siteDao");
+        list = dao.getAllSiteMenuList();
         for (Map<String, Object> map : list)
         {
             if ((Integer) map.get("parentid") > 0)
             {
-                vector.add((Integer) map.get("parentid"));
+                idList.add((Integer) map.get("parentid"));
             }
             
         }
@@ -58,7 +64,7 @@ public class MenuLoadInterceptor extends HandlerInterceptorAdapter
         {
             int menuId = (Integer)map.get("menuid");
             
-            if(vector.contains(menuId))
+            if(idList.contains(menuId))
             {
                 map.put("hasChild", 1);
             }
@@ -67,10 +73,11 @@ public class MenuLoadInterceptor extends HandlerInterceptorAdapter
                 map.put("hasChild", 0);
             }
         }
+        siteInfo = siteDao.getSite();
+        modelAndView.addObject("siteInfo", siteInfo);
         modelAndView.addObject("siteMenuList", list);
         request.setAttribute("siteMenuList", list);
         logger.debug("添加菜单栏数据成功");
-        // System.out.println("postHandle");
     }
 
     /**
@@ -84,5 +91,4 @@ public class MenuLoadInterceptor extends HandlerInterceptorAdapter
     {
         // System.out.println("afterCompletion");
     }
-
 }

@@ -3,7 +3,7 @@
 <!DOCTYPE html>
 <html>
 	<head>
-		<title>登录</title>
+		<title>登录-${siteInfo.title}</title>
 		<link rel="stylesheet" type="text/css" href="/shop/sto/css/login.css">
 		<script type="text/javascript" src="/shop/sto/js/login.js"></script>
 	</head>
