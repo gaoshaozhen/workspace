@@ -57,4 +57,11 @@ public class BrandDao
         session.delete("brandMapper.deleteBrand", param);
         session.close();
     }
+    
+    public void updateBrand(Map<String, Object> param)
+    {
+        SqlSession session = sqlSessionFactory.openSession();
+        session.delete("brandMapper.updateBrand", param);
+        session.close();
+    }
 }

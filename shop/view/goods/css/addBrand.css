@@ -1,0 +1,10 @@
+.wrapper {
+  padding: 5px;
+}
+.wrapper .operation-group {
+  margin: 5px;
+}
+.wrapper #win .brand-id-info {
+  display: none;
+}
+/*# sourceMappingURL=addBrand.css.map */

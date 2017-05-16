@@ -114,4 +114,12 @@
 		    <taglib-location>/WEB-INF/tld/fn.tld</taglib-location>
 		</taglib>
 	</jsp-config>
+	<mime-mapping> 
+        <extension>htm</extension> 
+        <mime-type>text/html;charset=utf-8</mime-type> 
+	</mime-mapping> 
+	<mime-mapping> 
+	       <extension>html</extension> 
+	       <mime-type>text/html;charset=utf-8</mime-type> 
+	</mime-mapping> 
 </web-app>

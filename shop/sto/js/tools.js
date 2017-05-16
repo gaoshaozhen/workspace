@@ -9,3 +9,11 @@ function getRadio($array){
 function trim(str){
 	return str.replace(/(^\s*)|(\s$)/g,"");
 }
+
+function arrayToJson(array){
+	var json={};
+	for(var i = 0,len = array.length; i < len; i++){
+		json[array[i].name] = array[i].value;
+	}
+	return json;
+}
