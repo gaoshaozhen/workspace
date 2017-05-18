@@ -4,6 +4,7 @@ public class Default
 {
     public static <T> T get(T value, T defaultValue)
     {        
+        T defaultValuea;
         if (value == null)
         {
             return defaultValue;

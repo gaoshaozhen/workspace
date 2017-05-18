@@ -26,4 +26,7 @@ html {
   background: #49a9cf;
   color: white;
 }
+.inlink-block {
+  display: inline-block;
+}
 /*# sourceMappingURL=global.css.map */

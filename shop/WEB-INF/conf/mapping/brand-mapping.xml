@@ -44,24 +44,25 @@
     
     <!--更新品牌信息  -->
     <update id="updateBrand" parameterType="java.util.Map">
-    	update es_brand 
+    	update es_brand   
     	<set>
+    		brand_id = brand_id
     		<if test="name!= null">
-    			name = #{name}
+    			,name = #{name}
     		</if>
     		<if test="logo != null">
-    			logo = #{logo}
+    			,logo = #{logo}
     		</if>
     		<if test="brief != null">
-    			brief = #{brief}
+    			,brief = #{brief}
     		</if>
     		<if test="url != null">
-    			url = #{url}
+    			,url = #{url}
     		</if>
     		<if test="disabled != null">
-    			disabled = #{disabled}
+    			,disabled = #{disabled}
     		</if>
     	</set>
-    	where brand_id = #{brand_id}
+    	where brand_id = #{brandId}
     </update>            
 </mapper>

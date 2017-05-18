@@ -74,6 +74,17 @@ function loadGrid(){
 				{field:"name",title:"分类名",align:"center",width:50},
 				{field:"parent_name",title:"上级分类",align:"center",width:50},
 				{field:"type_name",title:"类型",align:"center",width:50},
+				{field:"warn_num",title:"库存预警数",align:"center",width:50,
+					formatter:function(value,row,index){
+						var dom;
+						if (row.warn_num == undefined || row.warn_num < 1) {
+							dom = "未设置";
+						}else{
+							dom = row.warn_num;
+						}
+						return dom;
+					}
+				},
 				{field:"operation",title:"操作",align:"center",width:30,
 					formatter:function(value,row,index){
 						var dom = "<a href='javascript:openOperationWinDow("
@@ -81,8 +92,8 @@ function loadGrid(){
 								+")'>操作</a>";
 						return dom;
 					}
-				},
-			]],
+				}
+			]],			
 			data:msg.catList			
 		});
 	}

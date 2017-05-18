@@ -39,7 +39,9 @@
     </select>
     
      <select id ="getOneGoodsByGoodsId" parameterType="java.util.Map" resultType="java.util.Map">
-    	select *  from es_goods where goods_id=#{goodsId} 
+     select goods.*,type.have_parm,type.have_prop,type.join_brand from 
+    		(select *  from es_goods where goods_id=#{goodsId}) goods,es_goods_type type
+    		where goods.type_id=type.type_id 
     </select>
     <insert id="addGoods" parameterType="java.util.Map">
     	insert into es_goods(goods_id,

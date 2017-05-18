@@ -1,22 +1,20 @@
 package test;
 
+import java.util.Date;
+
+import org.apache.commons.lang.time.DateFormatUtils;
+
 
 public class Test
 {
     
     public static void main(String[] args)    
     {
-          B b = new B();   
-          Object o = b;
-           System.out.println(o instanceof A);
-           System.out.println(o instanceof B);       
+          long x = 100;   
+          Date date = new Date(x); 
+          String str = DateFormatUtils.format(date,"HH:mm:ss");
+          
+          
+          System.out.println(new Boolean("true"));       
     }  
-}
-
-class A {
-    
-}
-
-class B extends A{
-    
 }

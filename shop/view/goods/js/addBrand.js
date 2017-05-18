@@ -113,7 +113,7 @@ var updateGrid = function(){
 						var dom = "<a href='javascript:openEditWin(json, false)'>编辑</a>";
 						return dom.replace(/json/,JSON.stringify(row));						
 					}
-				},
+				}
 			]],
 			data: msg
 		});
@@ -154,9 +154,9 @@ function getBrandParam(){
 	return param;
 }
 
-
 ;(function(){		
 	var bindEvent = function(){
+		
 		$("#submit-brand-btn").click(saveBrand);
 		$("#win").dialog({  
 		    onClose: function () {  

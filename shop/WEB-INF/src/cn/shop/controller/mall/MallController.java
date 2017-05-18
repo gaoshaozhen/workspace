@@ -8,6 +8,9 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
+
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.math.NumberUtils;
 import org.apache.log4j.Logger;
@@ -34,6 +37,7 @@ import cn.shop.dao.ProductDao;
 import cn.shop.model.Check;
 import cn.shop.model.MemberInfo;
 import cn.shop.model.Page;
+import cn.shop.model.Prop;
 
 /**
  * @author shaozhen
@@ -361,6 +365,47 @@ public class MallController
         if (productList == null || productList.isEmpty())
         {
             return "redirect:/mall/search.shtm";
+        }
+        Object object = goodsDetail.get("have_parm");
+        if((Integer)goodsDetail.get("have_parm") > 0 && goodsDetail.get("params") != null)
+        {
+            String params = (String)goodsDetail.get("params");
+            JSONArray array = null;
+            List<Map<String, Object>> arrayList = new ArrayList<Map<String, Object>>();
+            try
+            {
+                array = JSONArray.fromObject(params);                
+            }
+            catch(Exception e)
+            {
+                logger.warn(String.format("转换json对象出错，请检查数据仓库字段格式：goodsId=%s", goodsId));
+            }               
+            if(array != null)
+            {
+                array.size();
+                for (int i = 0, size = array.size(); i < size; i++)
+                {
+                    Map<String, Object> map = new HashMap<String, Object>();
+                    List<Map<String, Object>> paramListObject = new ArrayList<Map<String, Object>>();
+                    
+                    JSONObject jsonObject = array.getJSONObject(i);
+                    JSONArray paramList = jsonObject.getJSONArray("paramList");
+                    map.put("name", jsonObject.get("name"));
+                    for(int j = 0, len = paramList.size(); j < len; j++)
+                    {
+                        JSONObject value = paramList.getJSONObject(j);
+                        Map<String, Object> paramMap = new HashMap<String, Object>();
+                        paramMap.put("name", value.getString("name"));
+                        paramMap.put("value", value.getString("value"));                        
+                        paramListObject.add(paramMap);
+                    }
+                    map.put("paramList", paramListObject);
+                    map.put("paramNum", jsonObject.get("paramNum"));
+                    arrayList.add(map);
+                }
+            }
+            goodsDetail.put("paramsObject", arrayList);
+            goodsDetail.put("propObject", Prop.getList((String)goodsDetail.get("prop")));
         }
         model.addAttribute("goodsDetail", goodsDetail);
         model.addAttribute("productList", productList);

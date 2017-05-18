@@ -17,7 +17,7 @@
         
     <!-- 查询所有个人订单 -->
     <select id="getAllOrderByParamAndMemberId" resultType="java.util.Map">
-    	select * from es_order where memberId = #{memberId} 
+    	select * from es_order where member_id = #{memberId} 
     	<if test="status != null">
     		and status = #{status}
     	</if>
