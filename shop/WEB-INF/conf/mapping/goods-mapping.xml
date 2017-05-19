@@ -43,8 +43,24 @@
     		(select *  from es_goods where goods_id=#{goodsId}) goods,es_goods_type type
     		where goods.type_id=type.type_id 
     </select>
+    <select id="getOneGoodsBySn" parameterType="java.util.Map" resultType="java.util.Map">
+    	select * from es_goods where sn=#{sn}
+    </select>
+    
+    <select id="getGoodsList" parameterType="java.util.Map" resultType="java.util.Map">
+    	select * from es_goods 
+    	<where>
+    		<if test="name != null">
+    			name like '${name}'
+    		</if>
+    	</where>
+    	<if test="start != null">
+    		<if test="num != null">limit #{start},#{num}</if>
+    	</if>
+    	
+    </select>
     <insert id="addGoods" parameterType="java.util.Map">
-    	insert into es_goods(goods_id,
+    	insert into es_goods(
                              name,
     						 sn,
     						 brand_id,
@@ -73,8 +89,9 @@
     						 store,
     						 point,
     						 page_title,
-    						 meta_keywords)
-    				values(#{goodsId},
+    						 meta_keywords,
+    						 meta_description)
+    				values(
                              #{name},
     						 #{sn},
     						 #{brandId},
@@ -103,6 +120,19 @@
     						 #{store},
     						 #{point},
     						 #{pageTitle},
-    						 #{metaKeyWords})    		
+    						 #{metaKeyWords},
+    						 #{metaDescription})    		
     </insert>
+    <update id="updateGoodsBase" parameterType="java.util.Map">
+    	update es_goods set name = #{name},
+    						mktEnable = #{mktEnable},
+    						cost = #{cost},
+    						price = #{price},
+    						point = #{point},
+    					where goods_id = #{goodsId}
+    </update>
+    
+    <update id="updateGoodsIntro" parameterType="java.util.Map">
+    	update es_goods set intro = #{intro} where goods_id = #{goodsId} 
+    </update>
 </mapper>

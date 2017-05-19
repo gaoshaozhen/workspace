@@ -12,9 +12,8 @@ public class SiteDao
 {
     @Autowired
     SqlSessionFactory sqlSessionFactory;
-    
+
     /**
-     * 
      * @return
      */
     public Map<String, Object> getSite()
@@ -27,50 +26,52 @@ public class SiteDao
     }
 
     /**
-     * 
      * @return
      */
-    public void updateSiteName(
-            Map<String, Object> param)
+    public void updateSiteName(Map<String, Object> param)
     {
-        SqlSession session = sqlSessionFactory.openSession();        
+        SqlSession session = sqlSessionFactory.openSession();
 
         session.update("siteMapper.updateSiteName", param);
-        session.close();        
+        session.close();
     }
-    
-    public void updateTitle(
-            Map<String, Object> param)
+
+    public void updateTitle(Map<String, Object> param)
     {
-        SqlSession session = sqlSessionFactory.openSession();        
+        SqlSession session = sqlSessionFactory.openSession();
 
         session.update("siteMapper.updateTitle", param);
-        session.close();        
+        session.close();
     }
-    
-    public void updateIconFile(
-            Map<String, Object> param)
+
+    public void updateIconFile(Map<String, Object> param)
     {
-        SqlSession session = sqlSessionFactory.openSession();        
+        SqlSession session = sqlSessionFactory.openSession();
 
         session.update("siteMapper.updateIconFile", param);
-        session.close();        
+        session.close();
     }
-    public void updateLogoFile(
-            Map<String, Object> param)
+
+    public void updateLogoFile(Map<String, Object> param)
     {
-        SqlSession session = sqlSessionFactory.openSession();        
+        SqlSession session = sqlSessionFactory.openSession();
 
         session.update("siteMapper.updateLogoFile", param);
-        session.close();        
+        session.close();
     }
-    
-    public void updateKeywords(
-            Map<String, Object> param)
+
+    public void updateKeywords(Map<String, Object> param)
     {
-        SqlSession session = sqlSessionFactory.openSession();        
+        SqlSession session = sqlSessionFactory.openSession();
 
         session.update("siteMapper.updateKeywords", param);
-        session.close();        
+        session.close();
+    }
+    public void updateSite(Map<String, Object> param)
+    {
+        SqlSession session = sqlSessionFactory.openSession();
+
+        session.update("siteMapper.updateSite", param);
+        session.close();
     }
 }

@@ -61,7 +61,7 @@
     </select>
 
     <insert id="addProduct" parameterType="java.util.Map">
-    	insert into es_product(product_id,
+    	insert into es_product(
                                goods_id,
                                name,
                                sn,
@@ -70,7 +70,7 @@
                                specs,
                                cost,
                                weight)
-                       values(#{productId},
+                       values(
                                #{goodsId},
                                #{name},
                                #{sn},

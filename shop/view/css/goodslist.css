@@ -1,4 +1,28 @@
 .wrapper {
   padding: 5px;
 }
+.edit-box .edit-btn {
+  display: none;
+}
+.edit-box .back-btn {
+  display: none;
+}
+.edit-box .intro-box {
+  display: none;
+}
+.edit-box .intro-cont {
+  display: none;
+}
+.edit-box .inline-active {
+  display: inline;
+}
+.edit-box .block-active {
+  display: block;
+}
+.intro-save-box .intro-save-btn {
+  display: none;
+}
+.intro-save-box .active {
+  display: inline;
+}
 /*# sourceMappingURL=goodslist.css.map */

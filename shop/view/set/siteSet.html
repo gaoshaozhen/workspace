@@ -2,25 +2,39 @@
 	<html>
 	<head>
 		<title>站点设置</title>
+		<link rel="stylesheet" type="text/css" href="../lib/jquery-easyui-1.5.1/themes/default/easyui.css">
+		<link rel="stylesheet" type="text/css" href="../lib/jquery-easyui-1.5.1/themes/icon.css">
+		<script type="text/javascript" src="../lib/jquery-easyui-1.5.1/jquery.min.js"></script>
+		<script type="text/javascript" src="../lib/jquery-easyui-1.5.1/jquery.easyui.min.js"></script>
+		<script src="./js/siteset.js"></script>
 	</head>
 	<body>
 		<div class="wrapper">
 			<table>
 				<tr>
 					<td>网站名称</td>
-					<td><input type="text" value="示例商城"/></td>					
-				</tr>
-				<tr>
-					<td>网站标题</td>
-					<td><input type="text" value="示例商城"></td>
+					<td><input type="text" id="site-name" class="easyui-textbox" /></td>
 				</tr>
 				<tr>
 					<td>页面关键词</td>
-					<td><input type="" value="页面描述" /></td>
+					<td><input type="" id="keywords"  class="easyui-textbox"/></td>
+				</tr>
+				<tr>
+					<td>页面描述</td>
+					<td><input type="" id="descript"  class="easyui-textbox"/></td>
 				</tr>
 				<tr>
 					<td>版权说明</td>
-					<td><input type="" value="高少振版权所有"/></td>					
+					<td><input type="" id="copyright"  class="easyui-textbox"/></td>
+				</tr>
+				<tr>
+					<td>icp</td>
+					<td><input type="" id="icp"  class="easyui-textbox"/></td>
+				</tr>
+				<tr>
+					<td></td><td><button id="save-site"
+						class="easyui-linkbutton"
+						iconCls="icon-save">保存</button></td>
 				</tr>
 			</table>
 			<fieldset>
@@ -49,7 +63,7 @@
 						</td>
 					</tr>
 				</table>
-			</fieldset>			
+			</fieldset>
 		</div>
 	</body>
 </html>

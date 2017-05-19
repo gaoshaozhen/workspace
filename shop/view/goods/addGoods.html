@@ -3,7 +3,7 @@
 	<head>
 		<title>添加商品</title>
 		<link rel="stylesheet" type="text/css" href="../lib/jquery-easyui-1.5.1/themes/default/easyui.css">
-		<link rel="stylesheet" type="text/css" href="../lib/jquery-easyui-1.5.1/themes/icon.css">		
+		<link rel="stylesheet" type="text/css" href="../lib/jquery-easyui-1.5.1/themes/icon.css">
 		<link rel="stylesheet" type="text/css" href="/shop/sto/css/global.css">
 		<link rel="stylesheet" type="text/css" href="./css/addGoods.css">
 
@@ -30,7 +30,7 @@
 						<span id="second-cat" class="cat-label"></span>
 						<span id="third-cat" class="cat-label"></span>
 					</label>
-				</h3>			
+				</h3>
 				<div class="easyui-layout" style="width: 600px;height: 200px">
 					<!-- 一级分类 -->
 					<div data-options="region:'west',split:true" style="width:180px;height:100%">
@@ -45,16 +45,19 @@
 						<ul id="thirdList"></ul>
 					</div>
 				</div>
-				<button id="next-btn">下一步</button>
+				<button id="next-btn"
+					class="easyui-linkbutton"
+					iconCls="icon-ok">下一步</button>
 			</div>
 			<div id="param-panel" style="display: none;">
-				<button id="previous-btn">上一步</button>
+				<button id="previous-btn" class="easyui-linkbutton"
+					iconCls="icon-back">上一步</button>
 				<div id="tt" class="easyui-tabs" style="width:750px;height:350px;">
 				    <div title="基本信息" style="padding:20px;">
 				    	<form id="base-info">
 				    		<input type="text" name="catId" hidden="true"/>
 				    		<input type="text" name="typeId" hidden="true"/>
-							<table style="width: 100%">								
+							<table style="width: 100%">
 								<tr>
 									<th>商品分类</th>
 									<td><input id="cat-info-selected" type="text" /></td>
@@ -63,6 +66,7 @@
 									<th>商品名称</th>
 									<td><input id="goods-name" type="text" name="name"></td>
 								</tr>
+								<tr id="brand-edit"></tr>
 								<tr>
 									<th>是否上架销售</th>
 									<td id="marketEnable">
@@ -71,7 +75,7 @@
 										</label>
 										<labe1>
 											<input type="radio" name="marketEnable" value="0" />否
-										</label>	
+										</label>
 									</td>
 								</tr>
 								<tr>
@@ -110,7 +114,7 @@
 								</tr>
 								<tr>
 									<th>成本价</th>
-									<td><input type="number" id="cost"></td>									
+									<td><input type="number" id="cost"></td>
 								</tr>
 								<tr>
 									<th>重量</th>
@@ -124,20 +128,29 @@
 						</table>
 				    </div>
 				    <div title="属性"  style="padding:2px;">
-				    	<table id="brand-edit"></table>					
 						<table id="prop-edit"></table>
 				    </div>
 				    <div title="参数"  style="padding:20px;">
 						<div id="param-edit"></div>
 				    </div>
 				    <div title="SEO"  style="padding:20px;">
-						<textarea id="seo"></textarea>
+						<table>
+							<tr>
+								<th>关键词</th>
+								<td><textarea id="meta-keywords"></textarea></td>
+							</tr>
+							<tr>
+								<th>描述</th>
+								<td><textarea id="meta-description"></textarea></td>
+							</tr>
+						</table>
 				    </div>
 				    <div title="标签"  style="padding:20px;">
 						<ul id="edit-tag"></ul>
 				    </div>
 				</div>
-				<button id="submit-form">提交信息</button>
+				<button id="submit-form" class="easyui-linkbutton"
+					iconCls="icon-add">提交信息</button>
 			</div>
 			<form action="/shop/mall/addGoods.shtm" method="post" id="goods-form"></form>
 		</div>

@@ -35,6 +35,14 @@ public class UserDao
         return list;
     }
 
+    public List<Map<String, Object>> getAllUser(Map<String, Object> param)
+    {
+        SqlSession session = sqlSessionFactory.openSession();
+        List<Map<String, Object>> list = session.selectList("userMapper.getAllUser", param);
+        session.close();
+        return list;
+    }
+    
     /**
      * 新增用户
      */
@@ -42,6 +50,7 @@ public class UserDao
     {
         SqlSession session = sqlSessionFactory.openSession();
         session.insert("userMapper.insertUser", param);
+        session.close();
     }
 
     /**
@@ -50,5 +59,12 @@ public class UserDao
     public Object deleteUser()
     {
         return null;
+    }
+
+    public void updateUser(Map<String, Object> param)
+    {
+        SqlSession session = sqlSessionFactory.openSession();
+        session.insert("userMapper.updateUser", param);
+        session.close();
     }
 }

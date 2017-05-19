@@ -18,8 +18,14 @@
     </select>
         
     <!-- 查询所有用户 -->
-    <select id="selectAllUser" resultType="java.util.Map">
-    	select * from eop_user
+    <select id="getAllUser" resultType="java.util.Map">
+    	select * from eop_user 
+    		<where>
+    			<if test="name != null">username like '%${name}%'</if>
+    		</where>
+    		<if test="start != null">
+    			<if test="num != null">limit #{start},#{num}</if>
+    		</if>
     </select>
     
     <!-- 插入用户信息 -->
@@ -42,14 +48,18 @@
     <update id="updateUser" parameterType="java.util.Map">
     	update eop_user 
     	<set>
+    		id = id
     		<if test="username != null">
-    			username = #{username}
+    			,username = #{username}
     		</if>
     		<if test="password != null">
-    			password = #{password}
+    			,password = #{password}
     		</if>
     		<if test="email != null">
-    			email = #{email}
+    			,email = #{email}
+    		</if>
+    		<if test="mobile != null">
+    			,mobile = #{mobile}
     		</if>
     	</set>
     	where id = #{id}

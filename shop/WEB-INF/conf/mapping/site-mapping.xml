@@ -21,4 +21,23 @@
     <update id="updateTitle" parameterType="java.util.Map">
     	update eop_site set title = #{title} where id=1
     </update>
+    <update id="updateSite" parameterType="java.util.Map">
+    	update eop_site set id = id
+    	<if test="sitename != null">
+    		,sitename=#{siteName}
+    	</if>
+    	<if test="keywords != null">
+    		,keywords = #{keywords}
+    	</if>
+    	<if test="description != null">
+    		,descript = #{descript}
+    	</if>
+    	<if test="copyright != null">
+    		,copyright = #{copyright}
+    	</if>
+    	<if test="copyright != null">
+    		,icp = #{icp}
+    	</if>
+    	where id = 1
+    </update>
 </mapper>

@@ -157,4 +157,42 @@ public class GoodsDao
         session.selectOne("goodsMapper.addGoods", param);
         session.close();
     }
+    
+    public Map<String, Object> getOneGoodsBySn(Map<String, Object> param)
+    {
+        SqlSession session = sqlSessionFactory.openSession();
+        Map<String, Object> map = session.selectOne("goodsMapper.getOneGoodsBySn", param);
+        session.close();
+        return map;
+    }
+
+    public List<Map<String, Object>> getGoodsList(Map<String, Object> param)
+    {
+        SqlSession session = sqlSessionFactory.openSession();
+        List<Map<String, Object>> list = session.selectList(
+                "goodsMapper.getGoodsList", param);
+        session.close();
+        return list;
+    }
+    
+    public void update(Map<String, Object> param)
+    {
+        SqlSession session = sqlSessionFactory.openSession();
+        session.update("goodsMapper.updateGoods", param);
+        session.close();
+    }
+    
+    public void updateBase(Map<String, Object> param)
+    {
+        SqlSession session = sqlSessionFactory.openSession();
+        session.update("goodsMapper.updateGoodsBase", param);
+        session.close();
+    }
+    
+    public void updateIntro(Map<String, Object> param)
+    {
+        SqlSession session = sqlSessionFactory.openSession();
+        session.update("goodsMapper.updateGoodsIntro", param);
+        session.close();
+    }
 }
