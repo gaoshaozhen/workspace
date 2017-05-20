@@ -131,9 +131,14 @@ public class MallController
             List<Integer> typeIds = new ArrayList<Integer>();
             List<Integer> catIds = new ArrayList<Integer>();
             List<Map<String, Object>> result;
+            Map<String, Object> goodsCat;
+            Map<String, Object> goodsCatDbParam = new HashMap<String, Object>();
             Map<String, Object> daoParam = new HashMap<String, Object>();
             int count = 0;// 限制最大循环次数，防止陷入死循环
             catIds.add(catId);
+            goodsCatDbParam.put("catId", catId);
+            goodsCat = goodsCatDao.getOneGoodsCatByCatId(goodsCatDbParam);
+            typeIds.add((Integer)goodsCat.get("type_id"));
             daoParam.put("parentIds", catIds);
             catIds.add(catId);
             do
@@ -217,7 +222,8 @@ public class MallController
 
             }
         }
-        totalPage = Math.round(total / pageSize);
+        
+        totalPage = new Double(Math.ceil((new Double(total)).doubleValue()/ (new Double(pageSize)).doubleValue())).intValue();
         model.addAttribute("goodsList", goodsList);
         model.addAttribute("pageNumber", pageNumber);
         model.addAttribute("total", total);

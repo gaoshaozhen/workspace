@@ -9,6 +9,7 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Controller;
@@ -93,7 +94,8 @@ public class BrandController
                     // 取得当前上传文件的文件名称
                     String myFileName = file.getOriginalFilename();
                     // 如果名称不为“”,说明该文件存在，否则说明该文件不存在
-                    if (myFileName.trim() != "")
+                    if(StringUtils.trimToNull(myFileName) != null)
+//                    if (myFileName.trim() != "")
                     {
                         Map<String, Object> fileMap = FileManager.getTempTile();
                         fileName = (String) fileMap.get("fileName");

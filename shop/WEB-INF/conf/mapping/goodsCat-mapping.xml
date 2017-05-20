@@ -31,4 +31,8 @@
 			</if>
 		)cat, es_goods_type where cat.type_id = es_goods_type.type_id
     </select>            
+	<select id = "getOneGoodsCatByCatId" parameterType="java.util.Map" 
+		resultType="java.util.Map">
+		select * from es_goods_cat where cat_id = #{catId}	
+	</select>
 </mapper>

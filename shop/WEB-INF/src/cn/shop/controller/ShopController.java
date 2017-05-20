@@ -61,18 +61,4 @@ public class ShopController
         log.debug(param.toString());
         return "buy";
     }
-
-    /**
-     * 将商品加入购物车
-     * <p>
-     * 传入参数:{"goodsId" : "商品id","goodsNumber" : 商品数量}
-     * </p>
-     * 
-     * @return
-     */
-    public String addToCart()
-    {
-
-        return "";
-    }
 }

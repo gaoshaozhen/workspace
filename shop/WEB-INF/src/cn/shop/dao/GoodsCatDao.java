@@ -79,4 +79,11 @@ public class GoodsCatDao
         session.close();
         return list;
     }
+    
+    public Map<String, Object> getOneGoodsCatByCatId(Map<String, Object> param)
+    {
+        SqlSession session = sqlSessionFactory.openSession();
+        Map<String, Object> map = session.selectOne("goodsCatMapper.getOneGoodsCatByCatId",param);
+        return map;
+    }
 }

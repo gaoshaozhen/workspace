@@ -75,7 +75,8 @@ public class GoodsController
                     // 取得当前上传文件的文件名称
                     String myFileName = file.getOriginalFilename();
                     // 如果名称不为“”,说明该文件存在，否则说明该文件不存在
-                    if (myFileName.trim() != "")
+                    if(StringUtils.trimToNull(myFileName) != null)
+//                    if (myFileName.trim() != "")
                     {
                         Map<String, Object> fileMap = FileManager.getTempTile();
 
@@ -89,8 +90,7 @@ public class GoodsController
         {
             String vectorStr = vector.toString();
             goods.put("imageDefault", vector.firstElement());
-            goods.put("imageFile",
-                    vectorStr.substring(1, vectorStr.length() + 1));
+            goods.put("imageFile",vectorStr.replace("[", "").replace("]", ""));
         }
         goods.put("name", param.get("name"));
         goods.put("brandId", param.get("brandId"));
